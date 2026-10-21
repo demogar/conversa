@@ -1,5 +1,16 @@
 import { generate } from 'otplib';
-import { API, createTestApp, PASSWORD, signUp, type TestApp } from './support/app.js';
+import request from 'supertest';
+import { CryptoService } from '../../src/common/crypto/crypto.service.js';
+import {
+  API,
+  automationInput,
+  connectSandboxChannel,
+  createTestApp,
+  firstWorkspaceId,
+  PASSWORD,
+  signUp,
+  type TestApp,
+} from './support/app.js';
 
 describe('security', () => {
   let t: TestApp;
@@ -23,6 +34,39 @@ describe('security', () => {
 
     const session = await t.prisma.session.findFirstOrThrow({ orderBy: { createdAt: 'desc' } });
     expect(session.ip).toBe('203.0.113.7');
+  });
+
+  it('resolves the visitor address on routes served outside the API prefix', async () => {
+    const owner = t.agent();
+    await owner
+      .post(`${API}/auth/login`)
+      .send({ email: 'owner@example.com', password: PASSWORD })
+      .expect(200);
+    const workspaceId = await firstWorkspaceId(owner);
+    const channelId = await connectSandboxChannel(owner, workspaceId);
+    const created = await owner
+      .post(`${API}/workspaces/${workspaceId}/automations`)
+      .send(automationInput(channelId))
+      .expect(201);
+    const link = await t.prisma.trackedLink.findFirstOrThrow({
+      where: { automationId: created.body.id as string },
+    });
+
+    const server = t.app.getHttpServer() as Parameters<typeof request>[0];
+    for (const forwardedFor of ['198.51.100.1, 203.0.113.7', '203.0.113.8']) {
+      await request(server).get(`/l/${link.slug}`).set('X-Forwarded-For', forwardedFor).expect(302);
+    }
+
+    const crypto = t.app.get(CryptoService);
+    const visitorHash = (ip: string) => crypto.hmac('visitor', `${link.id}:${ip}`).slice(0, 32);
+    const clicks = await t.prisma.linkClick.findMany({
+      where: { linkId: link.id },
+      orderBy: { createdAt: 'asc' },
+    });
+    expect(clicks.map((click) => click.visitorHash)).toEqual([
+      visitorHash('203.0.113.7'),
+      visitorHash('203.0.113.8'),
+    ]);
   });
 
   it('counts every failure of a burst of parallel wrong passwords', async () => {
