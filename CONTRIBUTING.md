@@ -44,7 +44,7 @@ Set `INSTAGRAM_SANDBOX=true` to work without a Meta app ([docs/sandbox.md](docs/
 6. Commit with [Conventional Commits](https://www.conventionalcommits.org/): `feat(engine): retry deliveries after a rate limit`, `fix(web): keep the draft when saving fails`, `docs: explain TRUST_PROXY`.
 7. Open the pull request with a Conventional Commit **title** (a check enforces it): say what changed and why, how you tested it, and include a screenshot for UI changes. Do not edit [CHANGELOG.md](CHANGELOG.md); it is generated at release time.
 
-Pull requests are squash-merged: the PR title becomes the commit message on `main`, and the PR description its body. All checks must pass and every review conversation must be resolved before merging.
+Pull requests are squash-merged: the PR title becomes the commit message on `main`, and the PR description its body. `main` is protected by a ruleset: nothing is pushed to it directly, every change arrives through a pull request that is up to date with `main`, the required checks (lint, typecheck and unit tests, integration tests, both image builds, end-to-end tests, the secret scan and the PR title check) must pass, and every review conversation must be resolved before merging. History stays linear, and `main` cannot be force-pushed or deleted.
 
 ## Releases
 
