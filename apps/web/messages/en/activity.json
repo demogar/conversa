@@ -1,1 +1,62 @@
-{}
+{
+  "title": "Activity",
+  "description": "Every time an automation fired: who set it off, what they wrote and how it ended.",
+  "loading": "Loading activity",
+  "loadFailed": "Activity did not load",
+  "filters": {
+    "label": "Filter activity",
+    "automation": "Automation",
+    "allAutomations": "All automations",
+    "status": "Status",
+    "allStatuses": "All statuses",
+    "clear": "Clear filters"
+  },
+  "status": {
+    "SENT": "Sent",
+    "AWAITING_TAP": "Waiting for tap",
+    "AWAITING_FOLLOW": "Waiting for follow",
+    "FAILED": "Failed",
+    "SKIPPED": "Skipped",
+    "PENDING": "Pending"
+  },
+  "table": {
+    "label": "Automation activity",
+    "time": "Time",
+    "contact": "Contact",
+    "automation": "Automation",
+    "trigger": "What they wrote",
+    "keyword": "Keyword",
+    "status": "Status",
+    "publicReply": "Public reply",
+    "details": "Details"
+  },
+  "unknownContact": "Unknown",
+  "anyText": "Any text",
+  "publicReplySent": "Sent",
+  "attempts": "{count, plural, one {# attempt} other {# attempts}}",
+  "skip": {
+    "RATE_LIMITED": "Skipped to stay under Instagram’s message limit.",
+    "CHANNEL_INACTIVE": "The Instagram account was disconnected or needs to be connected again.",
+    "AUTOMATION_PAUSED": "The automation was paused before the message went out.",
+    "ALREADY_REPLIED": "This person had already received this automation’s message.",
+    "unknown": "Skipped."
+  },
+  "errorCodes": {
+    "AUTH": "Instagram no longer accepts this account’s connection. Connect the account again.",
+    "RATE_LIMIT": "Instagram limited how many messages can be sent, even after retrying.",
+    "WINDOW_CLOSED": "The 24 hours in which Instagram allows a message to this person had passed.",
+    "REJECTED": "Instagram refused the message.",
+    "TRANSIENT": "Instagram did not answer, even after several tries.",
+    "INTERNAL": "Something went wrong in Conversa while sending.",
+    "unknown": "The message could not be sent."
+  },
+  "empty": {
+    "title": "Nothing has happened yet",
+    "description": "When someone comments or writes a message that matches an automation, it shows up here.",
+    "action": "Create automation"
+  },
+  "noResults": {
+    "title": "No activity matches these filters",
+    "description": "Try another automation or status, or clear the filters to see everything."
+  }
+}

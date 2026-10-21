@@ -42,7 +42,9 @@ export function Turnstile({
 }) {
   const container = useRef<HTMLDivElement>(null);
   const callback = useRef(onToken);
-  callback.current = onToken;
+  useEffect(() => {
+    callback.current = onToken;
+  }, [onToken]);
 
   useEffect(() => {
     if (!siteKey || !container.current) return;

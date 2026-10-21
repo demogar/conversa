@@ -13,18 +13,15 @@ import {
   Req,
   UnauthorizedException,
 } from '@nestjs/common';
-import { InjectQueue } from '@nestjs/bullmq';
 import { SkipThrottle } from '@nestjs/throttler';
-import type { Queue } from 'bullmq';
 import { AppConfig } from '../../config/app-config.js';
 import { CryptoService } from '../../common/crypto/crypto.service.js';
 import { Public, SkipOriginCheck } from '../../common/http/decorators.js';
 import type { AppRequest } from '../../common/http/request.js';
 import { PrismaService } from '../../infra/prisma/prisma.service.js';
-import { INBOUND_QUEUE, type InboundJob } from '../../infra/queue/queues.js';
-import type { Prisma } from '../../generated/prisma/client.js';
 import { ChannelsService } from '../channels/channels.service.js';
 import { ProviderRegistry } from '../channels/provider/provider.registry.js';
+import { InboundEventIngestor } from './inbound-event.ingestor.js';
 import { parseSignedRequest } from './signed-request.js';
 
 /**
@@ -45,7 +42,7 @@ export class WebhooksController {
     private readonly channels: ChannelsService,
     private readonly crypto: CryptoService,
     private readonly config: AppConfig,
-    @InjectQueue(INBOUND_QUEUE) private readonly inbound: Queue<InboundJob>,
+    private readonly ingestor: InboundEventIngestor,
   ) {}
 
   @Get(':type')
@@ -71,11 +68,7 @@ export class WebhooksController {
       throw new UnauthorizedException();
     }
 
-    const event = await this.prisma.inboundEvent.create({
-      data: { channelType: provider.type, payload: request.body as Prisma.InputJsonValue },
-      select: { id: true },
-    });
-    await this.inbound.add('event', { eventId: event.id }, { jobId: event.id });
+    await this.ingestor.ingest(provider.type, request.body);
     return { received: true };
   }
 

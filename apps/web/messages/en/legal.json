@@ -1,1 +1,121 @@
-{}
+{
+  "nav": {
+    "label": "Legal",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "dataDeletion": "Data deletion",
+    "home": "Go to Conversa"
+  },
+  "template": {
+    "title": "This is a template",
+    "description": "Conversa is self-hosted software. Whoever runs this instance should adapt this page to how they run it and to the laws that apply to them."
+  },
+  "privacy": {
+    "title": "Privacy notice",
+    "lead": "How this Conversa instance handles personal data, and who is responsible for it.",
+    "sections": [
+      {
+        "title": "Who is responsible",
+        "paragraphs": [
+          "Conversa is open-source software that anyone can run on their own servers. The organization or person that runs this instance (the operator) decides why and how its data is processed, and is the controller of that data. The people who wrote Conversa do not receive or see it.",
+          "To ask about your data, contact the operator of this instance using the contact details they publish."
+        ]
+      },
+      {
+        "title": "What Conversa stores",
+        "paragraphs": ["To work, Conversa keeps the following, in the operator's own database:"],
+        "items": [
+          "Account data of the people who use Conversa: name, email address, a hash of the password, sessions, language and two-step verification settings.",
+          "Access tokens of the Instagram accounts and other services (such as Buffer) connected to a workspace. They are stored encrypted and used only to act on behalf of that account.",
+          "For people who interact with a connected Instagram account: their Instagram id and username, and the comments or messages that started an automation.",
+          "The messages and replies Conversa sent on behalf of a connected account, with their delivery status.",
+          "Click counts on links Conversa sends. The visitor's IP address is never stored as is: only a one-way hash, used to count unique clicks."
+        ]
+      },
+      {
+        "title": "Why it is processed",
+        "paragraphs": [
+          "The data is used only to run the automations each workspace sets up: answering comments, sending direct messages, showing the inbox and counting results. Conversa does not sell data, show advertising or build profiles for third parties."
+        ]
+      },
+      {
+        "title": "Who it is shared with",
+        "paragraphs": [
+          "Replies and messages go through the platform they are sent on (for example, Meta for Instagram) under that platform's own terms. The operator may use hosting, email or monitoring providers to run the instance."
+        ]
+      },
+      {
+        "title": "How long it is kept",
+        "paragraphs": [
+          "Data is kept while the workspace that holds it exists, or until a deletion request is answered. When a workspace is deleted or an account is disconnected, its data and tokens are removed."
+        ]
+      },
+      {
+        "title": "Your rights",
+        "paragraphs": [
+          "Depending on where you live, you may have the right to access, correct, export or delete your data, and to object to its processing. Ask the operator of this instance; the data deletion page explains how to request deletion."
+        ]
+      }
+    ]
+  },
+  "terms": {
+    "title": "Terms of use",
+    "lead": "The rules for using this Conversa instance.",
+    "sections": [
+      {
+        "title": "The service",
+        "paragraphs": [
+          "This instance of Conversa is run by its operator, not by the authors of the software. The operator decides who may sign up and may change or end the service."
+        ]
+      },
+      {
+        "title": "Your responsibilities",
+        "paragraphs": ["When you use Conversa you agree to:"],
+        "items": [
+          "Use it only with accounts you are allowed to manage.",
+          "Follow the terms and policies of the platforms you connect, including Instagram's rules on automated messages.",
+          "Not send spam, misleading content or anything unlawful.",
+          "Keep your password and connected keys safe."
+        ]
+      },
+      {
+        "title": "No warranty",
+        "paragraphs": [
+          "Conversa is provided as is. Platforms can change or limit what automations may do at any time, and messages may sometimes not be delivered. To the extent the law allows, the operator is not liable for losses caused by using the service."
+        ]
+      },
+      {
+        "title": "Privacy",
+        "paragraphs": ["How personal data is handled is described in the privacy notice."]
+      }
+    ]
+  },
+  "dataDeletion": {
+    "title": "Data deletion",
+    "lead": "How to have the data this instance holds about you deleted.",
+    "confirmationTitle": "Your request was received",
+    "confirmationDescription": "Keep this confirmation code. Give it to the operator of this instance if you want to ask about your request.",
+    "confirmationCode": "Confirmation code",
+    "sections": [
+      {
+        "title": "If you interacted with an account that uses Conversa",
+        "paragraphs": [
+          "If you commented on or messaged an Instagram account that uses this instance, Conversa may hold your Instagram id, username and those messages.",
+          "Removing the app from your Facebook or Instagram settings sends a deletion request here automatically, and you are shown a confirmation code. You can also contact the operator of this instance and ask them to delete your data."
+        ]
+      },
+      {
+        "title": "If you have a Conversa account",
+        "paragraphs": [
+          "Deleting a workspace removes its connected accounts, automations, contacts and messages. To delete your account itself, contact the operator of this instance."
+        ]
+      },
+      {
+        "title": "What happens next",
+        "paragraphs": [
+          "The data linked to you is deleted, and any token for a disconnected account is removed. Records the operator must keep by law, such as security logs, may be kept for as long as that law requires."
+        ]
+      }
+    ]
+  }
+}

@@ -1,1 +1,82 @@
-{}
+{
+  "title": "Channels",
+  "description": "The Instagram accounts this workspace answers for. Automations and the inbox use them.",
+  "connect": "Connect Instagram account",
+  "reconnect": "Reconnect account",
+  "disconnect": "Disconnect account",
+  "simulate": "Simulate an event",
+  "connected": {
+    "title": "Instagram account connected",
+    "description": "Comments and messages to it can now start automations."
+  },
+  "connectFailed": "The account was not connected",
+  "notConfigured": {
+    "title": "Instagram is not set up on this installation",
+    "body": "The administrator must configure the Meta app before accounts can be connected — see {doc}."
+  },
+  "sandbox": {
+    "title": "Sandbox mode",
+    "body": "No real Instagram is used. Connecting creates a practice account, and “Simulate an event” pretends someone commented or sent a message, so you can try automations safely."
+  },
+  "memberNote": {
+    "title": "Only workspace owners and admins can connect or disconnect accounts",
+    "body": "You can see every connected account here. Ask an admin to add one or to reconnect one that stopped working."
+  },
+  "states": {
+    "loading": "Loading channels",
+    "loadFailed": "Channels did not load",
+    "loadFailedDescription": "Nothing was changed. Connected accounts keep working."
+  },
+  "empty": {
+    "title": "No Instagram accounts yet",
+    "description": "Connect the account people comment on and write to. Conversa then reads its comments and messages and answers through your automations.",
+    "requirementsTitle": "Before you connect",
+    "requirements": {
+      "professional": "The account must be an Instagram professional account (Business or Creator).",
+      "permissions": "When Instagram asks, allow Conversa to read comments and to send messages.",
+      "admin": "You need to be able to sign in to that Instagram account."
+    },
+    "memberDescription": "Ask a workspace owner or admin to connect the account people comment on and write to."
+  },
+  "status": {
+    "ACTIVE": "Active",
+    "NEEDS_REAUTH": "Needs reconnecting",
+    "DISCONNECTED": "Disconnected"
+  },
+  "card": {
+    "webhook": "Live updates",
+    "webhookOn": "Subscribed",
+    "webhookOff": "Not subscribed",
+    "tokenExpires": "Access expires",
+    "tokenNever": "Does not expire",
+    "connectedAt": "Connected",
+    "needsReauth": "Instagram stopped accepting this account's access. Its automations are paused until someone reconnects it.",
+    "disconnectedNote": "Conversa no longer has access to this account. Reconnect it to use it again."
+  },
+  "disconnectDialog": {
+    "title": "Disconnect @{username}?",
+    "description": "Conversa forgets this account's access and pauses every automation that uses it. Contacts and history stay. You can reconnect it later.",
+    "confirm": "Disconnect account",
+    "done": "@{username} was disconnected"
+  },
+  "simulateDialog": {
+    "title": "Simulate an event on @{username}",
+    "description": "Pretend someone interacted with this practice account. Matching automations run as they would with a real one.",
+    "kind": "What happens",
+    "kinds": { "comment": "Comment on a post", "message": "Direct message" },
+    "username": "From (Instagram username)",
+    "usernameHint": "Letters, numbers, dots and underscores, without the @.",
+    "text": "Text",
+    "commentText": "Comment",
+    "messageText": "Message",
+    "media": "Post",
+    "mediaPlaceholder": "Choose a post",
+    "mediaLoading": "Loading posts…",
+    "mediaEmpty": "This account has no posts to comment on.",
+    "mediaRequired": "Choose the post the comment is on.",
+    "mediaUntitled": "Post from {date}",
+    "submit": "Send event",
+    "done": "Event sent",
+    "doneDescription": "Matching automations run in a few seconds. Check the activity page."
+  }
+}

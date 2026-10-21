@@ -1,1 +1,54 @@
-{}
+{
+  "loading": "Loading integrations",
+  "buffer": {
+    "title": "Buffer",
+    "description": "Schedule posts in Buffer and have an automation ready for each one.",
+    "howItWorks": "Conversa only reads from Buffer and never changes your posts. Attach an automation to a post scheduled in Buffer; when Buffer publishes it, Conversa finds the post on Instagram and the automation starts answering its comments on its own.",
+    "readOnly": {
+      "title": "Only owners and admins can change this integration",
+      "description": "Ask an owner or an admin to connect or disconnect Buffer."
+    },
+    "status": "Status",
+    "connected": "Connected",
+    "notConnected": "Not connected",
+    "connect": {
+      "formLabel": "Connect Buffer",
+      "apiKey": "Buffer API key",
+      "hint": "Create a personal key in",
+      "hintLink": "Buffer's API settings",
+      "hintEnd": "and paste it here. It is stored encrypted.",
+      "submit": "Connect Buffer",
+      "success": "Buffer connected",
+      "successDescription": "Posts scheduled in Buffer now show on the Content page."
+    },
+    "organization": "Organization",
+    "organizationHint": "Conversa reads the posts and channels of this Buffer organization.",
+    "chooseOrganization": "Choose an organization",
+    "organizationPending": "Choose the Buffer organization whose posts Conversa should read.",
+    "organizationSaved": "Organization changed",
+    "organizationSavedDescription": "Conversa now reads the posts of {name}.",
+    "lastSync": "Last sync",
+    "lastError": "Last problem",
+    "errors": {
+      "unauthorized": "Buffer stopped accepting the API key. Connect again with a new key.",
+      "rate_limited": "Buffer's request limit was reached. Conversa tries again on its own.",
+      "not_found": "A post or channel was no longer found in Buffer.",
+      "unavailable": "Buffer did not answer. Conversa tries again on its own."
+    },
+    "disconnect": {
+      "button": "Disconnect Buffer",
+      "title": "Disconnect Buffer?",
+      "description": "Conversa deletes the stored API key and stops reading Buffer. Automations already waiting on a Buffer post stay, but will not start until Buffer is connected again.",
+      "success": "Buffer disconnected"
+    }
+  },
+  "channels": {
+    "title": "Linked channels",
+    "description": "Buffer's Instagram channels and the Conversa channel with the same account.",
+    "empty": "This Buffer organization has no Instagram channels.",
+    "notLinked": "Not connected in Conversa",
+    "connectInConversa": "Connect it in Channels",
+    "linkedTo": "Linked to {handle}",
+    "listLabel": "Buffer Instagram channels"
+  }
+}

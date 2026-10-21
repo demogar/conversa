@@ -52,6 +52,8 @@ export const envSchema = z.object({
   META_GRAPH_VERSION: z.string().regex(/^v\d+\.\d+$/).default('v24.0'),
   /** Run the worker's processors inside the API process (small installs). */
   WORKER_IN_API: booleanish,
+  /** A simulated Instagram for trying Conversa and for end-to-end tests. Never in production. */
+  INSTAGRAM_SANDBOX: booleanish,
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -64,6 +66,11 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
       .map((issue) => `  - ${issue.path.join('.') || '(root)'}: ${issue.message}`)
       .join('\n');
     throw new Error(`Invalid configuration:\n${problems}`);
+  }
+  if (result.data.INSTAGRAM_SANDBOX && result.data.NODE_ENV === 'production') {
+    throw new Error(
+      'Invalid configuration:\n  - INSTAGRAM_SANDBOX: the simulated Instagram cannot run with NODE_ENV=production',
+    );
   }
   return result.data;
 }

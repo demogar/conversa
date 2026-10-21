@@ -1,1 +1,52 @@
-{}
+{
+  "title": "Resumen",
+  "description": "Cómo les fue a tus automatizaciones en los últimos {days} días.",
+  "range": { "label": "Periodo", "7": "7 días", "30": "30 días", "90": "90 días" },
+  "loading": "Cargando el resumen",
+  "loadFailed": "El resumen no cargó",
+  "stats": {
+    "label": "Totales del periodo",
+    "triggered": "Activaciones",
+    "triggeredHint": "{count, plural, =0 {Ninguna automatización activa} one {# automatización activa} other {# automatizaciones activas}}",
+    "sent": "Mensajes enviados",
+    "clicks": "Clics en enlaces",
+    "clicksHint": "Personas únicas",
+    "failed": "Fallidos",
+    "contacts": "Contactos alcanzados"
+  },
+  "daily": {
+    "title": "Día a día",
+    "label": "Mensajes y clics en enlaces por día",
+    "date": "Día",
+    "sent": "Enviados",
+    "clicks": "Clics",
+    "failed": "Fallidos"
+  },
+  "top": {
+    "title": "Automatizaciones principales",
+    "label": "Automatizaciones con más mensajes enviados",
+    "name": "Automatización",
+    "sent": "Enviados",
+    "clicks": "Clics",
+    "empty": "Aún no hay automatizaciones",
+    "emptyDescription": "Aquí verás tus automatizaciones, ordenadas por mensajes enviados."
+  },
+  "gettingStarted": {
+    "title": "Primeros pasos",
+    "description": "Dos pasos y Conversa empieza a responder por ti.",
+    "label": "Pasos para empezar",
+    "done": "Listo",
+    "todo": "Pendiente",
+    "connect": {
+      "title": "Conecta tu cuenta de Instagram",
+      "note": "Conversa necesita una cuenta profesional de Instagram para leer comentarios y enviar mensajes.",
+      "action": "Conectar Instagram",
+      "memberNote": "Solo un propietario o un administrador de este espacio puede conectarla. Pídeselo a alguien de ellos."
+    },
+    "automate": {
+      "title": "Crea tu primera automatización",
+      "note": "Elige una publicación, las palabras que quieres detectar y el mensaje que se enviará.",
+      "action": "Crear automatización"
+    }
+  }
+}

@@ -4,5 +4,166 @@
     "description": "A workspace has its own Instagram accounts, automations and team.",
     "name": "Workspace name",
     "submit": "Create workspace"
+  },
+  "title": "Settings",
+  "description": "Settings for everyone in {workspace}.",
+  "navLabel": "Settings sections",
+  "nav": {
+    "general": "General",
+    "members": "Members",
+    "integrations": "Integrations",
+    "audit": "Audit log"
+  },
+  "loading": "Loading settings",
+  "general": {
+    "workspace": {
+      "title": "Workspace",
+      "description": "How the workspace is named in the switcher and in invitations.",
+      "name": "Workspace name",
+      "nameHint": "Everyone in the workspace sees this name.",
+      "formLabel": "Workspace details",
+      "saved": "Workspace renamed",
+      "savedDescription": "Everyone in the workspace now sees “{name}”."
+    },
+    "readOnly": {
+      "title": "Only owners and admins can change these settings",
+      "description": "Ask an owner or an admin of {workspace} to rename it."
+    },
+    "danger": {
+      "title": "Danger zone",
+      "description": "Actions here take effect at once and cannot be undone.",
+      "deleteTitle": "Delete this workspace",
+      "deleteDescription": "Removes its Instagram connections, automations, contacts, conversations and history, for everyone in {workspace}.",
+      "deleteButton": "Delete workspace",
+      "deleteDialogTitle": "Delete the {workspace} workspace?",
+      "deleteDialogDescription": "This permanently deletes every automation, contact, conversation and audit entry in {workspace}, and disconnects its Instagram accounts. Members lose access immediately.",
+      "deleted": "{workspace} was deleted",
+      "deleteFailed": "Not deleted. {reason}",
+      "leaveTitle": "Leave this workspace",
+      "leaveDescription": "You lose access to {workspace} until someone invites you again.",
+      "leaveButton": "Leave workspace",
+      "leaveDialogTitle": "Leave {workspace}?",
+      "leaveDialogDescription": "You lose access to its automations, inbox and contacts. To come back, an owner or an admin has to invite you again.",
+      "left": "You left {workspace}",
+      "leaveFailed": "You are still a member. {reason}"
+    }
+  },
+  "members": {
+    "title": "Members",
+    "description": "People who can work in this workspace, and what they may change.",
+    "readOnly": {
+      "title": "Only owners and admins can invite people and change roles",
+      "description": "Ask an owner or an admin of {workspace} to invite someone."
+    },
+    "table": {
+      "label": "Workspace members",
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "actions": "Actions",
+      "you": "You",
+      "roleOf": "Role of {name}",
+      "empty": "No members yet",
+      "loadFailed": "Members did not load"
+    },
+    "roleChanged": "{name} is now {role}",
+    "roleFailed": "Role not changed",
+    "remove": "Remove",
+    "removeLabel": "Remove {name}",
+    "leave": "Leave",
+    "removeDialogTitle": "Remove {name} from {workspace}?",
+    "removeDialogDescription": "{name} loses access at once. Their past replies and activity stay in the history.",
+    "removeConfirm": "Remove member",
+    "removed": "{name} was removed",
+    "removeFailed": "Not removed. {reason}",
+    "invite": {
+      "title": "Invite someone",
+      "description": "They get a link to join {workspace}. Each link works once and expires if it is not used.",
+      "formLabel": "Invite someone",
+      "email": "Email",
+      "role": "Role",
+      "roleHint": "Admins can connect accounts, invite people and change roles. Members work with automations, the inbox and contacts.",
+      "submit": "Send invitation",
+      "sent": "Invitation sent",
+      "sentDescription": "We emailed {email} a link to join.",
+      "linkTitle": "Share this invitation link",
+      "linkDescription": "Email is not set up on this installation, so nothing was sent. Send this link to {email} yourself. It works once and expires on {date}.",
+      "linkLabel": "Invitation link",
+      "dismiss": "Done"
+    },
+    "pending": {
+      "title": "Pending invitations",
+      "description": "Invitations nobody has accepted yet.",
+      "label": "Pending invitations",
+      "email": "Email",
+      "role": "Role",
+      "invitedBy": "Invited by",
+      "expires": "Expires",
+      "actions": "Actions",
+      "empty": "No pending invitations",
+      "emptyDescription": "Invitations you send appear here until they are accepted.",
+      "loadFailed": "Invitations did not load",
+      "revoke": "Revoke",
+      "revokeLabel": "Revoke the invitation for {email}",
+      "revokeDialogTitle": "Revoke the invitation for {email}?",
+      "revokeDialogDescription": "The link stops working at once. You can invite {email} again later.",
+      "revokeConfirm": "Revoke invitation",
+      "revoked": "Invitation revoked",
+      "revokeFailed": "Not revoked. {reason}"
+    }
+  },
+  "audit": {
+    "title": "Audit log",
+    "description": "Who changed what in this workspace, newest first.",
+    "label": "Audit log",
+    "actor": "Who",
+    "action": "What happened",
+    "time": "When",
+    "system": "Conversa",
+    "loading": "Loading the audit log",
+    "empty": "Nothing recorded yet",
+    "emptyDescription": "Changes to the workspace appear here as they happen.",
+    "loadFailed": "The audit log did not load",
+    "noPermission": "Only owners and admins can see the audit log",
+    "noPermissionDescription": "Ask an owner or an admin of {workspace} if you need to know who changed something.",
+    "unknownAction": "Something else happened ({code})",
+    "actions": {
+      "auth": {
+        "signup": "Created their account",
+        "login": "Signed in",
+        "password_changed": "Changed their password",
+        "password_reset": "Reset their password",
+        "mfa_enabled": "Turned on two-step verification",
+        "mfa_disabled": "Turned off two-step verification"
+      },
+      "workspace": {
+        "created": "Created the workspace",
+        "renamed": "Renamed the workspace"
+      },
+      "member": {
+        "invited": "Invited someone to the workspace",
+        "invitation_revoked": "Revoked an invitation",
+        "joined": "Joined the workspace",
+        "role_changed": "Changed a member’s role",
+        "removed": "Removed a member"
+      },
+      "channel": {
+        "connected": "Connected an Instagram account",
+        "disconnected": "Disconnected an Instagram account"
+      },
+      "automation": {
+        "created": "Created an automation",
+        "updated": "Edited an automation",
+        "status_changed": "Turned an automation on or off",
+        "deleted": "Deleted an automation"
+      },
+      "buffer": {
+        "connected": "Connected Buffer",
+        "disconnected": "Disconnected Buffer"
+      },
+      "inbox": {
+        "message_sent": "Sent a message from the inbox"
+      }
+    }
   }
 }

@@ -79,7 +79,7 @@ export class AccountService {
   }
 
   /** Starts setup: the secret is stored but MFA stays off until a code proves it works. */
-  async startMfaSetup(userId: string): Promise<MfaSetupDto> {
+  async startMfaSetup(userId: string): Promise<Omit<MfaSetupDto, 'qrSvg'>> {
     const user = await this.prisma.user.findUniqueOrThrow({ where: { id: userId } });
     if (user.mfaEnabledAt) throw new AppException(ErrorCode.CONFLICT);
     const { secret, otpauthUrl } = this.mfa.createSecret(user.email);

@@ -2,7 +2,7 @@ import nextVitals from 'eslint-config-next/core-web-vitals';
 import nextTypescript from 'eslint-config-next/typescript';
 import mola from '@demogar/mola-ui/eslint';
 
-export default [
+const config = [
   ...nextVitals,
   ...nextTypescript,
   // The design system's rules: tokens only, no radius, no borders on controls…
@@ -15,3 +15,5 @@ export default [
   },
   { ignores: ['.next/**', 'node_modules/**', 'coverage/**', 'next-env.d.ts'] },
 ];
+
+export default config;

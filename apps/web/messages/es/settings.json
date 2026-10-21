@@ -4,5 +4,166 @@
     "description": "Un espacio tiene sus propias cuentas de Instagram, automatizaciones y equipo.",
     "name": "Nombre del espacio",
     "submit": "Crear espacio"
+  },
+  "title": "Configuración",
+  "description": "Configuración para todas las personas de {workspace}.",
+  "navLabel": "Secciones de configuración",
+  "nav": {
+    "general": "General",
+    "members": "Miembros",
+    "integrations": "Integraciones",
+    "audit": "Registro de actividad"
+  },
+  "loading": "Cargando la configuración",
+  "general": {
+    "workspace": {
+      "title": "Espacio",
+      "description": "Cómo se llama el espacio en el selector y en las invitaciones.",
+      "name": "Nombre del espacio",
+      "nameHint": "Todas las personas del espacio ven este nombre.",
+      "formLabel": "Datos del espacio",
+      "saved": "Cambiaste el nombre del espacio",
+      "savedDescription": "Ahora todos ven “{name}”."
+    },
+    "readOnly": {
+      "title": "Solo propietarios y administradores pueden cambiar esto",
+      "description": "Pídele a un propietario o administrador de {workspace} que le cambie el nombre."
+    },
+    "danger": {
+      "title": "Zona de peligro",
+      "description": "Estas acciones se aplican de inmediato y no se pueden deshacer.",
+      "deleteTitle": "Eliminar este espacio",
+      "deleteDescription": "Borra sus conexiones de Instagram, automatizaciones, contactos, conversaciones e historial para todas las personas de {workspace}.",
+      "deleteButton": "Eliminar espacio",
+      "deleteDialogTitle": "¿Eliminar el espacio {workspace}?",
+      "deleteDialogDescription": "Se borran para siempre todas las automatizaciones, contactos, conversaciones y entradas del registro de {workspace}, y se desconectan sus cuentas de Instagram. Los miembros pierden el acceso de inmediato.",
+      "deleted": "Se eliminó {workspace}",
+      "deleteFailed": "No se eliminó. {reason}",
+      "leaveTitle": "Salir de este espacio",
+      "leaveDescription": "Pierdes el acceso a {workspace} hasta que alguien te vuelva a invitar.",
+      "leaveButton": "Salir del espacio",
+      "leaveDialogTitle": "¿Salir de {workspace}?",
+      "leaveDialogDescription": "Pierdes el acceso a sus automatizaciones, bandeja de entrada y contactos. Para volver, un propietario o administrador tiene que invitarte de nuevo.",
+      "left": "Saliste de {workspace}",
+      "leaveFailed": "Sigues siendo miembro. {reason}"
+    }
+  },
+  "members": {
+    "title": "Miembros",
+    "description": "Las personas que trabajan en este espacio y lo que pueden cambiar.",
+    "readOnly": {
+      "title": "Solo propietarios y administradores pueden invitar personas y cambiar roles",
+      "description": "Pídele a un propietario o administrador de {workspace} que invite a alguien."
+    },
+    "table": {
+      "label": "Miembros del espacio",
+      "name": "Nombre",
+      "email": "Correo",
+      "role": "Rol",
+      "actions": "Acciones",
+      "you": "Tú",
+      "roleOf": "Rol de {name}",
+      "empty": "Todavía no hay miembros",
+      "loadFailed": "Los miembros no cargaron"
+    },
+    "roleChanged": "{name} ahora es {role}",
+    "roleFailed": "No se cambió el rol",
+    "remove": "Quitar",
+    "removeLabel": "Quitar a {name}",
+    "leave": "Salir",
+    "removeDialogTitle": "¿Quitar a {name} de {workspace}?",
+    "removeDialogDescription": "{name} pierde el acceso de inmediato. Sus respuestas y actividad anteriores se quedan en el historial.",
+    "removeConfirm": "Quitar miembro",
+    "removed": "Se quitó a {name}",
+    "removeFailed": "No se quitó. {reason}",
+    "invite": {
+      "title": "Invita a alguien",
+      "description": "Recibe un enlace para unirse a {workspace}. Cada enlace funciona una sola vez y vence si no se usa.",
+      "formLabel": "Invita a alguien",
+      "email": "Correo",
+      "role": "Rol",
+      "roleHint": "Los administradores conectan cuentas, invitan personas y cambian roles. Los miembros trabajan con automatizaciones, la bandeja de entrada y los contactos.",
+      "submit": "Enviar invitación",
+      "sent": "Invitación enviada",
+      "sentDescription": "Le enviamos a {email} un enlace para unirse.",
+      "linkTitle": "Comparte este enlace de invitación",
+      "linkDescription": "El correo no está configurado en esta instalación, así que no se envió nada. Mándale tú este enlace a {email}. Funciona una sola vez y vence el {date}.",
+      "linkLabel": "Enlace de invitación",
+      "dismiss": "Listo"
+    },
+    "pending": {
+      "title": "Invitaciones pendientes",
+      "description": "Invitaciones que nadie ha aceptado todavía.",
+      "label": "Invitaciones pendientes",
+      "email": "Correo",
+      "role": "Rol",
+      "invitedBy": "Invitó",
+      "expires": "Vence",
+      "actions": "Acciones",
+      "empty": "No hay invitaciones pendientes",
+      "emptyDescription": "Las invitaciones que envíes aparecen aquí hasta que las acepten.",
+      "loadFailed": "Las invitaciones no cargaron",
+      "revoke": "Revocar",
+      "revokeLabel": "Revocar la invitación de {email}",
+      "revokeDialogTitle": "¿Revocar la invitación de {email}?",
+      "revokeDialogDescription": "El enlace deja de funcionar de inmediato. Puedes volver a invitar a {email} más adelante.",
+      "revokeConfirm": "Revocar invitación",
+      "revoked": "Invitación revocada",
+      "revokeFailed": "No se revocó. {reason}"
+    }
+  },
+  "audit": {
+    "title": "Registro de actividad",
+    "description": "Quién cambió qué en este espacio, de lo más reciente a lo más antiguo.",
+    "label": "Registro de actividad",
+    "actor": "Quién",
+    "action": "Qué pasó",
+    "time": "Cuándo",
+    "system": "Conversa",
+    "loading": "Cargando el registro de actividad",
+    "empty": "Todavía no hay nada registrado",
+    "emptyDescription": "Los cambios en el espacio aparecen aquí a medida que ocurren.",
+    "loadFailed": "El registro de actividad no cargó",
+    "noPermission": "Solo propietarios y administradores pueden ver el registro de actividad",
+    "noPermissionDescription": "Si necesitas saber quién cambió algo, pregúntale a un propietario o administrador de {workspace}.",
+    "unknownAction": "Pasó otra cosa ({code})",
+    "actions": {
+      "auth": {
+        "signup": "Creó su cuenta",
+        "login": "Inició sesión",
+        "password_changed": "Cambió su contraseña",
+        "password_reset": "Restableció su contraseña",
+        "mfa_enabled": "Activó la verificación en dos pasos",
+        "mfa_disabled": "Desactivó la verificación en dos pasos"
+      },
+      "workspace": {
+        "created": "Creó el espacio",
+        "renamed": "Cambió el nombre del espacio"
+      },
+      "member": {
+        "invited": "Invitó a alguien al espacio",
+        "invitation_revoked": "Revocó una invitación",
+        "joined": "Se unió al espacio",
+        "role_changed": "Cambió el rol de un miembro",
+        "removed": "Quitó a un miembro"
+      },
+      "channel": {
+        "connected": "Conectó una cuenta de Instagram",
+        "disconnected": "Desconectó una cuenta de Instagram"
+      },
+      "automation": {
+        "created": "Creó una automatización",
+        "updated": "Editó una automatización",
+        "status_changed": "Activó o pausó una automatización",
+        "deleted": "Eliminó una automatización"
+      },
+      "buffer": {
+        "connected": "Conectó Buffer",
+        "disconnected": "Desconectó Buffer"
+      },
+      "inbox": {
+        "message_sent": "Envió un mensaje desde la bandeja de entrada"
+      }
+    }
   }
 }

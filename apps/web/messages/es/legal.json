@@ -1,1 +1,121 @@
-{}
+{
+  "nav": {
+    "label": "Legal",
+    "privacy": "Privacidad",
+    "terms": "Términos",
+    "dataDeletion": "Eliminación de datos",
+    "home": "Ir a Conversa"
+  },
+  "template": {
+    "title": "Esto es una plantilla",
+    "description": "Conversa es software autoalojado. Quien opera esta instancia debe adaptar esta página a cómo la opera y a las leyes que le aplican."
+  },
+  "privacy": {
+    "title": "Aviso de privacidad",
+    "lead": "Cómo esta instancia de Conversa trata los datos personales y quién es responsable de ellos.",
+    "sections": [
+      {
+        "title": "Quién es responsable",
+        "paragraphs": [
+          "Conversa es software de código abierto que cualquiera puede ejecutar en sus propios servidores. La organización o persona que opera esta instancia (el operador) decide para qué y cómo se tratan sus datos, y es el responsable de ellos. Quienes escribieron Conversa no los reciben ni los ven.",
+          "Para hacer consultas sobre tus datos, contacta al operador de esta instancia con los datos de contacto que publique."
+        ]
+      },
+      {
+        "title": "Qué guarda Conversa",
+        "paragraphs": ["Para funcionar, Conversa guarda lo siguiente en la base de datos del propio operador:"],
+        "items": [
+          "Datos de cuenta de quienes usan Conversa: nombre, correo electrónico, un hash de la contraseña, sesiones, idioma y configuración de verificación en dos pasos.",
+          "Tokens de acceso de las cuentas de Instagram y otros servicios (como Buffer) conectados a un espacio de trabajo. Se guardan cifrados y solo se usan para actuar en nombre de esa cuenta.",
+          "De las personas que interactúan con una cuenta de Instagram conectada: su id y nombre de usuario de Instagram, y los comentarios o mensajes que iniciaron una automatización.",
+          "Los mensajes y respuestas que Conversa envió en nombre de una cuenta conectada, con su estado de entrega.",
+          "El conteo de clics en los enlaces que envía Conversa. La dirección IP de quien hace clic nunca se guarda tal cual: solo un hash de un solo sentido, que sirve para contar clics únicos."
+        ]
+      },
+      {
+        "title": "Para qué se usan",
+        "paragraphs": [
+          "Los datos solo se usan para ejecutar las automatizaciones que configura cada espacio de trabajo: responder comentarios, enviar mensajes directos, mostrar la bandeja de entrada y contar resultados. Conversa no vende datos, no muestra publicidad ni crea perfiles para terceros."
+        ]
+      },
+      {
+        "title": "Con quién se comparten",
+        "paragraphs": [
+          "Las respuestas y los mensajes pasan por la plataforma en la que se envían (por ejemplo, Meta en el caso de Instagram), según los términos de esa plataforma. El operador puede usar proveedores de alojamiento, correo o monitoreo para operar la instancia."
+        ]
+      },
+      {
+        "title": "Cuánto tiempo se guardan",
+        "paragraphs": [
+          "Los datos se guardan mientras exista el espacio de trabajo que los contiene, o hasta que se atienda una solicitud de eliminación. Al eliminar un espacio de trabajo o desconectar una cuenta, se borran sus datos y tokens."
+        ]
+      },
+      {
+        "title": "Tus derechos",
+        "paragraphs": [
+          "Según dónde vivas, puedes tener derecho a acceder a tus datos, corregirlos, exportarlos o eliminarlos, y a oponerte a su tratamiento. Pídeselo al operador de esta instancia; la página de eliminación de datos explica cómo solicitarla."
+        ]
+      }
+    ]
+  },
+  "terms": {
+    "title": "Términos de uso",
+    "lead": "Las reglas para usar esta instancia de Conversa.",
+    "sections": [
+      {
+        "title": "El servicio",
+        "paragraphs": [
+          "Esta instancia de Conversa la opera su operador, no los autores del software. El operador decide quién puede registrarse y puede cambiar o terminar el servicio."
+        ]
+      },
+      {
+        "title": "Tus responsabilidades",
+        "paragraphs": ["Al usar Conversa te comprometes a:"],
+        "items": [
+          "Usarlo solo con cuentas que tengas permiso de administrar.",
+          "Cumplir los términos y políticas de las plataformas que conectes, incluidas las reglas de Instagram sobre mensajes automáticos.",
+          "No enviar spam, contenido engañoso ni nada ilegal.",
+          "Mantener seguras tu contraseña y las claves que conectes."
+        ]
+      },
+      {
+        "title": "Sin garantía",
+        "paragraphs": [
+          "Conversa se ofrece tal cual. Las plataformas pueden cambiar o limitar en cualquier momento lo que pueden hacer las automatizaciones, y a veces un mensaje puede no entregarse. En la medida en que la ley lo permita, el operador no responde por pérdidas causadas por el uso del servicio."
+        ]
+      },
+      {
+        "title": "Privacidad",
+        "paragraphs": ["Cómo se tratan los datos personales se explica en el aviso de privacidad."]
+      }
+    ]
+  },
+  "dataDeletion": {
+    "title": "Eliminación de datos",
+    "lead": "Cómo pedir que se borren los datos que esta instancia tiene sobre ti.",
+    "confirmationTitle": "Recibimos tu solicitud",
+    "confirmationDescription": "Guarda este código de confirmación. Dáselo al operador de esta instancia si quieres consultar por tu solicitud.",
+    "confirmationCode": "Código de confirmación",
+    "sections": [
+      {
+        "title": "Si interactuaste con una cuenta que usa Conversa",
+        "paragraphs": [
+          "Si comentaste o le enviaste un mensaje a una cuenta de Instagram que usa esta instancia, Conversa puede tener tu id y nombre de usuario de Instagram y esos mensajes.",
+          "Al quitar la app desde la configuración de Facebook o Instagram, se envía aquí una solicitud de eliminación automáticamente y se te muestra un código de confirmación. También puedes contactar al operador de esta instancia y pedirle que borre tus datos."
+        ]
+      },
+      {
+        "title": "Si tienes una cuenta de Conversa",
+        "paragraphs": [
+          "Al eliminar un espacio de trabajo se borran sus cuentas conectadas, automatizaciones, contactos y mensajes. Para eliminar tu cuenta, contacta al operador de esta instancia."
+        ]
+      },
+      {
+        "title": "Qué pasa después",
+        "paragraphs": [
+          "Se borran los datos vinculados a ti y se elimina el token de cualquier cuenta desconectada. Los registros que el operador deba conservar por ley, como los registros de seguridad, pueden guardarse durante el tiempo que esa ley exija."
+        ]
+      }
+    ]
+  }
+}

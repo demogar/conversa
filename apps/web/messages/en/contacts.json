@@ -1,1 +1,36 @@
-{}
+{
+  "title": "Contacts",
+  "description": "People who have commented on your posts or written to your connected accounts.",
+  "count": "{count, plural, =0 {No contacts} one {# contact} other {# contacts}}",
+  "countMore": "More than {count} contacts",
+  "loading": "Loading contacts",
+  "loadFailed": "Contacts did not load",
+  "filters": {
+    "label": "Filter contacts",
+    "search": "Search",
+    "searchPlaceholder": "Instagram username",
+    "channel": "Account",
+    "allChannels": "All accounts",
+    "clear": "Clear filters"
+  },
+  "table": {
+    "label": "Contacts",
+    "contact": "Contact",
+    "channel": "Account",
+    "follows": "Follows you",
+    "interactions": "Interactions",
+    "firstSeen": "First seen",
+    "lastInteraction": "Last interaction"
+  },
+  "unknown": "Unknown",
+  "follows": { "yes": "Yes", "no": "No", "unknown": "Unknown" },
+  "empty": {
+    "title": "No contacts yet",
+    "description": "Someone becomes a contact the first time they comment on a post or write to a connected account.",
+    "action": "Connect Instagram"
+  },
+  "noResults": {
+    "title": "No contacts match these filters",
+    "description": "Check the spelling of the username, or clear the filters to see everyone."
+  }
+}

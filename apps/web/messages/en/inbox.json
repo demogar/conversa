@@ -1,1 +1,46 @@
-{}
+{
+  "title": "Inbox",
+  "description": "Direct messages to your Instagram accounts, read live from Instagram. Reply by hand when an automation is not enough.",
+  "refresh": "Refresh inbox",
+  "channel": "Account",
+  "conversations": "Conversations",
+  "conversationCount": "{count, plural, one {# conversation} other {# conversations}}",
+  "unknownContact": "Instagram user",
+  "noText": "A message without text (a photo, a sticker or a shared post).",
+  "you": "You",
+  "backToConversations": "Back to conversations",
+  "thread": "Conversation with {name}",
+  "jumpToLatest": "Jump to latest",
+  "transcript": "{label}, messages",
+  "states": {
+    "loading": "Loading conversations",
+    "loadingMessages": "Loading messages",
+    "loadFailed": "Conversations did not load",
+    "messagesFailed": "Messages did not load",
+    "loadFailedDescription": "Instagram did not answer. Nothing was changed; try again in a moment.",
+    "channelsFailed": "Channels did not load"
+  },
+  "noChannels": {
+    "title": "Connect an Instagram account first",
+    "description": "The inbox shows the direct messages of a connected account.",
+    "action": "Go to channels"
+  },
+  "reauth": {
+    "title": "@{username} needs reconnecting",
+    "description": "Instagram stopped accepting this account's access, so its messages cannot be read. An admin can reconnect it from the channels page.",
+    "action": "Go to channels"
+  },
+  "empty": {
+    "title": "No conversations yet",
+    "description": "When someone sends @{username} a direct message, or an automation writes to them, the conversation appears here."
+  },
+  "noMessages": "No messages in this conversation yet.",
+  "composer": {
+    "label": "Reply to {name}",
+    "hint": "Instagram only lets you reply within 24 hours of the person's last message.",
+    "submit": "Send message",
+    "sent": "Message sent",
+    "windowClosedTitle": "The 24-hour reply window has closed",
+    "windowClosed": "{name} wrote more than 24 hours ago, so Instagram does not allow a reply now. You can answer as soon as they write to you again."
+  }
+}

@@ -42,6 +42,11 @@ export class AppConfig {
     };
   }
 
+  /** Instagram is simulated: no Meta app, nothing leaves the instance. */
+  get sandbox(): boolean {
+    return this.env.INSTAGRAM_SANDBOX;
+  }
+
   url(path: string): string {
     return `${this.env.APP_URL}${path.startsWith('/') ? path : `/${path}`}`;
   }

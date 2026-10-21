@@ -1,1 +1,62 @@
-{}
+{
+  "title": "Actividad",
+  "description": "Cada vez que se activó una automatización: quién la activó, qué escribió y cómo terminó.",
+  "loading": "Cargando la actividad",
+  "loadFailed": "La actividad no cargó",
+  "filters": {
+    "label": "Filtrar actividad",
+    "automation": "Automatización",
+    "allAutomations": "Todas las automatizaciones",
+    "status": "Estado",
+    "allStatuses": "Todos los estados",
+    "clear": "Quitar filtros"
+  },
+  "status": {
+    "SENT": "Enviado",
+    "AWAITING_TAP": "Esperando toque",
+    "AWAITING_FOLLOW": "Esperando que te siga",
+    "FAILED": "Falló",
+    "SKIPPED": "Omitido",
+    "PENDING": "Pendiente"
+  },
+  "table": {
+    "label": "Actividad de las automatizaciones",
+    "time": "Hora",
+    "contact": "Contacto",
+    "automation": "Automatización",
+    "trigger": "Lo que escribió",
+    "keyword": "Palabra clave",
+    "status": "Estado",
+    "publicReply": "Respuesta pública",
+    "details": "Detalles"
+  },
+  "unknownContact": "Desconocido",
+  "anyText": "Cualquier texto",
+  "publicReplySent": "Enviada",
+  "attempts": "{count, plural, one {# intento} other {# intentos}}",
+  "skip": {
+    "RATE_LIMITED": "Se omitió para no pasar el límite de mensajes de Instagram.",
+    "CHANNEL_INACTIVE": "La cuenta de Instagram se desconectó o hay que volver a conectarla.",
+    "AUTOMATION_PAUSED": "La automatización se pausó antes de enviar el mensaje.",
+    "ALREADY_REPLIED": "Esta persona ya había recibido el mensaje de esta automatización.",
+    "unknown": "Se omitió."
+  },
+  "errorCodes": {
+    "AUTH": "Instagram ya no acepta la conexión de esta cuenta. Vuelve a conectarla.",
+    "RATE_LIMIT": "Instagram limitó cuántos mensajes se pueden enviar, incluso después de reintentar.",
+    "WINDOW_CLOSED": "Ya habían pasado las 24 horas en las que Instagram permite escribirle a esta persona.",
+    "REJECTED": "Instagram rechazó el mensaje.",
+    "TRANSIENT": "Instagram no respondió, ni siquiera después de varios intentos.",
+    "INTERNAL": "Algo falló en Conversa al enviar.",
+    "unknown": "No se pudo enviar el mensaje."
+  },
+  "empty": {
+    "title": "Todavía no pasa nada",
+    "description": "Cuando alguien comente o escriba un mensaje que coincida con una automatización, lo verás aquí.",
+    "action": "Crear automatización"
+  },
+  "noResults": {
+    "title": "Ninguna actividad coincide con estos filtros",
+    "description": "Prueba con otra automatización u otro estado, o quita los filtros para verlo todo."
+  }
+}

@@ -1,1 +1,54 @@
-{}
+{
+  "loading": "Cargando integraciones",
+  "buffer": {
+    "title": "Buffer",
+    "description": "Programa publicaciones en Buffer y deja lista una automatización para cada una.",
+    "howItWorks": "Conversa solo lee de Buffer y nunca modifica tus publicaciones. Asocia una automatización a una publicación programada en Buffer; cuando Buffer la publique, Conversa la encuentra en Instagram y la automatización empieza a responder sus comentarios por su cuenta.",
+    "readOnly": {
+      "title": "Solo los propietarios y administradores pueden cambiar esta integración",
+      "description": "Pídele a un propietario o administrador que conecte o desconecte Buffer."
+    },
+    "status": "Estado",
+    "connected": "Conectado",
+    "notConnected": "Sin conectar",
+    "connect": {
+      "formLabel": "Conectar Buffer",
+      "apiKey": "Clave de API de Buffer",
+      "hint": "Crea una clave personal en",
+      "hintLink": "la configuración de API de Buffer",
+      "hintEnd": "y pégala aquí. Se guarda cifrada.",
+      "submit": "Conectar Buffer",
+      "success": "Buffer conectado",
+      "successDescription": "Las publicaciones programadas en Buffer ahora aparecen en la página Contenido."
+    },
+    "organization": "Organización",
+    "organizationHint": "Conversa lee las publicaciones y los canales de esta organización de Buffer.",
+    "chooseOrganization": "Elige una organización",
+    "organizationPending": "Elige la organización de Buffer cuyas publicaciones debe leer Conversa.",
+    "organizationSaved": "Organización cambiada",
+    "organizationSavedDescription": "Conversa ahora lee las publicaciones de {name}.",
+    "lastSync": "Última sincronización",
+    "lastError": "Último problema",
+    "errors": {
+      "unauthorized": "Buffer dejó de aceptar la clave de API. Vuelve a conectar con una clave nueva.",
+      "rate_limited": "Se alcanzó el límite de solicitudes de Buffer. Conversa lo vuelve a intentar por su cuenta.",
+      "not_found": "Ya no se encontró una publicación o un canal en Buffer.",
+      "unavailable": "Buffer no respondió. Conversa lo vuelve a intentar por su cuenta."
+    },
+    "disconnect": {
+      "button": "Desconectar Buffer",
+      "title": "¿Desconectar Buffer?",
+      "description": "Conversa borra la clave de API guardada y deja de leer Buffer. Las automatizaciones que esperan una publicación de Buffer se conservan, pero no empezarán hasta que vuelvas a conectar Buffer.",
+      "success": "Buffer desconectado"
+    }
+  },
+  "channels": {
+    "title": "Canales vinculados",
+    "description": "Los canales de Instagram de Buffer y el canal de Conversa con la misma cuenta.",
+    "empty": "Esta organización de Buffer no tiene canales de Instagram.",
+    "notLinked": "Sin conectar en Conversa",
+    "connectInConversa": "Conéctalo en Canales",
+    "linkedTo": "Vinculado a {handle}",
+    "listLabel": "Canales de Instagram de Buffer"
+  }
+}

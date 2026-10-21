@@ -1,1 +1,82 @@
-{}
+{
+  "title": "Canales",
+  "description": "Las cuentas de Instagram que atiende este espacio. Las automatizaciones y la bandeja las usan.",
+  "connect": "Conectar cuenta de Instagram",
+  "reconnect": "Volver a conectar la cuenta",
+  "disconnect": "Desconectar cuenta",
+  "simulate": "Simular un evento",
+  "connected": {
+    "title": "Cuenta de Instagram conectada",
+    "description": "Los comentarios y mensajes que reciba ya pueden activar automatizaciones."
+  },
+  "connectFailed": "No se conectó la cuenta",
+  "notConfigured": {
+    "title": "Instagram no está configurado en esta instalación",
+    "body": "Quien administra la instalación debe configurar la app de Meta antes de poder conectar cuentas. Consulta {doc}."
+  },
+  "sandbox": {
+    "title": "Modo de prueba",
+    "body": "No se usa Instagram de verdad. Al conectar se crea una cuenta de práctica, y con “Simular un evento” puedes fingir que alguien comentó o envió un mensaje para probar tus automatizaciones sin riesgo."
+  },
+  "memberNote": {
+    "title": "Solo quienes son propietarios o administradores del espacio pueden conectar o desconectar cuentas",
+    "body": "Aquí puedes ver todas las cuentas conectadas. Pídele a alguien con rol de administrador que agregue una o que vuelva a conectar la que dejó de funcionar."
+  },
+  "states": {
+    "loading": "Cargando canales",
+    "loadFailed": "No se cargaron los canales",
+    "loadFailedDescription": "No se cambió nada. Las cuentas conectadas siguen funcionando."
+  },
+  "empty": {
+    "title": "Todavía no hay cuentas de Instagram",
+    "description": "Conecta la cuenta en la que la gente comenta y escribe. Conversa leerá sus comentarios y mensajes y responderá con tus automatizaciones.",
+    "requirementsTitle": "Antes de conectar",
+    "requirements": {
+      "professional": "La cuenta debe ser profesional de Instagram (de empresa o de creador).",
+      "permissions": "Cuando Instagram te lo pida, permite que Conversa lea los comentarios y envíe mensajes.",
+      "admin": "Necesitas poder iniciar sesión en esa cuenta de Instagram."
+    },
+    "memberDescription": "Pídele a quien sea propietario o administrador del espacio que conecte la cuenta en la que la gente comenta y escribe."
+  },
+  "status": {
+    "ACTIVE": "Activa",
+    "NEEDS_REAUTH": "Hay que volver a conectarla",
+    "DISCONNECTED": "Desconectada"
+  },
+  "card": {
+    "webhook": "Actualizaciones en vivo",
+    "webhookOn": "Suscrita",
+    "webhookOff": "Sin suscripción",
+    "tokenExpires": "El acceso vence",
+    "tokenNever": "No vence",
+    "connectedAt": "Conectada",
+    "needsReauth": "Instagram dejó de aceptar el acceso de esta cuenta. Sus automatizaciones están en pausa hasta que alguien la vuelva a conectar.",
+    "disconnectedNote": "Conversa ya no tiene acceso a esta cuenta. Vuelve a conectarla para usarla otra vez."
+  },
+  "disconnectDialog": {
+    "title": "¿Desconectar @{username}?",
+    "description": "Conversa olvida el acceso a esta cuenta y pausa todas las automatizaciones que la usan. Los contactos y el historial se conservan. Puedes volver a conectarla después.",
+    "confirm": "Desconectar cuenta",
+    "done": "Se desconectó @{username}"
+  },
+  "simulateDialog": {
+    "title": "Simular un evento en @{username}",
+    "description": "Finge que alguien interactuó con esta cuenta de práctica. Las automatizaciones que coincidan se ejecutan igual que con una cuenta real.",
+    "kind": "Qué pasa",
+    "kinds": { "comment": "Comentario en una publicación", "message": "Mensaje directo" },
+    "username": "De (usuario de Instagram)",
+    "usernameHint": "Letras, números, puntos y guiones bajos, sin la @.",
+    "text": "Texto",
+    "commentText": "Comentario",
+    "messageText": "Mensaje",
+    "media": "Publicación",
+    "mediaPlaceholder": "Elige una publicación",
+    "mediaLoading": "Cargando publicaciones…",
+    "mediaEmpty": "Esta cuenta no tiene publicaciones para comentar.",
+    "mediaRequired": "Elige la publicación en la que está el comentario.",
+    "mediaUntitled": "Publicación del {date}",
+    "submit": "Enviar evento",
+    "done": "Evento enviado",
+    "doneDescription": "Las automatizaciones que coincidan se ejecutan en unos segundos. Revisa la página de actividad."
+  }
+}

@@ -1,1 +1,36 @@
-{}
+{
+  "title": "Contactos",
+  "description": "Personas que comentaron tus publicaciones o les escribieron a tus cuentas conectadas.",
+  "count": "{count, plural, =0 {Ningún contacto} one {# contacto} other {# contactos}}",
+  "countMore": "Más de {count} contactos",
+  "loading": "Cargando los contactos",
+  "loadFailed": "Los contactos no cargaron",
+  "filters": {
+    "label": "Filtrar contactos",
+    "search": "Buscar",
+    "searchPlaceholder": "Usuario de Instagram",
+    "channel": "Cuenta",
+    "allChannels": "Todas las cuentas",
+    "clear": "Quitar filtros"
+  },
+  "table": {
+    "label": "Contactos",
+    "contact": "Contacto",
+    "channel": "Cuenta",
+    "follows": "Te sigue",
+    "interactions": "Interacciones",
+    "firstSeen": "Visto por primera vez",
+    "lastInteraction": "Última interacción"
+  },
+  "unknown": "Desconocido",
+  "follows": { "yes": "Sí", "no": "No", "unknown": "No se sabe" },
+  "empty": {
+    "title": "Aún no hay contactos",
+    "description": "Alguien se vuelve contacto la primera vez que comenta una publicación o le escribe a una cuenta conectada.",
+    "action": "Conectar Instagram"
+  },
+  "noResults": {
+    "title": "Ningún contacto coincide con estos filtros",
+    "description": "Revisa cómo escribiste el usuario, o quita los filtros para ver a todos."
+  }
+}

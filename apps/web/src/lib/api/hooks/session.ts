@@ -24,6 +24,8 @@ export function useSignOut() {
     mutationFn: () => api.post<void>('/auth/logout'),
     onSettled: () => {
       queryClient.clear();
+      // A full load, not a client navigation: nothing cached for the old session survives.
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
       window.location.assign('/login');
     },
   });

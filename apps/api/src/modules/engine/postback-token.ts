@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Module } from '@nestjs/common';
 import { CryptoService, safeEqual } from '../../common/crypto/crypto.service.js';
 
 const PREFIX = 'cv1';
@@ -26,3 +26,7 @@ export class PostbackTokens {
     return this.crypto.hmac('postback', deliveryId).slice(0, 22);
   }
 }
+
+/** Shared by the engine and the sandbox, which simulates taps on buttons. */
+@Module({ providers: [PostbackTokens], exports: [PostbackTokens] })
+export class PostbackTokensModule {}

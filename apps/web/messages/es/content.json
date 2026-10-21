@@ -1,1 +1,44 @@
-{}
+{
+  "title": "Contenido",
+  "description": "Publicaciones de Buffer y las automatizaciones que las esperan.",
+  "tabs": { "label": "Publicaciones", "scheduled": "Programadas", "sent": "Publicadas" },
+  "loading": "Cargando publicaciones",
+  "listLabel": { "scheduled": "Publicaciones programadas", "sent": "Publicaciones publicadas" },
+  "notConnected": {
+    "title": "Conecta Buffer para ver tus publicaciones aquí",
+    "description": "Programa publicaciones en Buffer y asocia una automatización a cada una. Cuando Buffer publique una, la automatización empieza a responder sus comentarios por su cuenta.",
+    "action": "Abrir integraciones",
+    "member": "Pídele a un propietario o administrador que conecte Buffer en Configuración."
+  },
+  "noOrganization": {
+    "title": "Elige una organización de Buffer",
+    "description": "Buffer está conectado, pero Conversa todavía no sabe qué organización leer.",
+    "action": "Elegir organización"
+  },
+  "empty": {
+    "scheduled": "No hay nada programado en Buffer",
+    "scheduledDescription": "Aquí aparecen las publicaciones que programes en Buffer para una cuenta de Instagram vinculada.",
+    "sent": "Buffer todavía no ha publicado nada",
+    "sentDescription": "Aquí aparecen las publicaciones que Buffer publique en una cuenta de Instagram vinculada."
+  },
+  "noCaption": "Sin texto",
+  "thumbnail": "Imagen de la publicación",
+  "unknownChannel": "Canal desconocido",
+  "due": "Programada para el {date}",
+  "sent": "Publicada el {date}",
+  "noDate": "Sin fecha",
+  "status": {
+    "scheduled": "Programada",
+    "sending": "Publicando",
+    "sent": "Publicada",
+    "error": "Falló",
+    "draft": "Borrador",
+    "other": "{status}"
+  },
+  "automationWaiting": "Automatización en espera",
+  "openAutomation": "Abrir automatización",
+  "createAutomation": "Crear automatización para esta publicación",
+  "channelNotLinked": "Conecta {channel} en Canales para asociarle una automatización.",
+  "connectChannel": "Abrir canales",
+  "viewOnInstagram": "Ver en Instagram"
+}

@@ -16,6 +16,6 @@ export default async function jestConfig(): Promise<Config> {
   const resolved = await createJestConfig(config)();
   return {
     ...resolved,
-    transformIgnorePatterns: ['/node_modules/(?!.pnpm|@demogar|@base-ui|lucide-react|next-intl|use-intl)'],
+    transformIgnorePatterns: ['/node_modules/(?!.pnpm|@demogar|@base-ui|lucide-react|next-intl|use-intl|@formatjs|intl-messageformat|@schummar)'],
   };
 }

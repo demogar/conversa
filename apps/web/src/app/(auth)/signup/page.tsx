@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import NextLink from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
-import { type FormEvent, Suspense, useEffect, useState } from 'react';
+import { type FormEvent, Suspense, useState } from 'react';
 import { AuthCard } from '@/features/auth/auth-card';
 import { Turnstile } from '@/features/auth/turnstile';
 import { api } from '@/lib/api/client';
@@ -33,9 +33,8 @@ function SignupForm() {
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [errors, setErrors] = useState<FieldErrors>({});
 
-  useEffect(() => {
-    if (invitation.data) setEmail(invitation.data.email);
-  }, [invitation.data]);
+  // An invitation fixes the address: the account must match the invited email.
+  const effectiveEmail = invitation.data?.email ?? email;
 
   const signup = useMutation({
     mutationFn: (body: unknown) => api.post('/auth/signup', body),
@@ -50,7 +49,7 @@ function SignupForm() {
     event.preventDefault();
     const parsed = signupSchema.safeParse({
       name,
-      email,
+      email: effectiveEmail,
       password,
       locale,
       invitationToken: invitationToken ?? undefined,
@@ -110,7 +109,7 @@ function SignupForm() {
               <Input
                 {...control}
                 type="email"
-                value={email}
+                value={effectiveEmail}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
                 readOnly={Boolean(invitation.data)}

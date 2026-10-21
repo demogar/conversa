@@ -46,6 +46,8 @@ export interface InstanceDto {
   mailEnabled: boolean;
   captchaSiteKey: string | null;
   providers: { instagram: boolean };
+  /** A simulated Instagram for trying Conversa without a Meta app. Never on in production. */
+  sandbox: boolean;
 }
 
 export interface SessionDto {
@@ -60,6 +62,8 @@ export interface SessionDto {
 export interface MfaSetupDto {
   secret: string;
   otpauthUrl: string;
+  /** The otpauth URL as a QR code, an SVG document rendered by the server. */
+  qrSvg: string;
 }
 
 export interface RecoveryCodesDto {

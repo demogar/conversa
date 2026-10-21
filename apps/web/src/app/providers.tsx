@@ -12,6 +12,8 @@ import type { Locale } from '@conversa/shared';
 function handleError(error: unknown): void {
   if (error instanceof ApiError && error.code === 'UNAUTHENTICATED' && typeof window !== 'undefined') {
     const next = encodeURIComponent(window.location.pathname + window.location.search);
+    // A full load, not a client navigation: nothing cached for the old session survives.
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
     window.location.assign(`/login?next=${next}`);
   }
 }

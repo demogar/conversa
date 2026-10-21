@@ -1,1 +1,46 @@
-{}
+{
+  "title": "Bandeja",
+  "description": "Los mensajes directos de tus cuentas de Instagram, leídos en vivo desde Instagram. Responde a mano cuando una automatización no alcance.",
+  "refresh": "Actualizar la bandeja",
+  "channel": "Cuenta",
+  "conversations": "Conversaciones",
+  "conversationCount": "{count, plural, one {# conversación} other {# conversaciones}}",
+  "unknownContact": "Usuario de Instagram",
+  "noText": "Un mensaje sin texto (una foto, un sticker o una publicación compartida).",
+  "you": "Tú",
+  "backToConversations": "Volver a las conversaciones",
+  "thread": "Conversación con {name}",
+  "jumpToLatest": "Ir a lo más reciente",
+  "transcript": "{label}, mensajes",
+  "states": {
+    "loading": "Cargando conversaciones",
+    "loadingMessages": "Cargando mensajes",
+    "loadFailed": "No se cargaron las conversaciones",
+    "messagesFailed": "No se cargaron los mensajes",
+    "loadFailedDescription": "Instagram no respondió. No se cambió nada; vuelve a intentarlo en un momento.",
+    "channelsFailed": "No se cargaron los canales"
+  },
+  "noChannels": {
+    "title": "Primero conecta una cuenta de Instagram",
+    "description": "La bandeja muestra los mensajes directos de una cuenta conectada.",
+    "action": "Ir a canales"
+  },
+  "reauth": {
+    "title": "Hay que volver a conectar @{username}",
+    "description": "Instagram dejó de aceptar el acceso de esta cuenta, así que no se pueden leer sus mensajes. Alguien con rol de administrador puede volver a conectarla desde la página de canales.",
+    "action": "Ir a canales"
+  },
+  "empty": {
+    "title": "Todavía no hay conversaciones",
+    "description": "Cuando alguien le envíe un mensaje directo a @{username}, o una automatización le escriba a alguien, la conversación aparecerá aquí."
+  },
+  "noMessages": "Todavía no hay mensajes en esta conversación.",
+  "composer": {
+    "label": "Responder a {name}",
+    "hint": "Instagram solo te deja responder dentro de las 24 horas posteriores al último mensaje de la persona.",
+    "submit": "Enviar mensaje",
+    "sent": "Mensaje enviado",
+    "windowClosedTitle": "Se cerró la ventana de 24 horas para responder",
+    "windowClosed": "{name} escribió hace más de 24 horas, así que Instagram no permite responder ahora. Podrás contestar en cuanto te vuelva a escribir."
+  }
+}

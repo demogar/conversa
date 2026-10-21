@@ -1,1 +1,44 @@
-{}
+{
+  "title": "Content",
+  "description": "Posts from Buffer, and the automations waiting for them.",
+  "tabs": { "label": "Posts", "scheduled": "Scheduled", "sent": "Published" },
+  "loading": "Loading posts",
+  "listLabel": { "scheduled": "Scheduled posts", "sent": "Published posts" },
+  "notConnected": {
+    "title": "Connect Buffer to see your posts here",
+    "description": "Schedule posts in Buffer and attach an automation to each one. When Buffer publishes a post, the automation starts answering its comments on its own.",
+    "action": "Open integrations",
+    "member": "Ask an owner or an admin to connect Buffer in Settings."
+  },
+  "noOrganization": {
+    "title": "Choose a Buffer organization",
+    "description": "Buffer is connected, but Conversa does not know which organization to read yet.",
+    "action": "Choose organization"
+  },
+  "empty": {
+    "scheduled": "Nothing scheduled in Buffer",
+    "scheduledDescription": "Posts you schedule in Buffer for a linked Instagram account show here.",
+    "sent": "Nothing published from Buffer yet",
+    "sentDescription": "Posts Buffer publishes to a linked Instagram account show here."
+  },
+  "noCaption": "No caption",
+  "thumbnail": "Post image",
+  "unknownChannel": "Unknown channel",
+  "due": "Scheduled for {date}",
+  "sent": "Published {date}",
+  "noDate": "No date set",
+  "status": {
+    "scheduled": "Scheduled",
+    "sending": "Publishing",
+    "sent": "Published",
+    "error": "Failed",
+    "draft": "Draft",
+    "other": "{status}"
+  },
+  "automationWaiting": "Automation waiting",
+  "openAutomation": "Open automation",
+  "createAutomation": "Create automation for this post",
+  "channelNotLinked": "Connect {channel} in Channels to attach an automation.",
+  "connectChannel": "Open channels",
+  "viewOnInstagram": "View on Instagram"
+}
