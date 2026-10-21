@@ -115,9 +115,38 @@ Example: `GET /api/v1/workspaces/:workspaceId/automations/:automationId/stats`.
 7. **Web.** A hook in `apps/web/src/lib/api/hooks/<area>.ts`, words in `messages/en` and `messages/es`.
 8. Run `pnpm check`.
 
-## Database changes
+## Database migrations
 
 1. Edit `prisma/schema.prisma`. Keep the comments: they document intent.
 2. `pnpm db:migrate --name <what_changed>` creates the migration and regenerates the client.
 3. Commit the migration folder. Never edit a migration that has been released; add a new one.
-4. Migrations must be safe on a live database: add nullable columns or columns with defaults, backfill, then tighten.
+
+### Backward compatible with the previous release
+
+Upgrades are zero-downtime rolling updates: the `migrate` job runs first, then `api`, `worker` and `web` are replaced one at a time while the previous version keeps serving. So for a while the **previous release runs against the new schema**, and every migration must keep it working. Use expand/contract:
+
+1. **Expand.** Add new tables, and new columns as nullable or with a default. Nothing the previous release reads or writes changes.
+2. **Write both.** Ship code that writes the old and the new shape and reads the new one, falling back to the old.
+3. **Backfill.** Fill the new shape for existing rows.
+4. **Contract, in a later release.** Only once no running version uses the old shape: drop or rename the old column, or make the new one `NOT NULL`.
+
+Checklist for every migration:
+
+- [ ] Adds only: new tables, nullable columns or columns with a default, new indexes.
+- [ ] Does not drop or rename a table or column in the same release that stops using it.
+- [ ] Does not make a column `NOT NULL` that the previous release may leave empty.
+- [ ] Enums: adds values only. Never removes or renames one; the previous release may still write it.
+- [ ] Long-running data changes (backfills over many rows) are idempotent jobs, not part of the schema migration, so the `migrate` step stays fast and can be rerun.
+
+Example: renaming `Automation.title` to `Automation.name`.
+
+- **Release N:** migration adds `name` (nullable). Code writes `title` and `name`, reads `name ?? title`. A job copies `title` into `name` where `name` is null.
+- **Release N+1:** code stops using `title`. No schema change for `title` yet, because release N is still running during the rollout.
+- **Release N+2:** migration drops `title` and, if needed, makes `name` `NOT NULL`.
+
+### Queues and caches across versions
+
+During a rollout an API and a worker of two adjacent versions can run at the same time. Queue job payloads and Valkey (Redis) keys must stay compatible across one version:
+
+- A new worker must process jobs enqueued by the previous API, and the previous worker must tolerate jobs from the new API. Add payload fields as optional; do not rename or remove a field in the same release that stops sending it.
+- Do not change the format of an existing key. Use a new key name, and stop using the old one in a later release.

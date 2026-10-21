@@ -184,6 +184,8 @@ docker compose -f docker/compose.yml --env-file .env up -d
 
 Migrations run automatically on start. Take a database backup before upgrading, and read [CHANGELOG.md](../CHANGELOG.md) for anything that needs attention.
 
+Rolling upgrades are safe: every migration is backward compatible with the previous release (expand/contract, see [Database migrations](contributing/backend-guide.md#database-migrations)). You can run the `migrate` job first and then replace `api`, `worker` and `web` one at a time while the previous version keeps serving, with no downtime. Queued jobs and Valkey keys stay compatible across one version, so an old and a new worker can run side by side during the rollout. Upgrade one release at a time when you can; skipping releases may skip the step that makes a later cleanup safe. Still take a backup before every upgrade.
+
 ## Rotating the encryption key
 
 1. Generate a new key: `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`.
