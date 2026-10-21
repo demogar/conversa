@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { VersionLink } from '@/features/brand/version-link';
 import { PreferencesBar } from '@/features/preferences/preferences-bar';
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
@@ -7,6 +8,9 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       <div className="flex w-full max-w-md flex-col gap-6">
         {children}
         <PreferencesBar />
+        <footer className="flex justify-center">
+          <VersionLink />
+        </footer>
       </div>
     </main>
   );

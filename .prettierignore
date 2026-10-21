@@ -11,3 +11,5 @@ e2e/playwright-report
 e2e/test-results
 apps/web/next-env.d.ts
 apps/web/AGENTS.md
+# Written by release-please on every release; reformatting it would fight the bot.
+CHANGELOG.md

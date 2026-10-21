@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import type { InstanceDto } from '@conversa/shared';
 import { AppConfig } from '../../config/app-config.js';
+import { BuildInfo } from '../../config/build-info.js';
 import { Public } from '../../common/http/decorators.js';
 import { PrismaService } from '../../infra/prisma/prisma.service.js';
 import { InstanceSettingsService } from './instance-settings.service.js';
@@ -12,6 +13,7 @@ export class InstanceController {
     private readonly prisma: PrismaService,
     private readonly config: AppConfig,
     private readonly settings: InstanceSettingsService,
+    private readonly build: BuildInfo,
   ) {}
 
   @Public()
@@ -25,6 +27,7 @@ export class InstanceController {
       captchaSiteKey: this.settings.turnstile?.siteKey ?? null,
       providers: { instagram: this.config.sandbox || this.settings.instagram !== null },
       sandbox: this.config.sandbox,
+      version: this.build.version,
     };
   }
 }

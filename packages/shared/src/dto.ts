@@ -50,6 +50,8 @@ export interface InstanceDto {
   providers: { instagram: boolean };
   /** A simulated Instagram for trying Conversa without a Meta app. Never on in production. */
   sandbox: boolean;
+  /** The API's version, from its package.json: "0.1.0". */
+  version: string;
 }
 
 export interface SessionDto {

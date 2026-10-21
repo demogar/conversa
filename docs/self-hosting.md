@@ -5,7 +5,7 @@ Conversa runs as one Docker Compose stack: [`docker/compose.yml`](../docker/comp
 | Service       | Image                    | Role                                                                                                                         |
 | ------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
 | `postgres`    | `postgres:17-alpine`     | Database. On an internal network with no route outside.                                                                      |
-| `valkey`      | `valkey/valkey:8-alpine` | Queues, rate limits, caches. Append-only persistence, `noeviction` (BullMQ needs every key kept).                            |
+| `valkey`      | `valkey/valkey:9-alpine` | Queues, rate limits, caches. Append-only persistence, `noeviction` (BullMQ needs every key kept).                            |
 | `migrate`     | API image                | Runs `prisma migrate deploy`, then exits. API and worker start only after it succeeds.                                       |
 | `api`         | API image                | HTTP API on port 4000, not published.                                                                                        |
 | `worker`      | API image                | Queue worker. Stopped with a 30 s grace period so running jobs finish.                                                       |
@@ -36,14 +36,16 @@ docker compose -f docker/compose.yml --env-file .env ps
 
 ### Published images
 
-Every release tag (`v*`) publishes multi-architecture images (amd64, arm64) to the GitHub Container Registry as `ghcr.io/<owner>/<repository>-api` and `ghcr.io/<owner>/<repository>-web`, tagged `X.Y.Z`, `X.Y` and `X`. To use them instead of building, set in `.env`:
+Every release tag (`v*`) publishes multi-architecture images (amd64, arm64) to the GitHub Container Registry as `ghcr.io/<owner>/<repository>-api` and `ghcr.io/<owner>/<repository>-web`, tagged `X.Y.Z`, `X.Y`, `X` and, for a final release, `latest`. Each image carries the standard OCI labels (`org.opencontainers.image.version`, `.revision` and `.source`), so `docker inspect` tells you which release and commit it was built from. To use them instead of building, set in `.env`:
 
 ```bash
 API_IMAGE=ghcr.io/<owner>/<repository>-api:0.1
 WEB_IMAGE=ghcr.io/<owner>/<repository>-web:0.1
 ```
 
-and run `docker compose ... pull` before `up -d`. The published web image's API address is the compose default, `http://api:4000`; if your API runs elsewhere, build the web image yourself with `--build-arg API_INTERNAL_URL=...`.
+and run `docker compose ... pull` before `up -d`.
+
+To see which version is running: the sidebar shows it at the bottom of every workspace, `/admin` shows the web app's and the API's version (and warns when they differ, as after updating only one image), and `GET /api/v1/health` answers `{ "status": "ok", "version": "0.1.0", "commit": "abc1234" }`. Both processes also log it when they start. A self-built image reports the commit when built with `--build-arg CONVERSA_COMMIT=$(git rev-parse HEAD)`. The published web image's API address is the compose default, `http://api:4000`; if your API runs elsewhere, build the web image yourself with `--build-arg API_INTERNAL_URL=...`.
 
 Open `APP_URL` and create the first account. It becomes the owner of the first workspace and the first **instance admin**, and lands on a short setup guide (email, Instagram app, Turnstile; every step can be skipped). Sign-up is by invitation only until an instance admin opens it.
 
@@ -194,7 +196,7 @@ Migrations run automatically on start. Take a database backup before upgrading, 
 - **Worker.** Run more workers to process more events: `docker compose ... up -d --scale worker=3`. The private-reply budget, job ids and maintenance schedules are shared through Valkey, so workers never double-send or exceed Instagram's limits together.
 - **API.** Stateless: sessions are in PostgreSQL and rate limits in Valkey. Several replicas can run behind one web server or load balancer.
 - **Database.** Each process opens up to `DB_POOL_MAX` connections; keep the total under PostgreSQL's `max_connections`.
-- **Health checks.** `GET /api/v1/health` (process up) and `GET /api/v1/health/ready` (database and Valkey answer).
+- **Health checks.** `GET /api/v1/health` (process up, with the running version) and `GET /api/v1/health/ready` (database and Valkey answer).
 
 ## Logs
 
