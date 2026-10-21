@@ -70,14 +70,9 @@ Cloudflare does not cache HTML or API responses by default, and tracked-link red
 Turnstile adds a bot check to sign-up, sign-in and password reset.
 
 1. In the dashboard, open **Turnstile → Add widget**. Hostname: your `APP_URL` host. Widget mode: **Managed**.
-2. Copy the keys into `.env`:
+2. In Conversa, open **Instance settings → Human check** (account menu, instance admins only) and paste the site key and the secret key. The setup guide that follows the first sign-up asks for them too.
 
-   ```bash
-   TURNSTILE_SITE_KEY=<site key>
-   TURNSTILE_SECRET_KEY=<secret key>
-   ```
-
-3. Restart `api`. The sign-in screens read the site key from `GET /api/v1/instance` and show the widget; the API verifies each token server-side. Set both keys or neither.
+It applies at once, with no restart. The sign-in screens read the site key from `GET /api/v1/instance` and show the widget; the API verifies each token server-side. The secret key is stored encrypted and never shown again. **Turn off human check** removes both keys.
 
 The app's Content Security Policy already allows `https://challenges.cloudflare.com` for scripts and frames.
 
@@ -106,5 +101,5 @@ The OAuth callback (`/api/v1/channels/oauth/instagram/callback`) is a browser re
 - [ ] `TRUST_PROXY=cloudflare`, and the origin is reachable only through Cloudflare.
 - [ ] Rate-limiting rule on `/api/v1/auth/*`.
 - [ ] Skip rule for `/api/v1/webhooks/*`; Bot Fight Mode off if webhooks are challenged.
-- [ ] Turnstile keys set (both).
+- [ ] Turnstile keys saved under **Instance settings → Human check**.
 - [ ] If Access is on: bypass for `/api/v1/webhooks/*`, `/l/*`, `/legal/*`.

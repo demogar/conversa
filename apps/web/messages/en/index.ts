@@ -14,6 +14,7 @@ import settings from './settings.json';
 import integrations from './integrations.json';
 import account from './account.json';
 import legal from './legal.json';
+import admin from './admin.json';
 
 const messages = {
   common,
@@ -31,6 +32,7 @@ const messages = {
   integrations,
   account,
   legal,
+  admin,
 };
 
 export default messages;

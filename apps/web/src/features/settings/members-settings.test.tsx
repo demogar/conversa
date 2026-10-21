@@ -16,6 +16,7 @@ const me = (role: WorkspaceRole): MeDto => ({
     name: 'Ana',
     locale: 'en',
     mfaEnabled: false,
+    isInstanceAdmin: false,
     createdAt: '2026-01-01T00:00:00Z',
   },
   workspaces: [{ id: 'w1', name: 'Studio', role, createdAt: '2026-01-01T00:00:00Z' }],

@@ -1,6 +1,8 @@
 /** Query keys, in one place so invalidation matches what was cached. */
 export const keys = {
   instance: ['instance'] as const,
+  instanceSettings: ['instance', 'settings'] as const,
+  instanceAdmins: ['instance', 'admins'] as const,
   me: ['me'] as const,
   sessions: ['me', 'sessions'] as const,
   invitation: (token: string) => ['invitation', token] as const,

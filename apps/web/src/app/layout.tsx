@@ -8,6 +8,7 @@ import { headers } from 'next/headers';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getTranslations } from 'next-intl/server';
 import type { ReactNode } from 'react';
+import { TIME_ZONE_COOKIE } from '@/i18n/config';
 import { Providers } from './providers';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -21,8 +22,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export const viewport: Viewport = { width: 'device-width', initialScale: 1 };
 
-// Applies a stored theme before the first paint, so a dark choice never flashes light.
-const themeScript = `try{var t=localStorage.getItem('conversa-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}`;
+// Applies a stored theme before the first paint, so a dark choice never flashes light, and
+// tells the server the browser's time zone, so dates it renders match what the browser would.
+const themeScript = `try{var t=localStorage.getItem('conversa-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}try{document.cookie='${TIME_ZONE_COOKIE}='+encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone)+'; Path=/; Max-Age=31536000; SameSite=Lax'+(location.protocol==='https:'?'; Secure':'')}catch(e){}`;
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const locale = await getLocale();

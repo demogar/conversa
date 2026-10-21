@@ -27,7 +27,8 @@
     "MESSAGING_WINDOW_CLOSED": "Instagram solo permite responder dentro de las 24 horas posteriores al último mensaje de la persona.",
     "BUFFER_NOT_CONNECTED": "Primero conecta Buffer.",
     "BUFFER_INVALID_KEY": "Buffer no aceptó esa clave de API. Cópiala de nuevo desde la configuración de Buffer.",
-    "BUFFER_RATE_LIMITED": "Se alcanzó el límite de solicitudes de Buffer. Inténtalo de nuevo en unos minutos."
+    "BUFFER_RATE_LIMITED": "Se alcanzó el límite de solicitudes de Buffer. Inténtalo de nuevo en unos minutos.",
+    "LAST_INSTANCE_ADMIN": "La instalación necesita al menos un administrador de la instancia. Primero haz administrador a otra persona."
   },
   "fields": {
     "required": "Este campo es obligatorio.",
@@ -46,6 +47,8 @@
     "message_required": "Escribe el mensaje que se enviará.",
     "public_reply_comment_only": "Las respuestas públicas solo son posibles en comentarios.",
     "not_found": "Ese elemento ya no existe.",
-    "passwords_differ": "Las contraseñas no coinciden."
+    "passwords_differ": "Las contraseñas no coinciden.",
+    "invalid_host": "Escribe un nombre de servidor como smtp.example.com.",
+    "invalid_app_id": "Escribe el ID numérico de la app de Instagram."
   }
 }

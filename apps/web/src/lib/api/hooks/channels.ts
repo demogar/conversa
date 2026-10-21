@@ -1,15 +1,17 @@
-'use client';
-
 import type { ChannelDto, MediaDto, SimulateEventInput } from '@conversa/shared';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api } from '../client';
+import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { api, type ApiGet } from '../client';
 import { keys } from '../keys';
 
-export function useChannels(workspaceId: string) {
-  return useQuery({
+/** The workspace's connected accounts, from Conversa's own records (no call to the platform). */
+export const channelsQuery = (workspaceId: string, get: ApiGet = api.get) =>
+  queryOptions({
     queryKey: keys.channels(workspaceId),
-    queryFn: ({ signal }) => api.get<ChannelDto[]>(`/workspaces/${workspaceId}/channels`, signal),
+    queryFn: ({ signal }) => get<ChannelDto[]>(`/workspaces/${workspaceId}/channels`, signal),
   });
+
+export function useChannels(workspaceId: string) {
+  return useQuery(channelsQuery(workspaceId));
 }
 
 /** Starts the Instagram sign-in; the browser leaves for the platform and comes back to the channels page. */

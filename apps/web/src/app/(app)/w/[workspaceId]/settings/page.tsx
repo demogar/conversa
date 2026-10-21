@@ -1,9 +1,11 @@
-'use client';
-
-import { useParams } from 'next/navigation';
 import { GeneralSettings } from '@/features/settings/general-settings';
 
-export default function GeneralSettingsPage() {
-  const { workspaceId } = useParams<{ workspaceId: string }>();
+/** Reads only the workspace and the person, which the workspace layout already prefetched. */
+export default async function GeneralSettingsPage({
+  params,
+}: {
+  params: Promise<{ workspaceId: string }>;
+}) {
+  const { workspaceId } = await params;
   return <GeneralSettings workspaceId={workspaceId} />;
 }

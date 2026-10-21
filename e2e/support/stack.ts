@@ -62,7 +62,10 @@ const encryptionKey = randomBytes(32).toString('base64');
 
 /**
  * Settings for the API and the worker. Every value the code reads is set
- * here, so nothing from the development .env leaks into the run.
+ * here, so nothing from the development .env leaks into the run. Mail, the
+ * Meta app, Turnstile and the sign-up mode are instance settings, empty on
+ * the fresh database: no mail (invitations show a link to copy), no captcha,
+ * sign-up by invitation.
  */
 export function apiEnv(): Record<string, string> {
   return {
@@ -76,16 +79,8 @@ export function apiEnv(): Record<string, string> {
     SECRET_KEY: secretKey,
     ENCRYPTION_KEY: encryptionKey,
     ENCRYPTION_KEYS_PREVIOUS: '',
-    SIGNUP_MODE: 'invite_only',
     TRUST_PROXY: 'none',
-    // No mail server: invitations show a link to copy instead.
-    SMTP_URL: '',
-    TURNSTILE_SITE_KEY: '',
-    TURNSTILE_SECRET_KEY: '',
     INSTAGRAM_SANDBOX: 'true',
-    INSTAGRAM_APP_ID: '',
-    INSTAGRAM_APP_SECRET: '',
-    INSTAGRAM_WEBHOOK_VERIFY_TOKEN: '',
     WORKER_IN_API: '',
   };
 }

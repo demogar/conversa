@@ -19,7 +19,6 @@ describe('loadEnv', () => {
       NODE_ENV: 'development',
       APP_URL: 'http://localhost:3000',
       API_PORT: 4000,
-      SIGNUP_MODE: 'invite_only',
       TRUST_PROXY: 'none',
       INSTAGRAM_SANDBOX: false,
       WORKER_IN_API: false,

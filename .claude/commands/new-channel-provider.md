@@ -8,7 +8,7 @@ Add `$ARGUMENTS` as a channel type. The engine, webhooks and inbox talk only to 
 Plan before coding, and confirm with the user anything the platform cannot do (for example no private reply to a comment, no postback buttons, no follow status).
 
 1. **Type.** Add the value to `enum ChannelType` in `apps/api/prisma/schema.prisma` and to `ChannelType` in `packages/shared/src/enums.ts`. `pnpm db:migrate --name add_<platform>_channel`.
-2. **Configuration.** App credentials in `apps/api/src/config/env.ts` (optional strings), a getter on `AppConfig` that returns null unless all are set, and entries with comments in `.env.example`.
+2. **Configuration.** App credentials are an instance setting, never env: a section in `apps/api/src/modules/instance/instance-settings.service.ts` (stored encrypted, secrets masked in `toDto()`), its update schema in `packages/shared/src/schemas/instance.ts`, a `PATCH /instance/settings/<platform>` route, a getter that returns null unless all values are set, and a section in `apps/web/src/features/admin/`.
 3. **Provider.** `apps/api/src/modules/channels/<platform>/`:
    - `<platform>.provider.ts` implementing every method of `ChannelProvider` (`ChannelConnector`, `WebhookAdapter`, `Messenger`, `ContentSource`), `type`, and `isConfigured()`.
    - `verifySignature` checks the platform's signature over the raw body with a constant-time comparison (`safeEqual`).

@@ -1,5 +1,3 @@
-'use client';
-
 import type {
   BufferChannelDto,
   BufferOrganizationDto,
@@ -7,19 +5,23 @@ import type {
   BufferStatusDto,
   ConnectBufferInput,
 } from '@conversa/shared';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api } from '../client';
+import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { api, type ApiGet } from '../client';
 import { keys } from '../keys';
 
 export type BufferPostView = 'scheduled' | 'sent';
 
 const base = (workspaceId: string) => `/workspaces/${workspaceId}/integrations/buffer`;
 
-export function useBufferStatus(workspaceId: string) {
-  return useQuery({
+/** Whether Buffer is connected, from Conversa's own records; the other Buffer reads call Buffer. */
+export const bufferStatusQuery = (workspaceId: string, get: ApiGet = api.get) =>
+  queryOptions({
     queryKey: keys.buffer(workspaceId),
-    queryFn: ({ signal }) => api.get<BufferStatusDto>(base(workspaceId), signal),
+    queryFn: ({ signal }) => get<BufferStatusDto>(base(workspaceId), signal),
   });
+
+export function useBufferStatus(workspaceId: string) {
+  return useQuery(bufferStatusQuery(workspaceId));
 }
 
 /** Buffer reads need a connection with an organization chosen; pass `enabled` from the status. */

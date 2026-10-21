@@ -8,5 +8,6 @@ export * from './schemas/auth.js';
 export * from './schemas/workspace.js';
 export * from './schemas/automation.js';
 export * from './schemas/integrations.js';
+export * from './schemas/instance.js';
 export * from './dto.js';
 export * from './validation.js';

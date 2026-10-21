@@ -17,6 +17,11 @@ export const REQUIRED_ROLE = 'conversa:required-role';
 export const RequireRole = (role: WorkspaceRole): MethodDecorator & ClassDecorator =>
   SetMetadata(REQUIRED_ROLE, role);
 
+export const REQUIRE_INSTANCE_ADMIN = 'conversa:require-instance-admin';
+/** Only instance admins: people who manage the installation, not a workspace. */
+export const RequireInstanceAdmin = (): MethodDecorator & ClassDecorator =>
+  SetMetadata(REQUIRE_INSTANCE_ADMIN, true);
+
 export const CurrentAuth = createParamDecorator(
   (_: unknown, context: ExecutionContext): AuthContext => {
     const auth = context.switchToHttp().getRequest<AppRequest>().auth;

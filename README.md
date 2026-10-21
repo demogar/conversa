@@ -25,6 +25,7 @@ MIT licensed. Your data stays in your own PostgreSQL database.
 - Roles: owner, admin and member, with email invitations.
 - Contacts, an activity log of every delivery and why it was sent, skipped or failed, an inbox to read and answer conversations, a content view of your posts, and a dashboard.
 - An audit log of who changed what.
+- Instance settings in the app for instance admins: email, the Meta app, Turnstile and sign-up, with a first-run setup guide. Nothing to restart.
 
 **Everything else**
 
@@ -70,7 +71,7 @@ pnpm dev                # API on :4000 and web on :3000
 pnpm dev:worker         # in a second terminal: the queue worker
 ```
 
-Open http://localhost:3000. The first account you create sets up the instance and becomes the owner of its first workspace.
+Open http://localhost:3000. The first account you create becomes the instance admin and the owner of its first workspace, and is walked through a short setup: email, the Instagram app and Turnstile, each skippable. All three live in the app under **Instance settings**, not in `.env`. For Mailpit, use server `localhost`, port `1025`, no encryption.
 
 **No Meta app yet?** Set `INSTAGRAM_SANDBOX=true` in `.env` and restart. You can then connect fake Instagram accounts, simulate comments, messages and button taps from the channels page, and watch the whole pipeline run. See [docs/sandbox.md](docs/sandbox.md).
 

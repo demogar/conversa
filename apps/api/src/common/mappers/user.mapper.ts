@@ -8,6 +8,7 @@ export function toUserDto(user: User): UserDto {
     name: user.name,
     locale: isLocale(user.locale) ? user.locale : 'en',
     mfaEnabled: user.mfaEnabledAt !== null,
+    isInstanceAdmin: user.isInstanceAdmin,
     createdAt: user.createdAt.toISOString(),
   };
 }

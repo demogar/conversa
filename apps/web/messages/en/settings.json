@@ -163,6 +163,11 @@
       },
       "inbox": {
         "message_sent": "Sent a message from the inbox"
+      },
+      "instance": {
+        "settings_updated": "Changed the instance settings",
+        "admin_granted": "Made someone an instance admin",
+        "admin_revoked": "Removed someone's instance admin access"
       }
     }
   }

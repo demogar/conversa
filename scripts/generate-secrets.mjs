@@ -7,5 +7,4 @@ const secret = (bytes) => randomBytes(bytes).toString('base64url');
 
 console.log(`SECRET_KEY=${secret(48)}`);
 console.log(`ENCRYPTION_KEY=${randomBytes(32).toString('base64')}`);
-console.log(`INSTAGRAM_WEBHOOK_VERIFY_TOKEN=${secret(24)}`);
 console.log(`POSTGRES_PASSWORD=${secret(24)}`);

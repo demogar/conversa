@@ -37,7 +37,8 @@ function testRedisUrl(redisUrl: string): string {
 
 /**
  * Points the process at the test database and Redis and sets a test
- * configuration: fresh secrets, the simulated Instagram, no mail, no captcha.
+ * configuration: fresh secrets and the simulated Instagram. Mail, captcha and
+ * the sign-up mode are instance settings, empty on the fresh database.
  * Server addresses come from the environment (CI) or the repository's .env.
  */
 function applyTestEnv(): { databaseUrl: string; redisUrl: string } {
@@ -60,14 +61,7 @@ function applyTestEnv(): { databaseUrl: string; redisUrl: string } {
     SECRET_KEY: randomBytes(48).toString('base64url'),
     ENCRYPTION_KEY: randomBytes(32).toString('base64'),
     ENCRYPTION_KEYS_PREVIOUS: '',
-    SIGNUP_MODE: 'invite_only',
     TRUST_PROXY: 'none',
-    SMTP_URL: '',
-    TURNSTILE_SITE_KEY: '',
-    TURNSTILE_SECRET_KEY: '',
-    INSTAGRAM_APP_ID: '',
-    INSTAGRAM_APP_SECRET: '',
-    INSTAGRAM_WEBHOOK_VERIFY_TOKEN: '',
     INSTAGRAM_SANDBOX: 'true',
     WORKER_IN_API: 'false',
   };

@@ -1,4 +1,8 @@
+import { HydrationBoundary } from '@tanstack/react-query';
 import { NewAutomationScreen } from '@/features/automations/automation-builder';
+import { bufferStatusQuery } from '@/lib/api/hooks/buffer';
+import { channelsQuery } from '@/lib/api/hooks/channels';
+import { prefetch, serverGet } from '@/lib/api/server';
 import { pageTitle } from '@/lib/metadata';
 
 export const generateMetadata = pageTitle((t) => t('automations.builder.newTitle'));
@@ -16,12 +20,17 @@ export default async function NewAutomationPage({
   searchParams: Promise<Search>;
 }) {
   const { workspaceId } = await params;
-  const search = await searchParams;
+  const [search, state] = await Promise.all([
+    searchParams,
+    prefetch(channelsQuery(workspaceId, serverGet), bufferStatusQuery(workspaceId, serverGet)),
+  ]);
   // ?bufferPostId= and ?channelId= come from the content calendar, to attach the automation to a scheduled post.
   return (
-    <NewAutomationScreen
-      workspaceId={workspaceId}
-      defaults={{ bufferPostId: first(search.bufferPostId), channelId: first(search.channelId) }}
-    />
+    <HydrationBoundary state={state}>
+      <NewAutomationScreen
+        workspaceId={workspaceId}
+        defaults={{ bufferPostId: first(search.bufferPostId), channelId: first(search.channelId) }}
+      />
+    </HydrationBoundary>
   );
 }

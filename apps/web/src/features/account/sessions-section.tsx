@@ -3,7 +3,6 @@
 import {
   Badge,
   Button,
-  RelativeTime,
   Table,
   TableBody,
   TableCell,
@@ -19,6 +18,7 @@ import { useTranslations } from 'next-intl';
 import { SettingsSection } from '@/features/settings/settings-section';
 import { useRevokeSession, useSessions } from '@/lib/api/hooks/account';
 import { useErrorMessage } from '@/lib/errors';
+import { RelativeTime } from '@/features/time/relative-time';
 import { summariseUserAgent } from './user-agent';
 
 export function SessionsSection() {

@@ -1,5 +1,3 @@
-'use client';
-
 import type {
   AuditEntryDto,
   CreatedInvitationDto,
@@ -10,8 +8,15 @@ import type {
   WorkspaceDto,
   WorkspaceRole,
 } from '@conversa/shared';
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api, query } from '../client';
+import {
+  infiniteQueryOptions,
+  queryOptions,
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
+import { api, type ApiGet, query } from '../client';
 import { keys } from '../keys';
 
 const AUDIT_PAGE_SIZE = 25;
@@ -28,11 +33,34 @@ export function useDeleteWorkspace(workspaceId: string) {
   return useMutation({ mutationFn: () => api.delete(`/workspaces/${workspaceId}`) });
 }
 
-export function useMembers(workspaceId: string) {
-  return useQuery({
+export const membersQuery = (workspaceId: string, get: ApiGet = api.get) =>
+  queryOptions({
     queryKey: keys.members(workspaceId),
-    queryFn: ({ signal }) => api.get<MemberDto[]>(`/workspaces/${workspaceId}/members`, signal),
+    queryFn: ({ signal }) => get<MemberDto[]>(`/workspaces/${workspaceId}/members`, signal),
   });
+
+/** Admins only. */
+export const invitationsQuery = (workspaceId: string, get: ApiGet = api.get) =>
+  queryOptions({
+    queryKey: keys.invitations(workspaceId),
+    queryFn: ({ signal }) => get<InvitationDto[]>(`/workspaces/${workspaceId}/invitations`, signal),
+  });
+
+/** Admins only. */
+export const auditLogQuery = (workspaceId: string, get: ApiGet = api.get) =>
+  infiniteQueryOptions({
+    queryKey: keys.audit(workspaceId),
+    queryFn: ({ pageParam, signal }) =>
+      get<Page<AuditEntryDto>>(
+        `/workspaces/${workspaceId}/audit${query({ cursor: pageParam, limit: AUDIT_PAGE_SIZE })}`,
+        signal,
+      ),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
+  });
+
+export function useMembers(workspaceId: string) {
+  return useQuery(membersQuery(workspaceId));
 }
 
 export function useChangeRole(workspaceId: string) {
@@ -58,12 +86,7 @@ export function useRemoveMember(workspaceId: string) {
 }
 
 export function useInvitations(workspaceId: string, enabled = true) {
-  return useQuery({
-    queryKey: keys.invitations(workspaceId),
-    queryFn: ({ signal }) =>
-      api.get<InvitationDto[]>(`/workspaces/${workspaceId}/invitations`, signal),
-    enabled,
-  });
+  return useQuery({ ...invitationsQuery(workspaceId), enabled });
 }
 
 export function useCreateInvitation(workspaceId: string) {
@@ -85,15 +108,5 @@ export function useRevokeInvitation(workspaceId: string) {
 }
 
 export function useAuditLog(workspaceId: string, enabled = true) {
-  return useInfiniteQuery({
-    queryKey: keys.audit(workspaceId),
-    queryFn: ({ pageParam, signal }) =>
-      api.get<Page<AuditEntryDto>>(
-        `/workspaces/${workspaceId}/audit${query({ cursor: pageParam, limit: AUDIT_PAGE_SIZE })}`,
-        signal,
-      ),
-    initialPageParam: undefined as string | undefined,
-    getNextPageParam: (last) => last.nextCursor ?? undefined,
-    enabled,
-  });
+  return useInfiniteQuery({ ...auditLogQuery(workspaceId), enabled });
 }

@@ -23,12 +23,23 @@ test('the first person sets up the installation and signs back in', async ({ pag
     await page.getByRole('button', { name: 'Create account' }).click();
   });
 
+  await test.step('is guided through the instance setup and skips every step', async () => {
+    await expect(page).toHaveURL(/\/admin\/setup$/);
+    await expect(page.getByRole('heading', { name: 'Set up this installation' })).toBeVisible();
+    for (const step of ['Email', 'Instagram app', 'Human check']) {
+      await expect(page.getByRole('heading', { level: 2, name: new RegExp(step) })).toBeVisible();
+      await page.getByRole('button', { name: 'Skip for now' }).click();
+    }
+    await expect(page.getByRole('heading', { level: 2, name: /Done/ })).toBeVisible();
+    await page.getByRole('button', { name: 'Go to your workspace' }).click();
+  });
+
   await test.step('lands on the overview with the getting-started checklist', async () => {
     await expect(page).toHaveURL(/\/w\/[^/]+$/);
     await expect(page.getByRole('heading', { name: 'Overview', level: 1 })).toBeVisible();
     // The first workspace is named after its owner.
     await expect(
-      page.getByText(`How the automations in ${owner.name} did in the last 30 days.`),
+      page.getByText(`How the automations in ${owner.name}'s workspace did in the last 30 days.`),
     ).toBeVisible();
     const checklist = page.getByRole('region', { name: 'Get started' });
     await expect(checklist).toBeVisible();

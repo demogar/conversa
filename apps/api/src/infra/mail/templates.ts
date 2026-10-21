@@ -73,3 +73,20 @@ export function passwordResetMail(locale: Locale, params: { url: string }): Mail
     'Reset your password',
   );
 }
+
+export function testMail(locale: Locale, params: { url: string }): MailContent {
+  if (locale === 'es') {
+    return build(
+      ['Este es un correo de prueba de Conversa. Si lo recibiste, el correo saliente funciona.'],
+      { label: 'Abrir la configuración', url: params.url },
+      'Lo enviaste desde la configuración de la instalación.',
+      'Correo de prueba de Conversa',
+    );
+  }
+  return build(
+    ['This is a test email from Conversa. If it arrived, outgoing mail works.'],
+    { label: 'Open settings', url: params.url },
+    'You sent it from the installation settings.',
+    'Conversa test email',
+  );
+}

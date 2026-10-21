@@ -10,6 +10,7 @@ const me = {
     name: 'Ana',
     locale: 'en',
     mfaEnabled: false,
+    isInstanceAdmin: false,
     createdAt: '2026-01-01T00:00:00Z',
   },
   workspaces: [{ id: 'w1', name: 'Bakery', role: 'MEMBER', createdAt: '2026-01-01T00:00:00Z' }],

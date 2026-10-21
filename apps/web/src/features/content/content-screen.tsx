@@ -9,7 +9,6 @@ import {
   LinkButton,
   PageHeader,
   Panel,
-  RelativeTime,
   Skeleton,
   SkeletonGroup,
   SkeletonText,
@@ -33,6 +32,7 @@ import {
 import { useCurrentWorkspace } from '@/lib/api/hooks/session';
 import { useErrorMessage } from '@/lib/errors';
 import { workspacePath } from '@/lib/navigation';
+import { RelativeTime } from '@/features/time/relative-time';
 
 const VIEWS: BufferPostView[] = ['scheduled', 'sent'];
 const STATUS_TONE: Record<string, BadgeTone> = {

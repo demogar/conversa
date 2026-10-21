@@ -5,6 +5,7 @@ import { AppConfig } from '../config/app-config.js';
 import { ConfigModule } from '../config/config.module.js';
 import { CryptoModule } from '../common/crypto/crypto.module.js';
 import { AuditModule } from '../modules/audit/audit.module.js';
+import { InstanceSettingsModule } from '../modules/instance/instance-settings.module.js';
 import { MailModule } from './mail/mail.service.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { QueueModule } from './queue/queue.module.js';
@@ -21,6 +22,10 @@ const REDACT = [
   '*.accessToken',
   '*.token',
   '*.code',
+  '*.pass',
+  '*.appSecret',
+  '*.verifyToken',
+  '*.secretKey',
 ];
 
 /** Shared by the API and the worker: configuration, logging, storage, queues. */
@@ -60,6 +65,7 @@ const REDACT = [
     QueueModule,
     MailModule,
     AuditModule,
+    InstanceSettingsModule,
   ],
 })
 export class InfraModule {}

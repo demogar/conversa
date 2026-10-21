@@ -7,7 +7,6 @@ import {
   Field,
   LinkButton,
   PageHeader,
-  RelativeTime,
   SearchInput,
   Select,
   Table,
@@ -27,6 +26,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { type ContactFilters, useChannelLabels, useContacts } from '@/lib/api/hooks/contacts';
 import { useCurrentWorkspace } from '@/lib/api/hooks/session';
 import { workspacePath } from '@/lib/navigation';
+import { RelativeTime } from '@/features/time/relative-time';
 
 const ALL = 'all';
 const SEARCH_DELAY_MS = 300;

@@ -1,5 +1,3 @@
-'use client';
-
 import type {
   ChangePasswordInput,
   MfaSetupDto,
@@ -8,8 +6,8 @@ import type {
   UpdateProfileInput,
   UserDto,
 } from '@conversa/shared';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api } from '../client';
+import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { api, type ApiGet } from '../client';
 import { keys } from '../keys';
 
 /** The setup answer also carries the QR code, drawn by the server as SVG. */
@@ -30,11 +28,14 @@ export function useChangePassword() {
   });
 }
 
-export function useSessions() {
-  return useQuery({
+export const sessionsQuery = (get: ApiGet = api.get) =>
+  queryOptions({
     queryKey: keys.sessions,
-    queryFn: ({ signal }) => api.get<SessionDto[]>('/me/sessions', signal),
+    queryFn: ({ signal }) => get<SessionDto[]>('/me/sessions', signal),
   });
+
+export function useSessions() {
+  return useQuery(sessionsQuery());
 }
 
 export function useRevokeSession() {

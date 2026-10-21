@@ -35,7 +35,7 @@ import NextLink from 'next/link';
 import { useTranslations } from 'next-intl';
 import { type FormEvent, type ReactNode, useId, useRef, useState } from 'react';
 import { ApiError } from '@/lib/api/client';
-import { useScheduledBufferPosts } from '@/lib/api/hooks/automations';
+import { useBufferStatusForPicker } from '@/lib/api/hooks/automations';
 import { type FieldErrors, useErrorMessage, useFieldErrors } from '@/lib/errors';
 import { workspacePath } from '@/lib/navigation';
 import { BufferPostField } from './buffer-post-field';
@@ -134,10 +134,10 @@ export function AutomationForm({
   // After the first Save, the form re-checks as it changes, so a fixed field stops saying it is wrong.
   const errors: FieldErrors = { ...(submitted ? validate(draft).errors : {}), ...serverErrors };
 
-  const bufferPosts = useScheduledBufferPosts(workspaceId);
-  const bufferMissing =
-    bufferPosts.error instanceof ApiError && bufferPosts.error.code === 'BUFFER_NOT_CONNECTED';
-  const bufferOffered = !bufferMissing || draft.postScope === 'BUFFER_POST';
+  const bufferStatus = useBufferStatusForPicker(workspaceId);
+  const bufferMissing = bufferStatus.data?.connected === false;
+  // Offered once Buffer is known to be connected, so the option never appears and then vanishes.
+  const bufferOffered = bufferStatus.data?.connected === true || draft.postScope === 'BUFFER_POST';
 
   const update = (patch: Partial<AutomationDraft>) => {
     setServerErrors({});
@@ -321,6 +321,7 @@ export function AutomationForm({
                       value={draft.bufferPostId}
                       onChange={(bufferPostId) => update({ bufferPostId })}
                       error={errors.bufferPostId}
+                      connected={!bufferMissing}
                     />
                   ) : null}
                 </Stack>

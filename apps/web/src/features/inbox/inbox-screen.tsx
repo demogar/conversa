@@ -8,7 +8,6 @@ import {
   Heading,
   LinkButton,
   PageHeader,
-  RelativeTime,
   Select,
   Skeleton,
   SkeletonGroup,
@@ -26,6 +25,7 @@ import { useChannels } from '@/lib/api/hooks/channels';
 import { useConversations } from '@/lib/api/hooks/inbox';
 import { keys } from '@/lib/api/keys';
 import { workspacePath } from '@/lib/navigation';
+import { RelativeTime } from '@/features/time/relative-time';
 import { contactName, ConversationThread } from './conversation-thread';
 
 function pickDefault(channels: ChannelDto[]): string | null {

@@ -1,0 +1,190 @@
+{
+  "title": "Configuración de la instancia",
+  "description": "La configuración de toda esta instalación de Conversa: el correo, la app de Meta, la verificación humana y quién puede registrarse. Solo la ven los administradores de la instancia.",
+  "menuItem": "Configuración de la instancia",
+  "openSetup": "Abrir la guía de configuración",
+  "loading": "Cargando la configuración de la instancia",
+  "loadFailed": "No se pudo cargar la configuración de la instancia",
+  "noPermission": {
+    "title": "Solo los administradores de la instancia pueden cambiar esto",
+    "description": "Pídele a quien instaló Conversa que te haga administrador de la instancia o que cambie la configuración por ti.",
+    "back": "Ir a tu espacio de trabajo"
+  },
+  "secret": {
+    "configured": "Configurado",
+    "endsWith": "Termina en {hint}",
+    "replace": "Reemplazar",
+    "replaceLabel": "Reemplazar {field}",
+    "keep": "Conservar el guardado"
+  },
+  "mail": {
+    "title": "Correo",
+    "description": "El servidor de correo por el que Conversa envía invitaciones y restablecimientos de contraseña.",
+    "off": "El correo está apagado. Mientras no lo configures, las invitaciones muestran un enlace para copiar y nadie puede restablecer por su cuenta una contraseña olvidada.",
+    "host": "Servidor SMTP",
+    "hostHint": "El nombre del servidor de envío que te da tu proveedor de correo.",
+    "port": "Puerto",
+    "security": "Conexión",
+    "securityOptions": {
+      "tls": {
+        "label": "TLS desde el inicio",
+        "description": "Cifrada desde el primer byte. Suele ser el puerto 465."
+      },
+      "starttls": {
+        "label": "STARTTLS",
+        "description": "Empieza sin cifrar, pasa a cifrada y rechaza los servidores que no pueden. Suele ser el puerto 587."
+      },
+      "none": {
+        "label": "Sin cifrado",
+        "description": "Solo para un servidor de correo en la misma máquina o red, como un servidor local de pruebas."
+      }
+    },
+    "username": "Usuario",
+    "usernameHint": "Déjalo vacío si el servidor acepta correo sin iniciar sesión.",
+    "password": "Contraseña",
+    "fromName": "Nombre del remitente",
+    "fromAddress": "Dirección del remitente",
+    "saved": "Configuración de correo guardada",
+    "turnOff": "Apagar el correo",
+    "turnedOff": "Correo apagado",
+    "turnOffDialogTitle": "¿Apagar el correo?",
+    "turnOffDialogDescription": "Se olvidan el servidor, los datos de acceso y el remitente. Las invitaciones mostrarán un enlace para copiar y dejará de funcionar el restablecimiento de contraseña por correo.",
+    "test": {
+      "button": "Enviar correo de prueba",
+      "hint": "Se envía a {email} con la configuración guardada.",
+      "sent": "Correo de prueba enviado a {email}",
+      "failedTitle": "No se envió el correo de prueba",
+      "failure": {
+        "auth": "El servidor de correo rechazó el usuario o la contraseña. Revísalos y guarda de nuevo.",
+        "connection": "Conversa no pudo conectarse al servidor de correo. Revisa el nombre del servidor y el puerto, y que esta máquina pueda conectarse a él.",
+        "timeout": "El servidor de correo no respondió a tiempo. Revisa el puerto y el tipo de conexión.",
+        "tls": "Falló la conexión segura. Prueba el otro tipo de conexión o revisa el puerto.",
+        "rejected": "El servidor de correo rechazó el mensaje. Revisa que permita la dirección del remitente.",
+        "unknown": "El servidor de correo no aceptó el mensaje. Revisa la configuración y vuelve a intentarlo."
+      }
+    }
+  },
+  "instagram": {
+    "title": "App de Instagram",
+    "description": "Tu app de Meta, la que autoriza cada cuenta de Instagram que se conecta aquí. Cada instalación necesita la suya.",
+    "off": "Instagram todavía no está configurado. Hasta que lo esté, nadie puede conectar una cuenta de Instagram.",
+    "sandboxTitle": "Aquí Instagram es simulado",
+    "sandboxDescription": "Esta instalación usa el sandbox de Instagram, así que la app de Meta no se usa. Igual puedes guardarla para cuando se apague el sandbox.",
+    "appId": "ID de la app de Instagram",
+    "appIdHint": "Aparece en Instagram, configuración de la API con inicio de sesión empresarial de Instagram. No es el ID de la app de Meta que se ve arriba en el panel.",
+    "appSecret": "Clave secreta de la app de Instagram",
+    "appSecretHint": "Aparece junto al ID de la app de Instagram. Conversa la usa para comprobar que los webhooks vienen de verdad de Meta.",
+    "verifyToken": "Token de verificación del webhook",
+    "verifyTokenHint": "Cualquier texto aleatorio. Pega el mismo valor en el panel de Meta cuando configures los webhooks.",
+    "generate": "Generar token",
+    "saved": "App de Instagram guardada",
+    "remove": "Quitar la app de Instagram",
+    "removed": "App de Instagram quitada",
+    "removeDialogTitle": "¿Quitar la app de Instagram?",
+    "removeDialogDescription": "Las cuentas conectadas dejan de recibir comentarios y mensajes, y nadie puede conectar una nueva hasta que vuelvas a agregar la app.",
+    "steps": {
+      "create": "En el panel de desarrolladores de Meta, crea una app con el caso de uso para administrar mensajes y contenido en Instagram.",
+      "copy": "Abre Instagram, configuración de la API con inicio de sesión empresarial de Instagram, y copia el ID y la clave secreta de la app en los campos de abajo.",
+      "login": "En la configuración del inicio de sesión empresarial, pega las direcciones de redirección OAuth, de desautorización y de eliminación de datos.",
+      "webhooks": "En Configurar webhooks, pega la dirección del webhook y tu token de verificación, y suscríbete a comments, messages y messaging_postbacks.",
+      "basic": "En Configuración de la app, Básica, pega las direcciones de la política de privacidad y de los términos."
+    },
+    "urls": {
+      "oauthRedirect": "URI de redirección OAuth",
+      "webhook": "URL de devolución del webhook",
+      "deauthorize": "URL de devolución de desautorización",
+      "dataDeletion": "URL de solicitud de eliminación de datos",
+      "privacyPolicy": "URL de la política de privacidad",
+      "termsOfService": "URL de los términos del servicio"
+    }
+  },
+  "turnstile": {
+    "title": "Verificación humana",
+    "description": "Cloudflare Turnstile en el registro, el inicio de sesión y el restablecimiento de contraseña, para dejar fuera a los bots.",
+    "optional": "Es opcional. Sin ella, el inicio de sesión sigue protegido por límites de intentos y bloqueo de cuenta.",
+    "on": "Turnstile está activo. El registro, el inicio de sesión y el restablecimiento de contraseña piden la verificación.",
+    "siteKey": "Clave del sitio",
+    "siteKeyHint": "Del widget de Turnstile que creas para este sitio en el panel de Cloudflare.",
+    "secretKey": "Clave secreta",
+    "saved": "Verificación humana guardada",
+    "turnOff": "Apagar la verificación humana",
+    "turnedOff": "Verificación humana apagada",
+    "turnOffDialogTitle": "¿Apagar la verificación humana?",
+    "turnOffDialogDescription": "El registro, el inicio de sesión y el restablecimiento de contraseña dejan de pedirla. Las claves se olvidan."
+  },
+  "signup": {
+    "title": "Registro",
+    "description": "Quién puede crear una cuenta en esta instalación.",
+    "label": "Quién puede registrarse",
+    "inviteOnly": "Solo con invitación",
+    "inviteOnlyDescription": "Las personas entran cuando un administrador de un espacio de trabajo las invita.",
+    "open": "Cualquier persona",
+    "openDescription": "Cualquiera que pueda abrir esta dirección puede crear una cuenta y su propio espacio de trabajo.",
+    "saved": {
+      "invite_only": "Ahora el registro es solo con invitación",
+      "open": "Ahora cualquier persona puede registrarse"
+    }
+  },
+  "admins": {
+    "title": "Administradores de la instancia",
+    "description": "Los administradores de la instancia cambian esta configuración. Los roles de los espacios de trabajo son aparte: un administrador de la instancia solo ve los espacios a los que pertenece.",
+    "label": "Personas en esta instalación",
+    "name": "Nombre",
+    "email": "Correo",
+    "access": "Acceso",
+    "actions": "Acciones",
+    "loadFailed": "No se pudo cargar la lista de personas",
+    "empty": "Todavía nadie tiene cuenta",
+    "you": "Tú",
+    "admin": "Administrador de la instancia",
+    "member": "—",
+    "grant": "Hacer administrador",
+    "grantLabel": "Hacer a {name} administrador de la instancia",
+    "granted": "{name} ahora es administrador de la instancia",
+    "grantFailed": "No se guardó el cambio",
+    "revoke": "Quitar el acceso de administrador",
+    "revokeLabel": "Quitarle a {name} el acceso de administrador de la instancia",
+    "revoked": "{name} ya no es administrador de la instancia",
+    "revokeDialogTitle": "¿Quitarle a {name} el acceso de administrador?",
+    "revokeDialogDescription": "{name} conserva su cuenta y sus espacios de trabajo, pero ya no puede cambiar la configuración de la instancia.",
+    "revokeSelfDialogTitle": "¿Quitarte tu propio acceso de administrador?",
+    "revokeSelfDialogDescription": "Conservas tu cuenta y tus espacios de trabajo, pero ya no verás esta página. Otro administrador de la instancia puede devolverte el acceso."
+  },
+  "setup": {
+    "title": "Configura esta instalación",
+    "description": "Algunas cosas que Conversa necesita para funcionar del todo. Puedes saltarte cualquiera y volver después desde la configuración de la instancia.",
+    "label": "Pasos para configurar la instalación",
+    "saveAndContinue": "Guardar y continuar",
+    "finish": "Ir a tu espacio de trabajo",
+    "skip": "Saltar por ahora",
+    "sandboxTitle": "Aquí Instagram es simulado",
+    "sandboxDescription": "Esta instalación usa el sandbox de Instagram, así que puedes saltarte este paso y probar Conversa sin una app de Meta.",
+    "turnstileOptional": "Es opcional. Agrégala si esta instalación es accesible desde internet y quieres mantener a los bots lejos del inicio de sesión.",
+    "steps": {
+      "mail": {
+        "title": "Correo",
+        "description": "Permite que Conversa envíe invitaciones y restablecimientos de contraseña."
+      },
+      "instagram": {
+        "title": "App de Instagram",
+        "description": "Conecta tu app de Meta para que tu equipo pueda conectar cuentas de Instagram."
+      },
+      "turnstile": {
+        "title": "Verificación humana",
+        "description": "Agrega Cloudflare Turnstile al registro y al inicio de sesión."
+      },
+      "done": {
+        "title": "Listo",
+        "description": "Lo que ya funciona y lo que dejaste para después."
+      }
+    },
+    "summary": {
+      "mail": "Correo",
+      "instagram": "App de Instagram",
+      "turnstile": "Verificación humana",
+      "configured": "Configurado",
+      "skipped": "Sin configurar",
+      "later": "Puedes cambiar cualquiera de estas opciones cuando quieras desde la configuración de la instancia, en el menú de tu cuenta."
+    }
+  }
+}

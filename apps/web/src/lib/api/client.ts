@@ -15,6 +15,12 @@ export class ApiError extends Error {
 type Method = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 /**
+ * Reads one API path. Query options take one, so the browser (through /api)
+ * and the server's prefetch (straight to the API) fill the same cache entries.
+ */
+export type ApiGet = <T>(path: string, signal?: AbortSignal) => Promise<T>;
+
+/**
  * Calls the API through the app's own origin (/api is proxied), so the
  * session cookie is first-party and the browser sends the Origin header the
  * API checks on every write.

@@ -30,8 +30,9 @@ Out of scope: an attacker with shell access to the host or to the `.env` file, a
 - **Passwords** hashed with **argon2id** (19 MiB, 2 iterations, OWASP parameters); 12 to 128 characters. Unknown emails take the same time as wrong passwords.
 - **Account lockout**: every fifth consecutive failure (counted atomically, so parallel guesses all count) locks the account, for 15 minutes first and twice as long each time after, up to 24 hours.
 - **Two-factor authentication**: TOTP (RFC 6238, one step of clock drift), with 8 one-time recovery codes stored as hashes. A TOTP code is accepted **once**: a replay within its window is rejected, and a recovery code cannot be used twice even by requests racing with it.
-- **Turnstile** (optional) on sign-up, sign-in and password reset.
-- **Sign-up** is invite-only by default after the first account.
+- **Turnstile** (optional) on sign-up, sign-in and password reset, configured by an instance admin in the app.
+- **Sign-up** is invite-only by default after the first account. Only instance admins can open it.
+- **Instance settings** (mail, the Meta app, Turnstile, sign-up) can be read and changed only by instance admins, checked against the database on every request. The first account is the first instance admin, and the last one cannot be removed. Secrets are never returned to the browser, only whether they are set and their last four characters; every change is audited by section, never with values.
 - Password reset and invitation tokens are random, single-use, expiring, and stored only as SHA-256 hashes.
 
 ### Sessions
@@ -56,8 +57,8 @@ Out of scope: an attacker with shell access to the host or to the `.env` file, a
 
 ### Secrets at rest
 
-- Provider tokens, the Buffer API key and TOTP seeds are encrypted with **AES-256-GCM** (random 96-bit IV, authenticated). Each value records which key encrypted it.
-- **Key rotation**: set a new `ENCRYPTION_KEY` and keep old keys in `ENCRYPTION_KEYS_PREVIOUS`; old values still decrypt, and the worker re-encrypts channel credentials with the current key. See [docs/self-hosting.md](docs/self-hosting.md#rotating-the-encryption-key).
+- Provider tokens, the Buffer API key, TOTP seeds and the instance settings (including the SMTP password, the Meta app secret, the webhook verify token and the Turnstile secret) are encrypted with **AES-256-GCM** (random 96-bit IV, authenticated). Each value records which key encrypted it.
+- **Key rotation**: set a new `ENCRYPTION_KEY` and keep old keys in `ENCRYPTION_KEYS_PREVIOUS`; old values still decrypt, and the worker re-encrypts channel credentials and instance settings with the current key. See [docs/self-hosting.md](docs/self-hosting.md#rotating-the-encryption-key).
 - Signing keys are derived per purpose from `SECRET_KEY` with HKDF, so a signature made for one feature is never valid for another.
 
 ### Platform callbacks and links
@@ -90,6 +91,7 @@ Out of scope: an attacker with shell access to the host or to the `.env` file, a
 - [ ] `SECRET_KEY` and `ENCRYPTION_KEY` were generated with `pnpm secrets:generate` and are not reused elsewhere.
 - [ ] `.env` is readable only by the user that runs Docker, and backed up securely.
 - [ ] `TRUST_PROXY` matches your proxy setup ([docs/self-hosting.md](docs/self-hosting.md#client-ips-trust_proxy)).
-- [ ] `SIGNUP_MODE=invite_only` unless you mean to run a public instance.
+- [ ] Sign-up is **by invitation only** (Instance settings → Sign-up) unless you mean to run a public instance.
+- [ ] Only the people who run the installation are instance admins (Instance settings → Instance admins).
 - [ ] Owners and admins have 2FA enabled.
 - [ ] Database backups are encrypted and stored off the host.

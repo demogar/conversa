@@ -2,13 +2,14 @@
 
 import { Avatar, Menu, MenuContent, MenuItem, MenuSeparator, MenuTrigger } from '@demogar/mola-ui';
 import type { UserDto } from '@conversa/shared';
-import { LogOut, UserRound } from 'lucide-react';
+import { LogOut, ServerCog, UserRound } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useSignOut } from '@/lib/api/hooks/session';
 
 export function UserMenu({ user }: { user: UserDto | undefined }) {
   const t = useTranslations('nav');
+  const tAdmin = useTranslations('admin');
   const router = useRouter();
   const signOut = useSignOut();
   const name = user?.name ?? '';
@@ -25,6 +26,11 @@ export function UserMenu({ user }: { user: UserDto | undefined }) {
         <MenuItem icon={<UserRound />} onClick={() => router.push('/account')}>
           {t('account')}
         </MenuItem>
+        {user?.isInstanceAdmin ? (
+          <MenuItem icon={<ServerCog />} onClick={() => router.push('/admin')}>
+            {tAdmin('menuItem')}
+          </MenuItem>
+        ) : null}
         <MenuSeparator />
         <MenuItem icon={<LogOut />} onClick={() => signOut.mutate()}>
           {t('signOut')}

@@ -5,11 +5,6 @@ const booleanish = z
   .optional()
   .transform((value) => value === 'true' || value === '1');
 
-const optionalString = z
-  .string()
-  .optional()
-  .transform((value) => (value && value.trim() ? value.trim() : undefined));
-
 const trustProxy = z
   .string()
   .default('none')
@@ -47,15 +42,7 @@ export const envSchema = z.object({
         : [],
     )
     .pipe(z.array(base64Key)),
-  SIGNUP_MODE: z.enum(['invite_only', 'open']).default('invite_only'),
   TRUST_PROXY: trustProxy,
-  SMTP_URL: optionalString,
-  MAIL_FROM: z.string().default('Conversa <no-reply@localhost>'),
-  TURNSTILE_SITE_KEY: optionalString,
-  TURNSTILE_SECRET_KEY: optionalString,
-  INSTAGRAM_APP_ID: optionalString,
-  INSTAGRAM_APP_SECRET: optionalString,
-  INSTAGRAM_WEBHOOK_VERIFY_TOKEN: optionalString,
   META_GRAPH_VERSION: z
     .string()
     .regex(/^v\d+\.\d+$/)

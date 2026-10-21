@@ -22,5 +22,6 @@ The first version.
 - Two-factor authentication (TOTP) with recovery codes.
 - Sandbox mode: a simulated Instagram for trying Conversa and for tests.
 - Read-only Buffer integration.
+- Instance settings (`/admin`) for instance admins: SMTP with a test email, the Meta app with every dashboard URL to copy, Cloudflare Turnstile, sign-up mode and instance admins, stored encrypted and applied without a restart; a first-run setup guide at `/admin/setup`.
 - Docker Compose production stack with an optional Cloudflare Tunnel.
 - Security: argon2id passwords, hashed server-side sessions in `__Host-` cookies, origin checks, Redis-backed rate limits, account lockout, AES-256-GCM encryption at rest with key rotation, signed webhooks, OAuth state, postbacks and link references, nonce-based CSP, log redaction.

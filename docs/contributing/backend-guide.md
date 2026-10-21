@@ -31,6 +31,8 @@ Anything the worker needs goes in a module imported by `WorkerModule` (`src/work
 
 Read settings only through `AppConfig` (injected). A new setting goes in `src/config/env.ts` (zod, with its default), gets a getter on `AppConfig` if it needs logic, and is documented in `.env.example` and [self-hosting.md](../self-hosting.md).
 
+`.env` holds only what a process needs to start (database, Redis, keys, `APP_URL`, proxy, logging). Anything an operator may change while the installation runs (mail, the Meta app, Turnstile, the sign-up mode) is an instance setting: read it from `InstanceSettingsService`, whose getters are synchronous reads of an in-memory copy that every API process and worker reloads when an admin saves. Never cache a value derived from it without checking `version` (see `MailService`).
+
 ## Errors: codes, not prose
 
 The API never returns a human sentence. Throw `AppException` with a code from `@conversa/shared`:
@@ -72,6 +74,7 @@ Global guards run on every route in this order: rate limit, origin check, sessio
 | `@Public()`                              | No session needed. Use sparingly.                                                                            |
 | `@SkipOriginCheck()`                     | Skips the CSRF origin check. Only for server-to-server callbacks that verify their own signature (webhooks). |
 | `@RequireRole('ADMIN')`                  | Minimum workspace role. Needs a `:workspaceId` route param.                                                  |
+| `@RequireInstanceAdmin()`                | Only instance admins (`User.isInstanceAdmin`), checked against the database on every request.                |
 | `@Throttle({ default: { limit, ttl } })` | Tighter rate limit (see the auth controller). `@SkipThrottle()` only for signed callbacks and health.        |
 | `@CurrentAuth()`                         | `{ userId, sessionId }` of the signed-in person.                                                             |
 | `@CurrentMembership()`                   | `{ workspaceId, role }`, set by `WorkspaceGuard`.                                                            |

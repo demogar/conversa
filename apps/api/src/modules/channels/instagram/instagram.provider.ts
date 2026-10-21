@@ -7,8 +7,8 @@ import {
   type MediaDto,
   type MessageDto,
 } from '@conversa/shared';
-import { AppConfig } from '../../../config/app-config.js';
 import { safeEqual } from '../../../common/crypto/crypto.service.js';
+import { InstanceSettingsService } from '../../instance/instance-settings.service.js';
 import type {
   ChannelProvider,
   ChannelSession,
@@ -106,15 +106,15 @@ export class InstagramProvider implements ChannelProvider {
 
   constructor(
     private readonly graph: InstagramGraphClient,
-    private readonly config: AppConfig,
+    private readonly settings: InstanceSettingsService,
   ) {}
 
   isConfigured(): boolean {
-    return this.config.instagram !== null;
+    return this.settings.instagram !== null;
   }
 
   private get app() {
-    const app = this.config.instagram;
+    const app = this.settings.instagram;
     if (!app) throw new ProviderError('rejected', 'Instagram app credentials are not configured');
     return app;
   }
@@ -203,7 +203,7 @@ export class InstagramProvider implements ChannelProvider {
   // ---- Webhooks -----------------------------------------------------------
 
   verifySubscription(query: Record<string, unknown>): string | null {
-    const app = this.config.instagram;
+    const app = this.settings.instagram;
     if (!app) return null;
     const token = query['hub.verify_token'];
     const challenge = query['hub.challenge'];
@@ -221,7 +221,7 @@ export class InstagramProvider implements ChannelProvider {
     rawBody: Buffer,
     headers: Record<string, string | string[] | undefined>,
   ): boolean {
-    const app = this.config.instagram;
+    const app = this.settings.instagram;
     const header = headers['x-hub-signature-256'];
     const signature = Array.isArray(header) ? header[0] : header;
     if (!app || !signature) return false;

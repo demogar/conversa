@@ -22,6 +22,7 @@ import { isUniqueViolation } from '../../infra/prisma/errors.js';
 import { PrismaService } from '../../infra/prisma/prisma.service.js';
 import type { User } from '../../generated/prisma/client.js';
 import { AuditService } from '../audit/audit.service.js';
+import { InstanceSettingsService } from '../instance/instance-settings.service.js';
 import { InvitationsService } from '../workspaces/invitations.service.js';
 import { MfaService } from './mfa.service.js';
 import { PasswordService } from './password.service.js';
@@ -58,6 +59,7 @@ export class AuthService {
     private readonly mail: MailService,
     private readonly config: AppConfig,
     private readonly audit: AuditService,
+    private readonly settings: InstanceSettingsService,
   ) {}
 
   async signup(input: SignupInput, client: ClientInfo): Promise<SignedIn> {
@@ -72,7 +74,7 @@ export class AuthService {
         const invitation = input.invitationToken
           ? await this.invitations.findUsable(tx, input.invitationToken)
           : null;
-        if (!isFirstAccount && !invitation && this.config.env.SIGNUP_MODE !== 'open') {
+        if (!isFirstAccount && !invitation && this.settings.signupMode !== 'open') {
           throw new AppException(ErrorCode.SIGNUP_CLOSED);
         }
         if (invitation && invitation.email !== input.email) {
@@ -85,6 +87,8 @@ export class AuthService {
             name: input.name,
             passwordHash,
             locale: input.locale && isLocale(input.locale) ? input.locale : 'en',
+            // Whoever creates the first account is setting the installation up.
+            isInstanceAdmin: isFirstAccount,
           },
         });
         if (invitation && input.invitationToken) {

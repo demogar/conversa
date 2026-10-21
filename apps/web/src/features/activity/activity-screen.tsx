@@ -7,7 +7,6 @@ import {
   Field,
   LinkButton,
   PageHeader,
-  RelativeTime,
   Select,
   Table,
   TableBody,
@@ -26,6 +25,7 @@ import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { type ActivityFilters, useActivity, useAutomationOptions } from '@/lib/api/hooks/activity';
 import { workspacePath } from '@/lib/navigation';
+import { RelativeTime } from '@/features/time/relative-time';
 import { DeliveryStatusBadge, useDeliveryExplanation } from './delivery-status';
 
 const ALL = 'all';

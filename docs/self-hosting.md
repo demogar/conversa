@@ -26,7 +26,7 @@ cp .env.example .env
 node scripts/generate-secrets.mjs   # or: pnpm secrets:generate
 ```
 
-Paste the generated values (`SECRET_KEY`, `ENCRYPTION_KEY`, `INSTAGRAM_WEBHOOK_VERIFY_TOKEN`, `POSTGRES_PASSWORD`) into `.env`, then set at least `APP_URL`, `TRUST_PROXY` and the Instagram app values ([instagram.md](instagram.md)). `NODE_ENV` is forced to `production` by the stack.
+Paste the generated values (`SECRET_KEY`, `ENCRYPTION_KEY`, `POSTGRES_PASSWORD`) into `.env`, then set at least `APP_URL` and `TRUST_PROXY`. `NODE_ENV` is forced to `production` by the stack. Email, the Instagram app, Turnstile and sign-up are not in `.env`: you set them in the app after the first sign-in ([Instance settings](#instance-settings)).
 
 ```bash
 docker compose -f docker/compose.yml --env-file .env build    # or: pnpm docker:build
@@ -45,11 +45,29 @@ WEB_IMAGE=ghcr.io/<owner>/<repository>-web:0.1
 
 and run `docker compose ... pull` before `up -d`. The published web image's API address is the compose default, `http://api:4000`; if your API runs elsewhere, build the web image yourself with `--build-arg API_INTERNAL_URL=...`.
 
-Open `APP_URL` and create the first account. It becomes the owner of the first workspace. With `SIGNUP_MODE=invite_only` (the default), everyone after that joins by invitation.
+Open `APP_URL` and create the first account. It becomes the owner of the first workspace and the first **instance admin**, and lands on a short setup guide (email, Instagram app, Turnstile; every step can be skipped). Sign-up is by invitation only until an instance admin opens it.
+
+## Instance settings
+
+Everything that can change while the installation runs is edited in the app, under **Instance settings** in the account menu (`/admin`). Only instance admins see it.
+
+| Section         | What it holds                                                                                                                                                                                                     |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Email           | SMTP server, port, connection (TLS, STARTTLS or none), username, password and sender. **Send test email** checks them. Without email, invitations show a link to copy and password reset by email is unavailable. |
+| Instagram app   | Instagram app ID, app secret and webhook verify token (with a **Generate token** button), plus every address to paste into the Meta dashboard. See [instagram.md](instagram.md).                                  |
+| Human check     | Cloudflare Turnstile site key and secret key. Optional. See [cloudflare.md](cloudflare.md#turnstile).                                                                                                             |
+| Sign-up         | By invitation only (the default), or open to anyone who can reach the instance.                                                                                                                                   |
+| Instance admins | Who may change these settings. The first account is one; an instance admin can make others. The last one cannot be removed.                                                                                       |
+
+The values are stored in the database encrypted with `ENCRYPTION_KEY`, secrets included, and the app never sends a secret back: it shows only that one is set and its last four characters. A change applies at once in every API process and worker (they reload through Valkey), with no restart. Each change is written to the audit log with the section name, never the values.
+
+The setup guide is at `/admin/setup` and can be opened again from Instance settings.
+
+For local development with Mailpit (`pnpm infra:up`), use server `localhost`, port `1025`, connection **No encryption**, no username; mail appears at `http://localhost:8025`.
 
 ## Configuration
 
-All settings live in the `.env` file at the repository root. The API validates them on start and refuses to run, listing every problem, if any is wrong.
+What the processes need to start lives in the `.env` file at the repository root. The API validates it on start and refuses to run, listing every problem, if any is wrong.
 
 Inside the Docker stack, `NODE_ENV`, `DATABASE_URL`, `REDIS_URL`, `API_PORT` and `API_INTERNAL_URL` are set by `compose.yml` and point at the services; what `.env` says for them is ignored.
 
@@ -72,35 +90,25 @@ Inside the Docker stack, `NODE_ENV`, `DATABASE_URL`, `REDIS_URL`, `API_PORT` and
 | Variable                   | Default    | Meaning                                                                                                                                                                                                          |
 | -------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `SECRET_KEY`               | (required) | At least 32 characters (the generator makes 48 random bytes). Signs OAuth state, MFA challenges, postback buttons, link references and visitor hashes. Changing it invalidates those, not passwords or sessions. |
-| `ENCRYPTION_KEY`           | (required) | 32 random bytes, base64. Encrypts provider tokens, the Buffer key and TOTP seeds (AES-256-GCM). **Losing it makes that data unreadable.**                                                                        |
+| `ENCRYPTION_KEY`           | (required) | 32 random bytes, base64. Encrypts provider tokens, the Buffer key, TOTP seeds and the instance settings (AES-256-GCM). **Losing it makes that data unreadable.**                                                 |
 | `ENCRYPTION_KEYS_PREVIOUS` | empty      | Comma-separated old keys, still accepted for decryption. See [Rotating the encryption key](#rotating-the-encryption-key).                                                                                        |
 
 ### Access
 
-| Variable                                     | Default       | Meaning                                                                                                                        |
-| -------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `SIGNUP_MODE`                                | `invite_only` | `invite_only`: after the first account, people join only by invitation. `open`: anyone who can reach the instance can sign up. |
-| `TRUST_PROXY`                                | `none`        | What is in front of the web server, to read client IPs. See [Client IPs](#client-ips-trust_proxy).                             |
-| `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | empty         | Cloudflare Turnstile on sign-up, sign-in and password reset. Both or neither.                                                  |
+| Variable      | Default | Meaning                                                                                            |
+| ------------- | ------- | -------------------------------------------------------------------------------------------------- |
+| `TRUST_PROXY` | `none`  | What is in front of the web server, to read client IPs. See [Client IPs](#client-ips-trust_proxy). |
 
-### Mail
-
-| Variable    | Default                         | Meaning                                                                                                                                                                     |
-| ----------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SMTP_URL`  | empty                           | For example `smtps://user:password@smtp.example.com:465`. Without it, invitations show a link to copy instead of sending email, and password reset by email is unavailable. |
-| `MAIL_FROM` | `Conversa <no-reply@localhost>` | Sender of invitations and password resets.                                                                                                                                  |
+Sign-up mode and Turnstile are [instance settings](#instance-settings).
 
 ### Instagram
 
-| Variable                         | Default | Meaning                                                                                                                           |
-| -------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `INSTAGRAM_APP_ID`               | empty   | Instagram app ID from the Meta app dashboard.                                                                                     |
-| `INSTAGRAM_APP_SECRET`           | empty   | Instagram app secret. Verifies webhook signatures and Meta's signed requests.                                                     |
-| `INSTAGRAM_WEBHOOK_VERIFY_TOKEN` | empty   | Any random string; the same value goes in the Meta dashboard.                                                                     |
-| `META_GRAPH_VERSION`             | `v24.0` | Graph API version, `vNN.N`.                                                                                                       |
-| `INSTAGRAM_SANDBOX`              | `false` | The simulated Instagram ([sandbox.md](sandbox.md)). **Refused when `NODE_ENV=production`**, so it never runs in the Docker stack. |
+| Variable             | Default | Meaning                                                                                                                           |
+| -------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `META_GRAPH_VERSION` | `v24.0` | Graph API version, `vNN.N`.                                                                                                       |
+| `INSTAGRAM_SANDBOX`  | `false` | The simulated Instagram ([sandbox.md](sandbox.md)). **Refused when `NODE_ENV=production`**, so it never runs in the Docker stack. |
 
-Instagram is enabled only when the first three are all set.
+The Meta app itself (app ID, app secret, verify token) is an [instance setting](#instance-settings).
 
 ### Docker stack only
 
@@ -178,7 +186,7 @@ Migrations run automatically on start. Take a database backup before upgrading, 
 
 1. Generate a new key: `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`.
 2. Move the current `ENCRYPTION_KEY` to `ENCRYPTION_KEYS_PREVIOUS` (comma-separated if there are several) and set the new one as `ENCRYPTION_KEY`.
-3. Restart the stack. New values are written with the new key; old ones still decrypt. The `refresh-tokens` maintenance job (every 6 hours) re-encrypts channel credentials written with an old key.
+3. Restart the stack. New values are written with the new key; old ones still decrypt. The `refresh-tokens` maintenance job (every 6 hours) re-encrypts channel credentials and instance settings written with an old key.
 4. Remove an old key only once nothing encrypted with it is left. Buffer keys and TOTP seeds are re-encrypted when they are next saved; reconnecting Buffer or re-enrolling 2FA moves them to the new key.
 
 ## Scaling

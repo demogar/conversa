@@ -9,6 +9,7 @@ import { ChannelsService } from '../channels/channels.service.js';
 import { ProviderError } from '../channels/provider/channel-provider.js';
 import { ProviderRegistry } from '../channels/provider/provider.registry.js';
 import { ScopeResolver } from '../engine/scope-resolver.js';
+import { InstanceSettingsService } from '../instance/instance-settings.service.js';
 
 const DAY_MS = 86_400_000;
 /** Long-lived Instagram tokens last 60 days; refresh well before the end. */
@@ -33,6 +34,7 @@ export class MaintenanceProcessor extends WorkerHost implements OnApplicationBoo
     private readonly providers: ProviderRegistry,
     private readonly scopes: ScopeResolver,
     private readonly buffer: BufferService,
+    private readonly settings: InstanceSettingsService,
   ) {
     super();
   }
@@ -53,6 +55,7 @@ export class MaintenanceProcessor extends WorkerHost implements OnApplicationBoo
         );
         return;
       case MaintenanceTask.REFRESH_TOKENS:
+        await this.settings.reencrypt();
         return this.refreshTokens();
       case MaintenanceTask.CLEANUP:
         return this.cleanup();

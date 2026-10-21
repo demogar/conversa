@@ -12,7 +12,6 @@ import {
   Form,
   Input,
   Link,
-  RelativeTime,
   Select,
   Skeleton,
   SkeletonGroup,
@@ -38,6 +37,7 @@ import { useChannels } from '@/lib/api/hooks/channels';
 import { useCurrentWorkspace } from '@/lib/api/hooks/session';
 import { type FieldErrors, useErrorMessage, useFieldErrors } from '@/lib/errors';
 import { workspacePath } from '@/lib/navigation';
+import { RelativeTime } from '@/features/time/relative-time';
 
 const BUFFER_API_SETTINGS = 'https://publish.buffer.com/settings/api';
 const SYNC_ERRORS = ['unauthorized', 'rate_limited', 'not_found', 'unavailable'] as const;

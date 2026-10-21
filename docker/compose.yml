@@ -4,6 +4,10 @@
 #   pnpm docker:build             # or set API_IMAGE / WEB_IMAGE to published images
 #   pnpm docker:up                # docker compose -f docker/compose.yml --env-file .env up -d
 #
+# Email, the Instagram app, Turnstile and sign-up are not set here: the first
+# account configures them in the app (Instance settings), stored encrypted in
+# the database.
+#
 # Only the web server publishes a port, and by default only on 127.0.0.1, so
 # it sits behind a reverse proxy or a tunnel. The web server proxies /api and
 # /l to the API, so nothing else needs to be reachable from outside.

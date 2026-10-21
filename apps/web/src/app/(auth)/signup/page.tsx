@@ -40,7 +40,8 @@ function SignupForm() {
     mutationFn: (body: unknown) => api.post('/auth/signup', body),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: keys.me });
-      router.replace('/');
+      // The first account sets the installation up before anything else.
+      router.replace(instance.data?.needsSetup ? '/admin/setup' : '/');
     },
     onError: (error) => setErrors(toFieldErrors(error)),
   });

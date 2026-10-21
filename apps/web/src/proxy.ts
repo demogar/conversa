@@ -55,6 +55,8 @@ export function proxy(request: NextRequest): NextResponse {
   const csp = contentSecurityPolicy(nonce);
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-nonce', nonce);
+  // Lets a server-side prefetch that finds the session gone send the person back here after sign-in.
+  requestHeaders.set('x-pathname', `${pathname}${search}`);
   requestHeaders.set('Content-Security-Policy', csp);
 
   const response = NextResponse.next({ request: { headers: requestHeaders } });

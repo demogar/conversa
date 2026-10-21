@@ -20,6 +20,9 @@ import { ContactsModule } from './modules/contacts/contacts.controller.js';
 import { DashboardModule } from './modules/dashboard/dashboard.controller.js';
 import { InboxModule } from './modules/inbox/inbox.controller.js';
 import { HealthController } from './modules/instance/health.controller.js';
+import { InstanceAdminGuard } from './modules/instance/instance-admin.guard.js';
+import { InstanceAdminsService } from './modules/instance/instance-admins.service.js';
+import { InstanceSettingsController } from './modules/instance/instance-settings.controller.js';
 import { InstanceController } from './modules/instance/instance.controller.js';
 import { LinksModule } from './modules/links/links.module.js';
 import { WebhooksModule } from './modules/webhooks/webhooks.module.js';
@@ -56,13 +59,15 @@ const embeddedWorker = ['true', '1'].includes(process.env.WORKER_IN_API ?? '')
     SandboxModule,
     ...embeddedWorker,
   ],
-  controllers: [InstanceController, HealthController],
+  controllers: [InstanceController, InstanceSettingsController, HealthController],
   providers: [
-    // Guards run in this order: rate limit, origin check, session, workspace.
+    InstanceAdminsService,
+    // Guards run in this order: rate limit, origin check, session, workspace, instance admin.
     { provide: APP_GUARD, useClass: AppThrottlerGuard },
     { provide: APP_GUARD, useClass: OriginGuard },
     { provide: APP_GUARD, useClass: AuthGuard },
     { provide: APP_GUARD, useClass: WorkspaceGuard },
+    { provide: APP_GUARD, useClass: InstanceAdminGuard },
     { provide: APP_FILTER, useClass: HttpExceptionFilter },
   ],
 })

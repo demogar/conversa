@@ -12,6 +12,8 @@ interface BufferPostFieldProps {
   value: string | null;
   onChange: (bufferPostId: string | null) => void;
   error?: string;
+  /** False when Buffer is not connected: the posts are not asked for, and none can be chosen. */
+  connected?: boolean;
 }
 
 function excerpt(text: string, max = 60): string {
@@ -29,10 +31,11 @@ export function BufferPostField({
   value,
   onChange,
   error,
+  connected = true,
 }: BufferPostFieldProps) {
   const t = useTranslations('automations.builder.trigger');
   const format = useFormatter();
-  const posts = useScheduledBufferPosts(workspaceId);
+  const posts = useScheduledBufferPosts(workspaceId, connected);
   const bufferChannels = useBufferChannelsForPicker(workspaceId, posts.isSuccess);
 
   const items = useMemo<SelectOption[]>(() => {
@@ -89,7 +92,7 @@ export function BufferPostField({
           value={value}
           onValueChange={onChange}
           placeholder={t('bufferPostPlaceholder')}
-          disabled={posts.isPending || items.length === 0}
+          disabled={!connected || posts.isPending || items.length === 0}
         />
       )}
     </Field>

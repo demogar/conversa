@@ -25,7 +25,10 @@ export type AuditAction =
   | 'automation.deleted'
   | 'buffer.connected'
   | 'buffer.disconnected'
-  | 'inbox.message_sent';
+  | 'inbox.message_sent'
+  | 'instance.settings_updated'
+  | 'instance.admin_granted'
+  | 'instance.admin_revoked';
 
 export interface AuditEvent {
   action: AuditAction;

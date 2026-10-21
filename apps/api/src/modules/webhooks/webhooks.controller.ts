@@ -19,6 +19,7 @@ import { CryptoService } from '../../common/crypto/crypto.service.js';
 import { Public, SkipOriginCheck } from '../../common/http/decorators.js';
 import type { AppRequest } from '../../common/http/request.js';
 import { PrismaService } from '../../infra/prisma/prisma.service.js';
+import { InstanceSettingsService } from '../instance/instance-settings.service.js';
 import { ChannelsService } from '../channels/channels.service.js';
 import { ProviderRegistry } from '../channels/provider/provider.registry.js';
 import { InboundEventIngestor } from './inbound-event.ingestor.js';
@@ -43,6 +44,7 @@ export class WebhooksController {
     private readonly crypto: CryptoService,
     private readonly config: AppConfig,
     private readonly ingestor: InboundEventIngestor,
+    private readonly settings: InstanceSettingsService,
   ) {}
 
   @Get(':type')
@@ -94,7 +96,7 @@ export class WebhooksController {
   }
 
   private async channelForSignedRequest(signedRequest: unknown) {
-    const app = this.config.instagram;
+    const app = this.settings.instagram;
     const data = app ? parseSignedRequest(signedRequest, app.appSecret) : null;
     if (!data) throw new UnauthorizedException();
     if (!data.user_id) return null;

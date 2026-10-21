@@ -38,7 +38,7 @@ pnpm infra:up
 pnpm --filter @conversa/api test:integration
 ```
 
-The global setup (`test/integration/support/global-setup.ts`) takes the servers from `DATABASE_URL` and `REDIS_URL` (the environment, or the repository's `.env`) and uses its own space on them: the database `conversa_test`, created if missing and migrated with `prisma migrate deploy`, and Valkey logical database `15`, emptied before each run. It sets fresh secrets, `NODE_ENV=test`, no mail and no captcha. Your development data is never touched.
+The global setup (`test/integration/support/global-setup.ts`) takes the servers from `DATABASE_URL` and `REDIS_URL` (the environment, or the repository's `.env`) and uses its own space on them: the database `conversa_test`, created if missing and migrated with `prisma migrate deploy`, and Valkey logical database `15`, emptied before each run. It sets fresh secrets and `NODE_ENV=test`; the instance settings start empty on the fresh database, so there is no mail, no captcha and sign-up is by invitation. Your development data is never touched.
 
 Suites: `auth`, `workspaces`, `automations`, `webhooks`, `engine` (`*.int-spec.ts`).
 

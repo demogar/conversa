@@ -163,6 +163,11 @@
       },
       "inbox": {
         "message_sent": "Envió un mensaje desde la bandeja"
+      },
+      "instance": {
+        "settings_updated": "Cambió la configuración de la instancia",
+        "admin_granted": "Hizo a alguien administrador de la instancia",
+        "admin_revoked": "Le quitó a alguien el acceso de administrador de la instancia"
       }
     }
   }

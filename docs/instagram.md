@@ -18,13 +18,9 @@ The URLs below use `https://conversa.example.com` for `APP_URL`.
 2. In the app, open **Instagram → API setup with Instagram business login**.
 3. Copy the **Instagram app ID** and **Instagram app secret** shown there. They are not the same as the Meta app ID at the top of the dashboard.
 
-```bash
-INSTAGRAM_APP_ID=<Instagram app ID>
-INSTAGRAM_APP_SECRET=<Instagram app secret>
-INSTAGRAM_WEBHOOK_VERIFY_TOKEN=<random string; pnpm secrets:generate makes one>
-```
+In Conversa, open **Instance settings → Instagram app** (account menu, instance admins only; the setup guide after the first sign-up shows the same step). Paste the app ID and the app secret, and click **Generate token** for the webhook verify token, or type any random string. Save.
 
-Restart the API. The channels page now offers to connect Instagram.
+It applies at once, with no restart, and the channels page offers to connect Instagram. The app secret and the verify token are stored encrypted and never shown again; **Replace** sets a new one. The same screen lists every address the steps below ask for, each with a copy button.
 
 ## 2. Permissions
 
@@ -60,7 +56,7 @@ Under **Configure webhooks**:
 | Setting      | Value                                                    |
 | ------------ | -------------------------------------------------------- |
 | Callback URL | `https://conversa.example.com/api/v1/webhooks/instagram` |
-| Verify token | the value of `INSTAGRAM_WEBHOOK_VERIFY_TOKEN`            |
+| Verify token | the verify token saved in Instance settings              |
 
 Click **Verify and save**. Meta calls the URL with a challenge, and Conversa answers only if the token matches. Then subscribe these fields:
 
@@ -133,10 +129,10 @@ Only one tool should answer a conversation.
 
 ## Troubleshooting
 
-| Symptom                                               | Check                                                                                                                                                                    |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Verify and save fails                                 | `APP_URL` is reachable over HTTPS from the internet; the verify token matches; a WAF or Access is not challenging `/api/v1/webhooks/*` ([cloudflare.md](cloudflare.md)). |
-| Connect returns to Channels with an error             | The OAuth redirect URI matches exactly; the Instagram app ID and secret (not the Meta app ID) are in `.env`; in development mode, the account has a role on the app.     |
-| Comments arrive but no DM is sent                     | **Allow access to messages** is on; the automation is active and its keywords match; check **Activity** for the delivery and its skip or error reason.                   |
-| Channel shows Needs reconnecting                      | The token was revoked or the password changed. Reconnect it from Channels.                                                                                               |
-| API logs `Rejected webhook with an invalid signature` | `INSTAGRAM_APP_SECRET` is the Instagram app secret of this app.                                                                                                          |
+| Symptom                                               | Check                                                                                                                                                                                 |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Verify and save fails                                 | `APP_URL` is reachable over HTTPS from the internet; the verify token matches; a WAF or Access is not challenging `/api/v1/webhooks/*` ([cloudflare.md](cloudflare.md)).              |
+| Connect returns to Channels with an error             | The OAuth redirect URI matches exactly; the Instagram app ID and secret (not the Meta app ID) are saved in Instance settings; in development mode, the account has a role on the app. |
+| Comments arrive but no DM is sent                     | **Allow access to messages** is on; the automation is active and its keywords match; check **Activity** for the delivery and its skip or error reason.                                |
+| Channel shows Needs reconnecting                      | The token was revoked or the password changed. Reconnect it from Channels.                                                                                                            |
+| API logs `Rejected webhook with an invalid signature` | The app secret in Instance settings is the Instagram app secret of this app.                                                                                                          |

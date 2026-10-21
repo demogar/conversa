@@ -24,6 +24,9 @@ model User {
   name              String
   passwordHash      String
   locale            String    @default("en")
+  /// Manages the installation itself (mail, Meta app, captcha, sign-up). The
+  /// first account gets it; instance admins grant it to others.
+  isInstanceAdmin   Boolean   @default(false)
   /// Encrypted TOTP seed. Null until MFA setup starts.
   mfaSecret         String?
   mfaEnabledAt      DateTime?
@@ -42,6 +45,7 @@ model User {
   auditEntries        AuditLog[]
   automationsCreated  Automation[]
   channelsConnected   Channel[]
+  settingsUpdated     InstanceSetting[]
 }
 
 model Session {
@@ -394,6 +398,23 @@ model BufferConnection {
   updatedAt        DateTime  @updatedAt
 
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+}
+
+// ---------------------------------------------------------------------------
+// Instance
+// ---------------------------------------------------------------------------
+
+/// Installation-wide settings managed from the admin area, one row per section
+/// (mail, instagram, turnstile, signup). The whole value is encrypted JSON, so
+/// secrets such as the SMTP password or the Meta app secret are never readable
+/// from a database dump without ENCRYPTION_KEY.
+model InstanceSetting {
+  key         String   @id
+  value       String
+  updatedById String?
+  updatedAt   DateTime @updatedAt
+
+  updatedBy User? @relation(fields: [updatedById], references: [id], onDelete: SetNull)
 }
 
 // ---------------------------------------------------------------------------

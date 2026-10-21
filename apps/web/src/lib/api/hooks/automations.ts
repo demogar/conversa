@@ -1,34 +1,41 @@
-'use client';
-
 import type {
   AutomationDto,
   BufferChannelDto,
   BufferPostDto,
-  ChannelDto,
   CreateAutomationInput,
   MediaDto,
   SetAutomationStatusInput,
   UpdateAutomationInput,
 } from '@conversa/shared';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api, query } from '../client';
+import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { api, type ApiGet, query } from '../client';
 import { keys } from '../keys';
+import { bufferStatusQuery } from './buffer';
+import { channelsQuery } from './channels';
 
 const base = (workspaceId: string) => `/workspaces/${encodeURIComponent(workspaceId)}`;
 const one = (workspaceId: string, automationId: string) =>
   `${base(workspaceId)}/automations/${encodeURIComponent(automationId)}`;
 
-export function useAutomations(workspaceId: string) {
-  return useQuery({
+export const automationsQuery = (workspaceId: string, get: ApiGet = api.get) =>
+  queryOptions({
     queryKey: keys.automations(workspaceId),
-    queryFn: ({ signal }) => api.get<AutomationDto[]>(`${base(workspaceId)}/automations`, signal),
+    queryFn: ({ signal }) => get<AutomationDto[]>(`${base(workspaceId)}/automations`, signal),
   });
+
+export const automationQuery = (workspaceId: string, automationId: string, get: ApiGet = api.get) =>
+  queryOptions({
+    queryKey: keys.automation(workspaceId, automationId),
+    queryFn: ({ signal }) => get<AutomationDto>(one(workspaceId, automationId), signal),
+  });
+
+export function useAutomations(workspaceId: string) {
+  return useQuery(automationsQuery(workspaceId));
 }
 
 export function useAutomation(workspaceId: string, automationId: string | null) {
   return useQuery({
-    queryKey: keys.automation(workspaceId, automationId ?? ''),
-    queryFn: ({ signal }) => api.get<AutomationDto>(one(workspaceId, automationId ?? ''), signal),
+    ...automationQuery(workspaceId, automationId ?? ''),
     enabled: Boolean(automationId),
   });
 }
@@ -93,10 +100,7 @@ export function useDeleteAutomation(workspaceId: string) {
 
 /** The workspace's connected accounts, for the builder's account picker. */
 export function useChannelsForPicker(workspaceId: string) {
-  return useQuery({
-    queryKey: keys.channels(workspaceId),
-    queryFn: ({ signal }) => api.get<ChannelDto[]>(`${base(workspaceId)}/channels`, signal),
-  });
+  return useQuery(channelsQuery(workspaceId));
 }
 
 /** The latest posts of one account, for picking specific posts. */
@@ -111,6 +115,11 @@ export function useChannelMediaForPicker(workspaceId: string, channelId: string 
     enabled: Boolean(channelId),
     staleTime: 60_000,
   });
+}
+
+/** Whether Buffer is connected, so the builder only asks for scheduled posts when it is. */
+export function useBufferStatusForPicker(workspaceId: string) {
+  return useQuery({ ...bufferStatusQuery(workspaceId), staleTime: 60_000 });
 }
 
 /** Posts scheduled in Buffer. Fails with BUFFER_NOT_CONNECTED when Buffer is not set up. */

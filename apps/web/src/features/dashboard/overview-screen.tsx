@@ -18,6 +18,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableSkeletonRows,
 } from '@demogar/mola-ui';
 import { type DashboardDto, hasRole } from '@conversa/shared';
 import { RotateCcw } from 'lucide-react';
@@ -25,7 +26,11 @@ import NextLink from 'next/link';
 import { useFormatter, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useAutomationOptions } from '@/lib/api/hooks/activity';
-import { type DashboardRange, useDashboard } from '@/lib/api/hooks/dashboard';
+import {
+  type DashboardRange,
+  DEFAULT_DASHBOARD_RANGE,
+  useDashboard,
+} from '@/lib/api/hooks/dashboard';
 import { useCurrentWorkspace } from '@/lib/api/hooks/session';
 import { workspacePath } from '@/lib/navigation';
 import { GettingStarted } from './getting-started';
@@ -37,7 +42,7 @@ export function OverviewScreen({ workspaceId }: { workspaceId: string }) {
   const tCommon = useTranslations('common');
   const format = useFormatter();
   const workspace = useCurrentWorkspace(workspaceId);
-  const [days, setDays] = useState<DashboardRange>(30);
+  const [days, setDays] = useState<DashboardRange>(DEFAULT_DASHBOARD_RANGE);
   const dashboard = useDashboard(workspaceId, days);
   const automations = useAutomationOptions(workspaceId);
   const data = dashboard.data;
@@ -89,15 +94,7 @@ export function OverviewScreen({ workspaceId }: { workspaceId: string }) {
           <SkeletonGroup
             label={t('loading')}
             loading={dashboard.isPending}
-            fallback={
-              <div className="flex flex-col gap-6">
-                <Skeleton className="h-28" />
-                <div className="grid gap-6 lg:grid-cols-2">
-                  <Skeleton className="h-64" />
-                  <Skeleton className="h-64" />
-                </div>
-              </div>
-            }
+            fallback={<OverviewSkeleton workspaceId={workspaceId} days={days} />}
           >
             {data ? (
               <div
@@ -142,12 +139,38 @@ export function OverviewScreen({ workspaceId }: { workspaceId: string }) {
   );
 }
 
+const STAT_KEYS = ['triggered', 'sent', 'clicks', 'failed', 'contacts'] as const;
+
+/** The real tiles and tables with bones for figures, so nothing moves when they arrive. */
+function OverviewSkeleton({ workspaceId, days }: { workspaceId: string; days: DashboardRange }) {
+  const t = useTranslations('dashboard.stats');
+  return (
+    <div className="flex flex-col gap-6">
+      <StatGroup columns={5}>
+        {STAT_KEYS.map((key) => (
+          <Stat
+            key={key}
+            label={t(key)}
+            value={<Skeleton shape="text" className="inline-block w-16" />}
+            hint={<Skeleton shape="text" className="inline-block w-24" />}
+          />
+        ))}
+      </StatGroup>
+      <div className="grid items-start gap-6 lg:grid-cols-2">
+        <TopAutomations workspaceId={workspaceId} rows={undefined} />
+        <DailyTable daily={undefined} days={days} />
+      </div>
+    </div>
+  );
+}
+
 function TopAutomations({
   workspaceId,
   rows,
 }: {
   workspaceId: string;
-  rows: DashboardDto['topAutomations'];
+  /** Undefined while loading. */
+  rows: DashboardDto['topAutomations'] | undefined;
 }) {
   const t = useTranslations('dashboard.top');
   const format = useFormatter();
@@ -165,7 +188,9 @@ function TopAutomations({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {rows.length === 0 ? (
+          {rows === undefined ? (
+            <TableSkeletonRows columns={3} rows={3} />
+          ) : rows.length === 0 ? (
             <TableEmpty colSpan={3} title={t('empty')}>
               {t('emptyDescription')}
             </TableEmpty>
@@ -193,10 +218,17 @@ function TopAutomations({
 }
 
 /** The daily series as rows, newest first: the figures behind the sparklines, readable by anyone. */
-function DailyTable({ daily }: { daily: DashboardDto['daily'] }) {
+function DailyTable({
+  daily,
+  days,
+}: {
+  /** Undefined while loading. */
+  daily: DashboardDto['daily'] | undefined;
+  days?: DashboardRange;
+}) {
   const t = useTranslations('dashboard.daily');
   const format = useFormatter();
-  const newestFirst = [...daily].reverse();
+  const newestFirst = daily ? [...daily].reverse() : [];
   return (
     <section aria-labelledby="daily-title" className="flex flex-col gap-3">
       <Heading level={2} visualLevel={4} id="daily-title">
@@ -212,6 +244,7 @@ function DailyTable({ daily }: { daily: DashboardDto['daily'] }) {
           </TableRow>
         </TableHeader>
         <TableBody>
+          {daily === undefined ? <TableSkeletonRows columns={4} rows={days} /> : null}
           {newestFirst.map((day) => (
             <TableRow key={day.date}>
               <TableCell>

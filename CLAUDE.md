@@ -24,7 +24,8 @@ pnpm --filter @conversa/shared build           # after changing packages/shared
 | Path                                                         | What                                                                                                           |
 | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
 | `apps/api/src/main.ts`, `worker.ts`                          | API (HTTP, `/api/v1`) and worker (queues) entry points; same codebase                                          |
-| `apps/api/src/config/env.ts`                                 | Every setting, validated with zod. Read via `AppConfig` only                                                   |
+| `apps/api/src/config/env.ts`                                 | Bootstrap settings, validated with zod. Read via `AppConfig` only                                              |
+| `apps/api/src/modules/instance/instance-settings.service.ts` | Mail, Meta app, Turnstile, sign-up mode: edited at `/admin`, encrypted in the DB, never in env                 |
 | `apps/api/prisma/schema.prisma`                              | Data model; every team row has `workspaceId`                                                                   |
 | `apps/api/src/modules/channels/provider/channel-provider.ts` | The platform contract. Instagram in `instagram/`, simulation in `sandbox/`                                     |
 | `apps/api/src/modules/webhooks/`                             | Verify signature, store `InboundEvent`, enqueue. Nothing else                                                  |

@@ -1,0 +1,160 @@
+import type { InstanceSettingsDto, MeDto } from '@conversa/shared';
+import { screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { MockError, mockApi, renderWithProviders } from '@/test/render';
+import { AdminPage } from './admin-page';
+
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({ replace: jest.fn(), push: jest.fn(), refresh: jest.fn() }),
+  usePathname: () => '/admin',
+}));
+
+const adminMe = (isInstanceAdmin = true): MeDto => ({
+  user: {
+    id: 'u1',
+    email: 'ana@example.com',
+    name: 'Ana',
+    locale: 'en',
+    mfaEnabled: false,
+    isInstanceAdmin,
+    createdAt: '2026-01-01T00:00:00Z',
+  },
+  workspaces: [],
+});
+
+const urls = {
+  oauthRedirect: 'https://conversa.example.com/api/v1/channels/oauth/instagram/callback',
+  webhook: 'https://conversa.example.com/api/v1/webhooks/instagram',
+  deauthorize: 'https://conversa.example.com/api/v1/webhooks/instagram/deauthorize',
+  dataDeletion: 'https://conversa.example.com/api/v1/webhooks/instagram/data-deletion',
+  privacyPolicy: 'https://conversa.example.com/legal/privacy',
+  termsOfService: 'https://conversa.example.com/legal/terms',
+};
+
+const settings: InstanceSettingsDto = {
+  mail: {
+    configured: true,
+    host: 'smtp.example.com',
+    port: 587,
+    security: 'starttls',
+    username: 'mailer@example.com',
+    password: { configured: true, hint: '1234' },
+    fromName: 'Conversa',
+    fromAddress: 'no-reply@example.com',
+  },
+  instagram: {
+    configured: false,
+    appId: null,
+    appSecret: { configured: false, hint: null },
+    verifyToken: { configured: false, hint: null },
+    urls,
+  },
+  turnstile: { configured: false, siteKey: null, secretKey: { configured: false, hint: null } },
+  signup: { mode: 'invite_only' },
+  sandbox: false,
+};
+
+function routes(overrides: Record<string, unknown> = {}) {
+  return mockApi({
+    'GET /me': adminMe(),
+    'GET /instance/settings': settings,
+    'GET /instance/admins': [
+      {
+        id: 'u1',
+        name: 'Ana',
+        email: 'ana@example.com',
+        isInstanceAdmin: true,
+        createdAt: '2026-01-01T00:00:00Z',
+      },
+    ],
+    ...overrides,
+  });
+}
+
+describe('AdminPage', () => {
+  it('shows a stored secret only as configured, and keeps it when saving', async () => {
+    const calls = routes({ 'PATCH /instance/settings/mail': settings });
+    renderWithProviders(<AdminPage />);
+
+    const mail = await screen.findByRole('form', { name: 'Email' });
+    expect(within(mail).getByText('Configured')).toBeInTheDocument();
+    expect(within(mail).getByText('••••1234')).toBeInTheDocument();
+    expect(within(mail).getByRole('button', { name: 'Replace Password' })).toBeInTheDocument();
+
+    const port = within(mail).getByRole('textbox', { name: /Port/ });
+    await userEvent.clear(port);
+    await userEvent.type(port, '2525');
+    await userEvent.click(within(mail).getByRole('button', { name: 'Save changes' }));
+
+    expect(await screen.findByText('Email settings saved')).toBeInTheDocument();
+    const saved = calls.find((call) => call.method === 'PATCH');
+    expect(saved?.body).toMatchObject({ host: 'smtp.example.com', port: 2525 });
+    // Left empty, so the stored password is kept.
+    expect(saved?.body).not.toHaveProperty('password');
+  });
+
+  it('checks the form before saving', async () => {
+    const calls = routes();
+    renderWithProviders(<AdminPage />);
+    const mail = await screen.findByRole('form', { name: 'Email' });
+
+    await userEvent.clear(within(mail).getByRole('textbox', { name: /SMTP server/ }));
+    await userEvent.click(within(mail).getByRole('button', { name: 'Save changes' }));
+
+    expect(await within(mail).findByText('This is too short.')).toBeInTheDocument();
+    expect(calls.some((call) => call.method === 'PATCH')).toBe(false);
+  });
+
+  it('explains why a test email failed without showing the server message', async () => {
+    routes({ 'POST /instance/settings/mail/test': { ok: false, failure: 'auth' } });
+    renderWithProviders(<AdminPage />);
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Send test email' }));
+    expect(await screen.findByText('The test email was not sent')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'The mail server refused the username or password. Check them and save again.',
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('generates a verify token in the browser and lists the Meta addresses', async () => {
+    const calls = routes({ 'PATCH /instance/settings/instagram': settings });
+    renderWithProviders(<AdminPage />);
+    const instagram = await screen.findByRole('form', { name: 'Instagram app' });
+
+    expect(screen.getByText(urls.webhook)).toBeInTheDocument();
+    expect(screen.getByText(urls.oauthRedirect)).toBeInTheDocument();
+
+    await userEvent.type(within(instagram).getByLabelText(/Instagram app ID/), '1234567890');
+    await userEvent.type(within(instagram).getByLabelText(/Instagram app secret/), 'app-secret');
+    await userEvent.click(within(instagram).getByRole('button', { name: 'Generate token' }));
+    const token = within(instagram).getByLabelText(/Webhook verify token/) as HTMLInputElement;
+    expect(token.value).toMatch(/^[\w-]{32}$/);
+
+    await userEvent.click(within(instagram).getByRole('button', { name: 'Save changes' }));
+    expect(await screen.findByText('Instagram app saved')).toBeInTheDocument();
+    expect(calls.find((call) => call.method === 'PATCH')?.body).toEqual({
+      appId: '1234567890',
+      appSecret: 'app-secret',
+      verifyToken: token.value,
+    });
+  });
+
+  it('tells a person who is not an instance admin who can change the settings', async () => {
+    const calls = mockApi({ 'GET /me': adminMe(false) });
+    renderWithProviders(<AdminPage />);
+
+    expect(
+      await screen.findByText('Only instance admins can change these settings'),
+    ).toBeInTheDocument();
+    expect(calls.some((call) => call.path === '/instance/settings')).toBe(false);
+  });
+
+  it('offers a retry when the settings do not load', async () => {
+    routes({ 'GET /instance/settings': new MockError(500, 'INTERNAL') });
+    renderWithProviders(<AdminPage />);
+    expect(await screen.findByText('The instance settings did not load')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Try again' })).toBeInTheDocument();
+  });
+});

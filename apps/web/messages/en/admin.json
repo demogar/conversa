@@ -1,0 +1,190 @@
+{
+  "title": "Instance settings",
+  "description": "Settings for this whole installation of Conversa: email, the Meta app, the human check and who may sign up. Only instance admins see this page.",
+  "menuItem": "Instance settings",
+  "openSetup": "Open setup guide",
+  "loading": "Loading the instance settings",
+  "loadFailed": "The instance settings did not load",
+  "noPermission": {
+    "title": "Only instance admins can change these settings",
+    "description": "Ask the person who set up this installation to make you an instance admin, or to change the setting for you.",
+    "back": "Go to your workspace"
+  },
+  "secret": {
+    "configured": "Configured",
+    "endsWith": "Ends in {hint}",
+    "replace": "Replace",
+    "replaceLabel": "Replace {field}",
+    "keep": "Keep the saved one"
+  },
+  "mail": {
+    "title": "Email",
+    "description": "The mail server Conversa sends invitations and password resets through.",
+    "off": "Email is off. Until you set it up, invitations show a link to copy and people cannot reset a forgotten password themselves.",
+    "host": "SMTP server",
+    "hostHint": "The host name your mail provider gives you for sending.",
+    "port": "Port",
+    "security": "Connection",
+    "securityOptions": {
+      "tls": {
+        "label": "TLS from the start",
+        "description": "Encrypted from the first byte. Usually port 465."
+      },
+      "starttls": {
+        "label": "STARTTLS",
+        "description": "Starts plain, then switches to encryption, and refuses servers that cannot. Usually port 587."
+      },
+      "none": {
+        "label": "No encryption",
+        "description": "Only for a mail server on the same machine or network, such as a local test server."
+      }
+    },
+    "username": "Username",
+    "usernameHint": "Leave empty if the server accepts mail without signing in.",
+    "password": "Password",
+    "fromName": "Sender name",
+    "fromAddress": "Sender address",
+    "saved": "Email settings saved",
+    "turnOff": "Turn off email",
+    "turnedOff": "Email turned off",
+    "turnOffDialogTitle": "Turn off email?",
+    "turnOffDialogDescription": "The server, sign-in details and sender are forgotten. Invitations will show a link to copy, and password reset by email stops working.",
+    "test": {
+      "button": "Send test email",
+      "hint": "Sent to {email} with the saved settings.",
+      "sent": "Test email sent to {email}",
+      "failedTitle": "The test email was not sent",
+      "failure": {
+        "auth": "The mail server refused the username or password. Check them and save again.",
+        "connection": "Conversa could not reach the mail server. Check the server name and port, and that this machine may connect to it.",
+        "timeout": "The mail server did not answer in time. Check the port and the connection type.",
+        "tls": "The secure connection failed. Try the other connection type, or check the port.",
+        "rejected": "The mail server refused the message. Check that the sender address is one it allows.",
+        "unknown": "The mail server did not accept the message. Check the settings and try again."
+      }
+    }
+  },
+  "instagram": {
+    "title": "Instagram app",
+    "description": "Your Meta app, which every Instagram account connected here authorises. Each installation needs its own.",
+    "off": "Instagram is not set up yet. Until it is, nobody can connect an Instagram account.",
+    "sandboxTitle": "Instagram is simulated here",
+    "sandboxDescription": "This installation runs the Instagram sandbox, so the Meta app is not used. You can still save it for when the sandbox is turned off.",
+    "appId": "Instagram app ID",
+    "appIdHint": "Shown under Instagram, API setup with Instagram business login. It is not the Meta app ID at the top of the dashboard.",
+    "appSecret": "Instagram app secret",
+    "appSecretHint": "Shown next to the Instagram app ID. Conversa uses it to check that webhooks really come from Meta.",
+    "verifyToken": "Webhook verify token",
+    "verifyTokenHint": "Any random text. Paste the same value into the Meta dashboard when you set up webhooks.",
+    "generate": "Generate token",
+    "saved": "Instagram app saved",
+    "remove": "Remove Instagram app",
+    "removed": "Instagram app removed",
+    "removeDialogTitle": "Remove the Instagram app?",
+    "removeDialogDescription": "Connected accounts stop receiving comments and messages, and nobody can connect a new one until the app is added again.",
+    "steps": {
+      "create": "In the Meta developer dashboard, create an app with the use case for managing messaging and content on Instagram.",
+      "copy": "Open Instagram, API setup with Instagram business login, and copy the app ID and app secret into the fields below.",
+      "login": "Under Business login settings, paste the OAuth redirect, deauthorize and data deletion addresses.",
+      "webhooks": "Under Configure webhooks, paste the webhook address and your verify token, then subscribe to comments, messages and messaging_postbacks.",
+      "basic": "Under App settings, Basic, paste the privacy policy and terms addresses."
+    },
+    "urls": {
+      "oauthRedirect": "OAuth redirect URI",
+      "webhook": "Webhook callback URL",
+      "deauthorize": "Deauthorize callback URL",
+      "dataDeletion": "Data deletion request URL",
+      "privacyPolicy": "Privacy policy URL",
+      "termsOfService": "Terms of service URL"
+    }
+  },
+  "turnstile": {
+    "title": "Human check",
+    "description": "Cloudflare Turnstile on sign-up, sign-in and password reset, to keep bots out.",
+    "optional": "Optional. Without it, sign-in is still protected by rate limits and account lockout.",
+    "on": "Turnstile is on. Sign-up, sign-in and password reset ask for the check.",
+    "siteKey": "Site key",
+    "siteKeyHint": "From the Turnstile widget you create for this site in the Cloudflare dashboard.",
+    "secretKey": "Secret key",
+    "saved": "Human check saved",
+    "turnOff": "Turn off human check",
+    "turnedOff": "Human check turned off",
+    "turnOffDialogTitle": "Turn off the human check?",
+    "turnOffDialogDescription": "Sign-up, sign-in and password reset stop asking for it. The keys are forgotten."
+  },
+  "signup": {
+    "title": "Sign-up",
+    "description": "Who may create an account on this installation.",
+    "label": "Who can sign up",
+    "inviteOnly": "By invitation only",
+    "inviteOnlyDescription": "People join when a workspace admin invites them.",
+    "open": "Anyone",
+    "openDescription": "Anyone who can open this address can create an account and their own workspace.",
+    "saved": {
+      "invite_only": "Sign-up is now by invitation only",
+      "open": "Sign-up is now open to anyone"
+    }
+  },
+  "admins": {
+    "title": "Instance admins",
+    "description": "Instance admins change these settings. Workspace roles are separate: an instance admin sees only the workspaces they belong to.",
+    "label": "People on this installation",
+    "name": "Name",
+    "email": "Email",
+    "access": "Access",
+    "actions": "Actions",
+    "loadFailed": "The list of people did not load",
+    "empty": "Nobody has an account yet",
+    "you": "You",
+    "admin": "Instance admin",
+    "member": "—",
+    "grant": "Make instance admin",
+    "grantLabel": "Make {name} an instance admin",
+    "granted": "{name} is now an instance admin",
+    "grantFailed": "The change was not saved",
+    "revoke": "Remove admin access",
+    "revokeLabel": "Remove instance admin access from {name}",
+    "revoked": "{name} is no longer an instance admin",
+    "revokeDialogTitle": "Remove instance admin access from {name}?",
+    "revokeDialogDescription": "{name} keeps their account and workspaces, but can no longer change the instance settings.",
+    "revokeSelfDialogTitle": "Remove your own admin access?",
+    "revokeSelfDialogDescription": "You keep your account and workspaces, but you will no longer see this page. Another instance admin can give the access back."
+  },
+  "setup": {
+    "title": "Set up this installation",
+    "description": "A few things Conversa needs to work fully. Skip any of them and come back later from Instance settings.",
+    "label": "Steps to set up the installation",
+    "saveAndContinue": "Save and continue",
+    "finish": "Go to your workspace",
+    "skip": "Skip for now",
+    "sandboxTitle": "Instagram is simulated here",
+    "sandboxDescription": "This installation runs the Instagram sandbox, so you can skip this step and try Conversa without a Meta app.",
+    "turnstileOptional": "Optional. Add it if this installation is reachable from the internet and you want to keep bots away from sign-in.",
+    "steps": {
+      "mail": {
+        "title": "Email",
+        "description": "Lets Conversa send invitations and password resets."
+      },
+      "instagram": {
+        "title": "Instagram app",
+        "description": "Connects your Meta app, so your team can connect Instagram accounts."
+      },
+      "turnstile": {
+        "title": "Human check",
+        "description": "Adds Cloudflare Turnstile to sign-up and sign-in."
+      },
+      "done": {
+        "title": "Done",
+        "description": "What is ready, and what you left for later."
+      }
+    },
+    "summary": {
+      "mail": "Email",
+      "instagram": "Instagram app",
+      "turnstile": "Human check",
+      "configured": "Set up",
+      "skipped": "Not set up",
+      "later": "You can change any of these at any time from Instance settings, in your account menu."
+    }
+  }
+}

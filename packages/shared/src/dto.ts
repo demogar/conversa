@@ -13,6 +13,7 @@ import type {
   WorkspaceRole,
 } from './enums.js';
 import type { AutomationResponse } from './schemas/automation.js';
+import type { MailSecurity, SignupMode } from './schemas/instance.js';
 
 export interface UserDto {
   id: string;
@@ -20,6 +21,8 @@ export interface UserDto {
   name: string;
   locale: Locale;
   mfaEnabled: boolean;
+  /** Manages the installation: mail, the Meta app, captcha, sign-up. */
+  isInstanceAdmin: boolean;
   createdAt: string;
 }
 
@@ -240,5 +243,74 @@ export interface AuditEntryDto {
   actor: { id: string; name: string } | null;
   targetType: string | null;
   targetId: string | null;
+  createdAt: string;
+}
+
+/** A stored secret as the admin area sees it: never the value itself. */
+export interface SecretStatusDto {
+  configured: boolean;
+  /** The last four characters, for telling two values apart. Null for short secrets. */
+  hint: string | null;
+}
+
+export interface MailSettingsDto {
+  /** Host and sender are set, so Conversa sends email. */
+  configured: boolean;
+  host: string | null;
+  port: number | null;
+  security: MailSecurity;
+  username: string | null;
+  password: SecretStatusDto;
+  fromName: string;
+  fromAddress: string | null;
+}
+
+/** The addresses to paste into the Meta app dashboard, built from APP_URL. */
+export interface MetaAppUrlsDto {
+  oauthRedirect: string;
+  webhook: string;
+  deauthorize: string;
+  dataDeletion: string;
+  privacyPolicy: string;
+  termsOfService: string;
+}
+
+export interface InstagramAppSettingsDto {
+  /** App ID, app secret and verify token are all set. */
+  configured: boolean;
+  appId: string | null;
+  appSecret: SecretStatusDto;
+  verifyToken: SecretStatusDto;
+  urls: MetaAppUrlsDto;
+}
+
+export interface TurnstileSettingsDto {
+  configured: boolean;
+  siteKey: string | null;
+  secretKey: SecretStatusDto;
+}
+
+export interface InstanceSettingsDto {
+  mail: MailSettingsDto;
+  instagram: InstagramAppSettingsDto;
+  turnstile: TurnstileSettingsDto;
+  signup: { mode: SignupMode };
+  /** Instagram is simulated (INSTAGRAM_SANDBOX): the Meta app is not used. */
+  sandbox: boolean;
+}
+
+export type MailTestFailure = 'auth' | 'connection' | 'timeout' | 'tls' | 'rejected' | 'unknown';
+
+export interface MailTestResultDto {
+  ok: boolean;
+  /** Why the server refused, as a category. Never the server's own message. */
+  failure: MailTestFailure | null;
+}
+
+export interface InstanceUserDto {
+  id: string;
+  name: string;
+  email: string;
+  isInstanceAdmin: boolean;
   createdAt: string;
 }

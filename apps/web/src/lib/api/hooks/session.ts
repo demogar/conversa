@@ -1,23 +1,27 @@
-'use client';
-
 import type { InstanceDto, MeDto, WorkspaceDto } from '@conversa/shared';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api } from '../client';
+import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { api, type ApiGet } from '../client';
 import { keys } from '../keys';
 
-export function useInstance() {
-  return useQuery({
+export const instanceQuery = (get: ApiGet = api.get) =>
+  queryOptions({
     queryKey: keys.instance,
-    queryFn: ({ signal }) => api.get<InstanceDto>('/instance', signal),
+    queryFn: ({ signal }) => get<InstanceDto>('/instance', signal),
   });
+
+export const meQuery = (get: ApiGet = api.get) =>
+  queryOptions({
+    queryKey: keys.me,
+    queryFn: ({ signal }) => get<MeDto>('/me', signal),
+    staleTime: 60_000,
+  });
+
+export function useInstance() {
+  return useQuery(instanceQuery());
 }
 
 export function useMe() {
-  return useQuery({
-    queryKey: keys.me,
-    queryFn: ({ signal }) => api.get<MeDto>('/me', signal),
-    staleTime: 60_000,
-  });
+  return useQuery(meQuery());
 }
 
 /** The workspace from the URL, as the signed-in person sees it (with their role). */
