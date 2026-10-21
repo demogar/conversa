@@ -1,4 +1,4 @@
-import { type MiddlewareConsumer, Module, type NestModule } from '@nestjs/common';
+import { type MiddlewareConsumer, Module, type NestModule, RequestMethod } from '@nestjs/common';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule } from '@nestjs/throttler';
 import type { Redis } from 'ioredis';
@@ -73,6 +73,8 @@ const embeddedWorker = ['true', '1'].includes(process.env.WORKER_IN_API ?? '')
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(ClientIpMiddleware).forRoutes('*');
+    // A named wildcard, as path-to-regexp 8 requires. Nest mounts it under the
+    // global prefix and on every route excluded from it, such as GET /l/:slug.
+    consumer.apply(ClientIpMiddleware).forRoutes({ path: '{*splat}', method: RequestMethod.ALL });
   }
 }
