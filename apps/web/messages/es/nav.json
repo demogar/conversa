@@ -1,0 +1,18 @@
+{
+  "sidebarLabel": "Principal",
+  "sections": { "engage": "Interacción", "audience": "Audiencia", "workspace": "Espacio" },
+  "dashboard": "Resumen",
+  "automations": "Automatizaciones",
+  "inbox": "Bandeja",
+  "content": "Contenido",
+  "contacts": "Contactos",
+  "activity": "Actividad",
+  "channels": "Canales",
+  "settings": "Configuración",
+  "switchWorkspace": "Cambiar de espacio, actual: {name}",
+  "workspaces": "Espacios",
+  "newWorkspace": "Crear espacio",
+  "account": "Configuración de la cuenta",
+  "signOut": "Cerrar sesión",
+  "userMenu": "Menú de la cuenta de {name}"
+}

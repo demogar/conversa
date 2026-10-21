@@ -1,0 +1,8 @@
+{
+  "createWorkspace": {
+    "title": "Crea un espacio",
+    "description": "Un espacio tiene sus propias cuentas de Instagram, automatizaciones y equipo.",
+    "name": "Nombre del espacio",
+    "submit": "Crear espacio"
+  }
+}

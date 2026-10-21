@@ -1,0 +1,33 @@
+{
+  "name": "conversa",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Self-hosted, open-source automation for Instagram comments and direct messages.",
+  "license": "MIT",
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=22.12.0",
+    "pnpm": ">=11"
+  },
+  "scripts": {
+    "build": "pnpm --filter @conversa/shared build && pnpm --filter @conversa/api --filter @conversa/web build",
+    "dev": "pnpm --filter @conversa/shared build && pnpm --parallel --filter @conversa/shared --filter @conversa/api --filter @conversa/web dev",
+    "dev:worker": "pnpm --filter @conversa/api dev:worker",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r --filter !@conversa/e2e test",
+    "test:e2e": "pnpm --filter @conversa/e2e test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:migrate": "pnpm --filter @conversa/api db:migrate",
+    "db:deploy": "pnpm --filter @conversa/api db:deploy",
+    "db:generate": "pnpm --filter @conversa/api db:generate",
+    "infra:up": "docker compose -f docker/compose.dev.yml up -d",
+    "infra:down": "docker compose -f docker/compose.dev.yml down",
+    "secrets:generate": "node scripts/generate-secrets.mjs",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test"
+  },
+  "devDependencies": {
+    "prettier": "3.9.10"
+  }
+}

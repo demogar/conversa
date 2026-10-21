@@ -1,0 +1,28 @@
+{
+  "meta": { "description": "Automatización autoalojada para comentarios y mensajes directos de Instagram." },
+  "productName": "Conversa",
+  "actions": {
+    "save": "Guardar cambios",
+    "cancel": "Cancelar",
+    "retry": "Intentar de nuevo",
+    "close": "Cerrar",
+    "back": "Volver",
+    "continue": "Continuar",
+    "delete": "Eliminar",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "refresh": "Actualizar",
+    "loadMore": "Mostrar más"
+  },
+  "states": {
+    "loading": "Cargando…",
+    "saving": "Guardando…",
+    "loadFailed": "Esto no cargó",
+    "loadFailedDescription": "No se cambió nada. Inténtalo de nuevo en un momento."
+  },
+  "roles": { "OWNER": "Propietario", "ADMIN": "Administrador", "MEMBER": "Miembro" },
+  "theme": { "label": "Tema", "system": "Sistema", "light": "Claro", "dark": "Oscuro" },
+  "language": { "label": "Idioma", "en": "English", "es": "Español" },
+  "never": "Nunca",
+  "none": "Ninguno"
+}

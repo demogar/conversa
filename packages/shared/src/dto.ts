@@ -1,0 +1,241 @@
+/**
+ * Response shapes returned by the API. Dates travel as ISO 8601 strings.
+ */
+import type {
+  AutomationStatus,
+  ChannelStatus,
+  ChannelType,
+  DeliveryStatus,
+  Locale,
+  MatchMode,
+  PostScope,
+  TriggerType,
+  WorkspaceRole,
+} from './enums.js';
+import type { AutomationResponse } from './schemas/automation.js';
+
+export interface UserDto {
+  id: string;
+  email: string;
+  name: string;
+  locale: Locale;
+  mfaEnabled: boolean;
+  createdAt: string;
+}
+
+export interface WorkspaceDto {
+  id: string;
+  name: string;
+  role: WorkspaceRole;
+  createdAt: string;
+}
+
+export interface MeDto {
+  user: UserDto;
+  workspaces: WorkspaceDto[];
+}
+
+export type LoginResultDto =
+  | { status: 'authenticated'; user: UserDto }
+  | { status: 'mfa_required'; challenge: string };
+
+export interface InstanceDto {
+  /** True until the first account has been created on this instance. */
+  needsSetup: boolean;
+  signupOpen: boolean;
+  mailEnabled: boolean;
+  captchaSiteKey: string | null;
+  providers: { instagram: boolean };
+}
+
+export interface SessionDto {
+  id: string;
+  current: boolean;
+  userAgent: string | null;
+  ip: string | null;
+  createdAt: string;
+  lastSeenAt: string;
+}
+
+export interface MfaSetupDto {
+  secret: string;
+  otpauthUrl: string;
+}
+
+export interface RecoveryCodesDto {
+  recoveryCodes: string[];
+}
+
+export interface MemberDto {
+  userId: string;
+  name: string;
+  email: string;
+  role: WorkspaceRole;
+  joinedAt: string;
+}
+
+export interface InvitationDto {
+  id: string;
+  email: string;
+  role: WorkspaceRole;
+  expiresAt: string;
+  createdAt: string;
+  invitedBy: string | null;
+}
+
+export interface CreatedInvitationDto extends InvitationDto {
+  /** Shown once, so it can be shared when email delivery is not configured. */
+  acceptUrl: string;
+  emailed: boolean;
+}
+
+export interface InvitationPreviewDto {
+  workspaceName: string;
+  email: string;
+  role: WorkspaceRole;
+  expiresAt: string;
+}
+
+export interface ChannelDto {
+  id: string;
+  type: ChannelType;
+  externalId: string;
+  username: string;
+  displayName: string | null;
+  avatarUrl: string | null;
+  status: ChannelStatus;
+  webhookSubscribed: boolean;
+  tokenExpiresAt: string | null;
+  connectedAt: string;
+}
+
+export interface MediaDto {
+  id: string;
+  caption: string | null;
+  mediaType: string;
+  thumbnailUrl: string | null;
+  permalink: string | null;
+  publishedAt: string;
+  commentsCount: number | null;
+}
+
+export interface AutomationStatsDto {
+  triggered: number;
+  sent: number;
+  failed: number;
+  clicks: number;
+}
+
+export interface AutomationDto {
+  id: string;
+  name: string;
+  status: AutomationStatus;
+  channelId: string;
+  triggerType: TriggerType;
+  postScope: PostScope;
+  mediaIds: string[];
+  bufferPostId: string | null;
+  matchMode: MatchMode;
+  keywords: string[];
+  wholeWord: boolean;
+  oncePerContact: boolean;
+  response: AutomationResponse;
+  stats: AutomationStatsDto;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DeliveryDto {
+  id: string;
+  automationId: string;
+  automationName: string;
+  channelId: string;
+  contact: { id: string; username: string | null };
+  triggerText: string;
+  matchedKeyword: string | null;
+  status: DeliveryStatus;
+  skipReason: string | null;
+  errorCode: string | null;
+  publicReplySent: boolean;
+  attempts: number;
+  createdAt: string;
+  sentAt: string | null;
+}
+
+export interface ContactDto {
+  id: string;
+  channelId: string;
+  externalId: string;
+  username: string | null;
+  interactions: number;
+  isFollower: boolean | null;
+  firstSeenAt: string;
+  lastInteractionAt: string;
+}
+
+export interface ConversationDto {
+  id: string;
+  participant: { id: string; username: string | null };
+  lastMessage: string | null;
+  updatedAt: string | null;
+}
+
+export interface MessageDto {
+  id: string;
+  text: string | null;
+  fromSelf: boolean;
+  createdAt: string | null;
+}
+
+export interface DashboardDto {
+  range: { from: string; to: string };
+  totals: { triggered: number; sent: number; failed: number; clicks: number; contacts: number };
+  activeAutomations: number;
+  channels: number;
+  daily: Array<{ date: string; sent: number; failed: number; clicks: number }>;
+  topAutomations: Array<{ id: string; name: string; sent: number; clicks: number }>;
+}
+
+export interface BufferStatusDto {
+  connected: boolean;
+  organizationId: string | null;
+  organizationName: string | null;
+  lastSyncedAt: string | null;
+  lastError: string | null;
+}
+
+export interface BufferOrganizationDto {
+  id: string;
+  name: string;
+}
+
+export interface BufferChannelDto {
+  id: string;
+  name: string;
+  service: string;
+  avatar: string | null;
+  /** The Conversa channel with the same Instagram handle, if any. */
+  linkedChannelId: string | null;
+}
+
+export interface BufferPostDto {
+  id: string;
+  channelId: string;
+  text: string;
+  status: string;
+  dueAt: string | null;
+  sentAt: string | null;
+  externalLink: string | null;
+  thumbnailUrl: string | null;
+  /** Automations already waiting for this post. */
+  automationIds: string[];
+}
+
+export interface AuditEntryDto {
+  id: string;
+  action: string;
+  actor: { id: string; name: string } | null;
+  targetType: string | null;
+  targetId: string | null;
+  createdAt: string;
+}

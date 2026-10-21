@@ -1,0 +1,28 @@
+{
+  "meta": { "description": "Self-hosted automation for Instagram comments and direct messages." },
+  "productName": "Conversa",
+  "actions": {
+    "save": "Save changes",
+    "cancel": "Cancel",
+    "retry": "Try again",
+    "close": "Close",
+    "back": "Back",
+    "continue": "Continue",
+    "delete": "Delete",
+    "copy": "Copy",
+    "copied": "Copied",
+    "refresh": "Refresh",
+    "loadMore": "Show more"
+  },
+  "states": {
+    "loading": "Loading…",
+    "saving": "Saving…",
+    "loadFailed": "This did not load",
+    "loadFailedDescription": "Nothing was changed. Try again in a moment."
+  },
+  "roles": { "OWNER": "Owner", "ADMIN": "Admin", "MEMBER": "Member" },
+  "theme": { "label": "Theme", "system": "System", "light": "Light", "dark": "Dark" },
+  "language": { "label": "Language", "en": "English", "es": "Español" },
+  "never": "Never",
+  "none": "None"
+}

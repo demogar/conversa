@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Builds
+dist/
+build/
+.next/
+out/
+*.tsbuildinfo
+coverage/
+apps/api/src/generated/
+
+# Tests
+playwright-report/
+test-results/
+blob-report/
+e2e/.auth/
+
+# Environment and secrets: never commit these
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+secrets/
+docker/cloudflared/*.json
+docker/cloudflared/config.yml
+
+# Local tooling
+.DS_Store
+*.log
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.claude/settings.local.json
+.turbo/

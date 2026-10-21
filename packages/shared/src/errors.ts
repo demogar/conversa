@@ -1,0 +1,49 @@
+/**
+ * Stable, machine-readable error codes. The API never sends user-facing prose;
+ * the web app translates these codes into the reader's language.
+ */
+export const ErrorCode = {
+  VALIDATION_FAILED: 'VALIDATION_FAILED',
+  UNAUTHENTICATED: 'UNAUTHENTICATED',
+  FORBIDDEN: 'FORBIDDEN',
+  NOT_FOUND: 'NOT_FOUND',
+  CONFLICT: 'CONFLICT',
+  RATE_LIMITED: 'RATE_LIMITED',
+  CSRF_REJECTED: 'CSRF_REJECTED',
+  CAPTCHA_FAILED: 'CAPTCHA_FAILED',
+  INTERNAL: 'INTERNAL',
+
+  INVALID_CREDENTIALS: 'INVALID_CREDENTIALS',
+  ACCOUNT_LOCKED: 'ACCOUNT_LOCKED',
+  MFA_REQUIRED: 'MFA_REQUIRED',
+  MFA_INVALID: 'MFA_INVALID',
+  SIGNUP_CLOSED: 'SIGNUP_CLOSED',
+  EMAIL_TAKEN: 'EMAIL_TAKEN',
+  TOKEN_INVALID: 'TOKEN_INVALID',
+  MAIL_NOT_CONFIGURED: 'MAIL_NOT_CONFIGURED',
+
+  LAST_OWNER: 'LAST_OWNER',
+  INVITATION_EMAIL_MISMATCH: 'INVITATION_EMAIL_MISMATCH',
+  ALREADY_MEMBER: 'ALREADY_MEMBER',
+
+  CHANNEL_NOT_CONFIGURED: 'CHANNEL_NOT_CONFIGURED',
+  CHANNEL_IN_OTHER_WORKSPACE: 'CHANNEL_IN_OTHER_WORKSPACE',
+  CHANNEL_NEEDS_REAUTH: 'CHANNEL_NEEDS_REAUTH',
+  PROVIDER_ERROR: 'PROVIDER_ERROR',
+  MESSAGING_WINDOW_CLOSED: 'MESSAGING_WINDOW_CLOSED',
+
+  BUFFER_NOT_CONNECTED: 'BUFFER_NOT_CONNECTED',
+  BUFFER_INVALID_KEY: 'BUFFER_INVALID_KEY',
+  BUFFER_RATE_LIMITED: 'BUFFER_RATE_LIMITED',
+} as const;
+export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
+
+export interface ApiErrorBody {
+  error: {
+    code: ErrorCode;
+    /** Field-level problems for VALIDATION_FAILED, keyed by dotted path. */
+    fields?: Record<string, string[]>;
+    /** Correlates the response with the server log line. */
+    requestId?: string;
+  };
+}

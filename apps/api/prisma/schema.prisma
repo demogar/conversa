@@ -1,0 +1,419 @@
+// Conversa data model.
+//
+// Every row that belongs to a team carries `workspaceId`, and every query from
+// the API is scoped by it. Secrets (provider tokens, API keys, MFA seeds) are
+// stored encrypted with AES-256-GCM; see src/common/crypto.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "esm"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Identity
+// ---------------------------------------------------------------------------
+
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  name              String
+  passwordHash      String
+  locale            String    @default("en")
+  /// Encrypted TOTP seed. Null until MFA setup starts.
+  mfaSecret         String?
+  mfaEnabledAt      DateTime?
+  /// Hashes of unused one-time recovery codes.
+  mfaRecoveryHashes String[]  @default([])
+  failedLogins      Int       @default(0)
+  lockedUntil       DateTime?
+  lastLoginAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  sessions            Session[]
+  memberships         Membership[]
+  passwordResets      PasswordReset[]
+  invitationsSent     Invitation[]    @relation("InvitationsSent")
+  auditEntries        AuditLog[]
+  automationsCreated  Automation[]
+  channelsConnected   Channel[]
+}
+
+model Session {
+  id         String   @id @default(cuid())
+  /// SHA-256 of the cookie token. The token itself is never stored.
+  tokenHash  String   @unique
+  userId     String
+  ip         String?
+  userAgent  String?
+  expiresAt  DateTime
+  lastSeenAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model PasswordReset {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// ---------------------------------------------------------------------------
+// Workspaces and teams
+// ---------------------------------------------------------------------------
+
+model Workspace {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  memberships  Membership[]
+  invitations  Invitation[]
+  channels     Channel[]
+  automations  Automation[]
+  contacts     Contact[]
+  deliveries   Delivery[]
+  trackedLinks TrackedLink[]
+  bufferLink   BufferConnection?
+  auditEntries AuditLog[]
+}
+
+enum WorkspaceRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+model Membership {
+  id          String        @id @default(cuid())
+  workspaceId String
+  userId      String
+  role        WorkspaceRole @default(MEMBER)
+  createdAt   DateTime      @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+  @@index([userId])
+}
+
+model Invitation {
+  id          String        @id @default(cuid())
+  workspaceId String
+  email       String
+  role        WorkspaceRole @default(MEMBER)
+  tokenHash   String        @unique
+  invitedById String?
+  expiresAt   DateTime
+  acceptedAt  DateTime?
+  revokedAt   DateTime?
+  createdAt   DateTime      @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  invitedBy User?     @relation("InvitationsSent", fields: [invitedById], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId])
+  @@index([email])
+}
+
+// ---------------------------------------------------------------------------
+// Channels: a connected messaging account (an Instagram professional account
+// today). `type` selects the provider implementation.
+// ---------------------------------------------------------------------------
+
+enum ChannelType {
+  INSTAGRAM
+}
+
+enum ChannelStatus {
+  ACTIVE
+  NEEDS_REAUTH
+  DISCONNECTED
+}
+
+model Channel {
+  id                String        @id @default(cuid())
+  workspaceId       String
+  type              ChannelType
+  /// The platform's id for the account; webhooks are routed by it.
+  externalId        String
+  username          String
+  displayName       String?
+  avatarUrl         String?
+  /// Encrypted provider credentials (JSON).
+  credentials       String
+  tokenExpiresAt    DateTime?
+  status            ChannelStatus @default(ACTIVE)
+  webhookSubscribed Boolean       @default(false)
+  lastError         String?
+  connectedById     String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  connectedBy User?        @relation(fields: [connectedById], references: [id], onDelete: SetNull)
+  automations Automation[]
+  contacts    Contact[]
+  deliveries  Delivery[]
+
+  /// A platform account belongs to one workspace at a time.
+  @@unique([type, externalId])
+  @@index([workspaceId])
+}
+
+// ---------------------------------------------------------------------------
+// Automations
+// ---------------------------------------------------------------------------
+
+enum AutomationStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+}
+
+enum TriggerType {
+  COMMENT
+  MESSAGE
+}
+
+enum PostScope {
+  ANY
+  SPECIFIC
+  NEXT_POST
+  BUFFER_POST
+}
+
+enum MatchMode {
+  KEYWORDS
+  ANYTHING
+}
+
+model Automation {
+  id             String           @id @default(cuid())
+  workspaceId    String
+  channelId      String
+  name           String
+  status         AutomationStatus @default(DRAFT)
+  triggerType    TriggerType
+  postScope      PostScope        @default(ANY)
+  /// Media the automation listens to when the scope is SPECIFIC, and the
+  /// resolved post once a NEXT_POST or BUFFER_POST scope has been attached.
+  mediaIds       String[]         @default([])
+  bufferPostId   String?
+  /// When a NEXT_POST scope started waiting: only media published after it count.
+  armedAt         DateTime?
+  /// Set when a NEXT_POST or BUFFER_POST scope found its post.
+  scopeResolvedAt DateTime?
+  matchMode      MatchMode        @default(KEYWORDS)
+  keywords       String[]         @default([])
+  wholeWord      Boolean          @default(true)
+  oncePerContact Boolean          @default(true)
+  /// The response definition, validated by automationResponseSchema.
+  response       Json
+  createdById    String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  workspace    Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  channel      Channel       @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  createdBy    User?         @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  deliveries   Delivery[]
+  trackedLinks TrackedLink[]
+
+  @@index([workspaceId])
+  @@index([channelId, status, triggerType])
+  @@index([bufferPostId])
+}
+
+// ---------------------------------------------------------------------------
+// Audience
+// ---------------------------------------------------------------------------
+
+model Contact {
+  id                String   @id @default(cuid())
+  workspaceId       String
+  channelId         String
+  /// The platform-scoped id of the person (Instagram IGSID).
+  externalId        String
+  username          String?
+  isFollower        Boolean?
+  interactions      Int      @default(0)
+  firstSeenAt       DateTime @default(now())
+  lastInteractionAt DateTime @default(now())
+
+  workspace  Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  channel    Channel    @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  deliveries Delivery[]
+
+  @@unique([channelId, externalId])
+  @@index([workspaceId, lastInteractionAt])
+}
+
+// ---------------------------------------------------------------------------
+// Event pipeline
+// ---------------------------------------------------------------------------
+
+enum InboundEventStatus {
+  RECEIVED
+  PROCESSED
+  IGNORED
+  FAILED
+}
+
+/// Raw webhook deliveries, kept briefly for diagnosis and replay.
+model InboundEvent {
+  id          String             @id @default(cuid())
+  channelType ChannelType
+  payload     Json
+  status      InboundEventStatus @default(RECEIVED)
+  error       String?
+  receivedAt  DateTime           @default(now())
+  processedAt DateTime?
+
+  @@index([status, receivedAt])
+  @@index([receivedAt])
+}
+
+enum DeliveryStatus {
+  PENDING
+  AWAITING_TAP
+  AWAITING_FOLLOW
+  SENT
+  FAILED
+  SKIPPED
+}
+
+/// One run of an automation for one trigger (a comment or a message).
+model Delivery {
+  id                String         @id @default(cuid())
+  workspaceId       String
+  automationId      String
+  channelId         String
+  contactId         String
+  /// The comment id or message id that fired the automation.
+  triggerExternalId String
+  triggerText       String
+  matchedKeyword    String?
+  status            DeliveryStatus @default(PENDING)
+  skipReason        String?
+  errorCode         String?
+  errorMessage      String?
+  attempts          Int            @default(0)
+  followPrompts     Int            @default(0)
+  publicReplySentAt DateTime?
+  publicReplyError  String?
+  sentAt            DateTime?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  workspace  Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  automation Automation  @relation(fields: [automationId], references: [id], onDelete: Cascade)
+  channel    Channel     @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  contact    Contact     @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  clicks     LinkClick[]
+
+  /// A comment or message fires a given automation once, however often the
+  /// platform redelivers the webhook.
+  @@unique([automationId, triggerExternalId])
+  @@index([workspaceId, createdAt])
+  @@index([automationId, status])
+  @@index([contactId])
+}
+
+// ---------------------------------------------------------------------------
+// Tracked links
+// ---------------------------------------------------------------------------
+
+model TrackedLink {
+  id             String   @id @default(cuid())
+  workspaceId    String
+  automationId   String
+  slug           String   @unique
+  /// The button's index in the automation's message.
+  position       Int
+  label          String
+  destinationUrl String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  workspace  Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  automation Automation  @relation(fields: [automationId], references: [id], onDelete: Cascade)
+  clicks     LinkClick[]
+
+  @@unique([automationId, position])
+}
+
+model LinkClick {
+  id         String   @id @default(cuid())
+  linkId     String
+  deliveryId String?
+  /// Keyed hash of the visitor's IP, so repeat clicks are countable without
+  /// storing the address.
+  visitorHash String
+  createdAt  DateTime @default(now())
+
+  link     TrackedLink @relation(fields: [linkId], references: [id], onDelete: Cascade)
+  delivery Delivery?   @relation(fields: [deliveryId], references: [id], onDelete: SetNull)
+
+  @@index([linkId, createdAt])
+  @@index([deliveryId])
+}
+
+// ---------------------------------------------------------------------------
+// Integrations
+// ---------------------------------------------------------------------------
+
+/// A read-only link to a Buffer organization.
+model BufferConnection {
+  workspaceId      String    @id
+  /// Encrypted personal API key.
+  apiKey           String
+  organizationId   String?
+  organizationName String?
+  lastSyncedAt     DateTime?
+  lastError        String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+}
+
+// ---------------------------------------------------------------------------
+// Audit
+// ---------------------------------------------------------------------------
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  workspaceId String?
+  actorId     String?
+  action      String
+  targetType  String?
+  targetId    String?
+  ip          String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  workspace Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  actor     User?      @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId, createdAt])
+  @@index([actorId])
+}

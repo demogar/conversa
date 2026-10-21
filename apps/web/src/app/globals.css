@@ -1,0 +1,4 @@
+@import 'tailwindcss';
+@import '@demogar/mola-ui/tailwind.css';
+/* Let Tailwind see the classes the design system's components use. */
+@source '../../node_modules/@demogar/mola-ui/dist';

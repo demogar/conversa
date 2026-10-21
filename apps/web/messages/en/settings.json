@@ -1,0 +1,8 @@
+{
+  "createWorkspace": {
+    "title": "Create a workspace",
+    "description": "A workspace has its own Instagram accounts, automations and team.",
+    "name": "Workspace name",
+    "submit": "Create workspace"
+  }
+}
