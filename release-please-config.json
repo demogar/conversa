@@ -23,7 +23,6 @@
     ".": {
       "package-name": "conversa",
       "component": "conversa",
-      "release-as": "0.1.0",
       "changelog-path": "CHANGELOG.md",
       "extra-files": [
         { "type": "json", "path": "apps/api/package.json", "jsonpath": "$.version" },
