@@ -68,21 +68,22 @@ export class InvitationsService {
         where: { workspaceId, email: input.email, acceptedAt: null, revokedAt: null },
         data: { revokedAt: new Date() },
       });
-      return Promise.all([
-        tx.invitation.create({
-          data: {
-            workspaceId,
-            email: input.email,
-            role: input.role,
-            tokenHash: this.crypto.hashToken(token),
-            invitedById: inviterId,
-            expiresAt: new Date(Date.now() + INVITATION_TTL_MS),
-          },
-          include: { invitedBy: { select: { name: true } } },
-        }),
-        tx.user.findUniqueOrThrow({ where: { id: inviterId }, select: { name: true, locale: true } }),
-        tx.workspace.findUniqueOrThrow({ where: { id: workspaceId }, select: { name: true } }),
-      ]);
+      // One after another: a transaction runs on a single connection, which
+      // cannot carry concurrent queries.
+      const created = await tx.invitation.create({
+        data: {
+          workspaceId,
+          email: input.email,
+          role: input.role,
+          tokenHash: this.crypto.hashToken(token),
+          invitedById: inviterId,
+          expiresAt: new Date(Date.now() + INVITATION_TTL_MS),
+        },
+        include: { invitedBy: { select: { name: true } } },
+      });
+      const invitedBy = await tx.user.findUniqueOrThrow({ where: { id: inviterId }, select: { name: true, locale: true } });
+      const target = await tx.workspace.findUniqueOrThrow({ where: { id: workspaceId }, select: { name: true } });
+      return [created, invitedBy, target] as const;
     });
 
     const acceptUrl = this.config.url(`/invite/${token}`);

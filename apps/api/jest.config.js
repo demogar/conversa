@@ -1,4 +1,4 @@
-/** Unit tests: fast, no database. Integration tests live in test/ (jest.integration.config.js). */
+/** Unit tests: fast, no database. Integration tests live in test/integration (jest.integration.config.js). */
 const swc = [
   '@swc/jest',
   {

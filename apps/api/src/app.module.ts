@@ -15,6 +15,7 @@ import { AuthModule } from './modules/auth/auth.module.js';
 import { AutomationsModule } from './modules/automations/automations.module.js';
 import { BufferModule } from './modules/buffer/buffer.module.js';
 import { ChannelsModule } from './modules/channels/channels.module.js';
+import { SandboxModule } from './modules/channels/sandbox/sandbox.module.js';
 import { ContactsModule } from './modules/contacts/contacts.controller.js';
 import { DashboardModule } from './modules/dashboard/dashboard.controller.js';
 import { InboxModule } from './modules/inbox/inbox.controller.js';
@@ -50,6 +51,7 @@ const embeddedWorker = ['true', '1'].includes(process.env.WORKER_IN_API ?? '') ?
     InboxModule,
     DashboardModule,
     BufferModule,
+    SandboxModule,
     ...embeddedWorker,
   ],
   controllers: [InstanceController, HealthController],
