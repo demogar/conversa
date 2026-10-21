@@ -1,0 +1,44 @@
+name: Feature request
+description: Suggest an idea or improvement for Conversa.
+labels: [enhancement, triage]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Describe the situation and who it affects, not only the solution.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How you imagine it working.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      multiple: true
+      options:
+        - Automations
+        - Inbox and contacts
+        - Instagram
+        - Other channels
+        - Accounts, sign-in and workspaces
+        - Settings and integrations
+        - Installation and operations
+        - Other
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched existing issues and this has not been requested yet.
+          required: true
+        - label: I would be willing to help build or test this.

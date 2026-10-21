@@ -1,0 +1,61 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    # Matches pnpm's minimum release age: give new versions time to be vetted.
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 10
+    versioning-strategy: increase
+    groups:
+      nestjs:
+        patterns: ['@nestjs/*']
+      prisma:
+        patterns: ['prisma', '@prisma/*']
+      nextjs:
+        patterns:
+          ['next', 'eslint-config-next', 'react', 'react-dom', '@types/react', '@types/react-dom']
+      testing:
+        patterns:
+          [
+            'jest',
+            'jest-*',
+            '@jest/*',
+            '@swc/*',
+            '@testing-library/*',
+            '@playwright/*',
+            '@types/jest',
+          ]
+      minor-and-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      actions:
+        patterns: ['*']
+
+  - package-ecosystem: docker
+    directory: /docker
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      docker:
+        patterns: ['*']
+
+  - package-ecosystem: docker-compose
+    directory: /docker
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      compose:
+        patterns: ['*']

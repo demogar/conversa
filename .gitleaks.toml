@@ -1,0 +1,14 @@
+# Gitleaks configuration for the secret scan workflow. Extends the default
+# rules; only files that hold placeholders or hashes are allowlisted.
+title = "Conversa"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Placeholders, local development credentials and lockfile hashes"
+paths = [
+  '''^\.env\.example$''',
+  '''(^|/)pnpm-lock\.yaml$''',
+  '''^docker/compose\.dev\.yml$''',
+]

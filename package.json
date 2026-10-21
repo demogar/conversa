@@ -24,6 +24,8 @@
     "db:generate": "pnpm --filter @conversa/api db:generate",
     "infra:up": "docker compose -f docker/compose.dev.yml up -d",
     "infra:down": "docker compose -f docker/compose.dev.yml down",
+    "docker:build": "docker compose -f docker/compose.yml --env-file .env build",
+    "docker:up": "docker compose -f docker/compose.yml --env-file .env up -d",
     "secrets:generate": "node scripts/generate-secrets.mjs",
     "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test"
   },
