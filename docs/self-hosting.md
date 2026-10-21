@@ -80,7 +80,7 @@ Inside the Docker stack, `NODE_ENV`, `DATABASE_URL`, `REDIS_URL`, `API_PORT` and
 | Variable                                     | Default       | Meaning                                                                                                                        |
 | -------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `SIGNUP_MODE`                                | `invite_only` | `invite_only`: after the first account, people join only by invitation. `open`: anyone who can reach the instance can sign up. |
-| `TRUST_PROXY`                                | `none`        | How the client IP is read. See [Client IPs](#client-ips-trust_proxy).                                                          |
+| `TRUST_PROXY`                                | `none`        | What is in front of the web server, to read client IPs. See [Client IPs](#client-ips-trust_proxy).                             |
 | `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | empty         | Cloudflare Turnstile on sign-up, sign-in and password reset. Both or neither.                                                  |
 
 ### Mail
@@ -116,15 +116,17 @@ Instagram is enabled only when the first three are all set.
 
 ## Client IPs (`TRUST_PROXY`)
 
-Rate limits, account lockout, session lists and the audit log use the client IP, so it must be read correctly.
+Rate limits, session lists and the audit log use the client IP, so it must be read correctly.
 
-| Value        | Reads the IP from                              | Use when                                                                                                                                                                               |
-| ------------ | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `cloudflare` | the `CF-Connecting-IP` header                  | The app is reachable **only** through Cloudflare (a Tunnel, or a firewall that admits only Cloudflare's ranges). Otherwise anyone can forge the header.                                |
-| a number `N` | the `X-Forwarded-For` chain, trusting `N` hops | Behind your own reverse proxy. In the Docker stack the web server itself forwards to the API, so use `1` for one reverse proxy in front of it, `2` for two.                            |
-| `none`       | the socket address                             | Only when the API is reached directly. In the Docker stack every request then appears to come from the web container, so rate limits would be shared by everyone: do not use it there. |
+The API is always reached through the web server, which appends the address it was connected from to `X-Forwarded-For`, as a reverse proxy does. `TRUST_PROXY` says what sits **in front of the web server**:
 
-Your reverse proxy must **set or append** `X-Forwarded-For` (for nginx: `proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;`). Do not publish the web port to the internet without a proxy in front: a client could then supply its own `X-Forwarded-For`.
+| Value        | Reads the IP from                                      | Use when                                                                                                                                                |
+| ------------ | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `none`       | the address that connected to the web server           | Nothing: browsers connect to the web port directly.                                                                                                     |
+| a number `N` | `X-Forwarded-For`, trusting the entries of `N` proxies | `N` reverse proxies in front of the web server, each appending to `X-Forwarded-For`. One nginx or Caddy is `1`.                                         |
+| `cloudflare` | the `CF-Connecting-IP` header                          | The app is reachable **only** through Cloudflare (a Tunnel, or a firewall that admits only Cloudflare's ranges). Otherwise anyone can forge the header. |
+
+Entries further left than the trusted ones were written by the client and are ignored, so a client cannot choose its own address as long as `N` is not larger than the number of proxies. Each proxy must **append** to `X-Forwarded-For` (for nginx: `proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;`). The API believes forwarding headers only from a peer on a private network or the same host (the web server), never from a client that reaches it directly.
 
 ## Reverse proxy
 

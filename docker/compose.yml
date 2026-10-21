@@ -13,7 +13,8 @@
 # http://web:3000, and start the stack with `--profile tunnel`.
 #
 # Behind any other reverse proxy, set TRUST_PROXY to the number of proxies in
-# front of the app (usually 1) so client IPs are read correctly.
+# front of the web server (usually 1) so client IPs are read correctly. With
+# nothing in front of it, leave TRUST_PROXY=none.
 name: conversa
 
 x-logging: &logging

@@ -60,7 +60,7 @@ Only the web server needs to be reachable from outside. The API is reached throu
 
 Every HTTP request passes, in order:
 
-1. `ClientIpMiddleware`: resolves the client IP according to `TRUST_PROXY`.
+1. `ClientIpMiddleware`: resolves the client IP from `X-Forwarded-For` (the web server appends its peer; `TRUST_PROXY` counts the proxies in front of it) or `CF-Connecting-IP`.
 2. `AppThrottlerGuard`: Redis-backed rate limit per client IP (300 requests per minute by default, stricter on auth routes).
 3. `OriginGuard`: state-changing requests must come from `APP_URL`'s origin (`@SkipOriginCheck()` for signed server-to-server callbacks).
 4. `AuthGuard`: a valid session unless the route is `@Public()`.

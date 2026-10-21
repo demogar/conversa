@@ -26,7 +26,7 @@ The tunnel creates the proxied DNS record for the hostname. Leave `WEB_BIND=127.
 
 ### DNS and proxy without a tunnel
 
-If you run your own reverse proxy instead, make the hostname's DNS record **proxied** (orange cloud), set SSL/TLS to **Full (strict)**, and firewall the origin so it accepts traffic **only from Cloudflare's IP ranges**. `TRUST_PROXY=cloudflare` trusts the `CF-Connecting-IP` header, which anyone could forge if the origin were reachable directly. If you cannot restrict the origin, use a hop count instead (see [self-hosting.md](self-hosting.md#client-ips-trust_proxy)).
+If you run your own reverse proxy instead, make the hostname's DNS record **proxied** (orange cloud), set SSL/TLS to **Full (strict)**, and firewall the origin so it accepts traffic **only from Cloudflare's IP ranges**. `TRUST_PROXY=cloudflare` trusts the `CF-Connecting-IP` header, which anyone could forge if the origin were reachable directly. If you cannot restrict the origin, set `TRUST_PROXY` to the number of proxies in front of the web server instead (see [self-hosting.md](self-hosting.md#client-ips-trust_proxy)).
 
 ## 2. WAF rules
 

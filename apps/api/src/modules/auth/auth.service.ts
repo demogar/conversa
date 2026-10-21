@@ -151,14 +151,13 @@ export class AuthService {
     if (await this.mfa.verifyCode(user.id, user.mfaSecret, code))
       return this.completeLogin(user, client);
 
+    // Removed in one statement, so two requests racing with the same code
+    // cannot both use it.
     const recoveryHash = this.mfa.hashRecoveryCode(code);
-    if (user.mfaRecoveryHashes.includes(recoveryHash)) {
-      await this.prisma.user.update({
-        where: { id: user.id },
-        data: { mfaRecoveryHashes: user.mfaRecoveryHashes.filter((hash) => hash !== recoveryHash) },
-      });
-      return this.completeLogin(user, client);
-    }
+    const used = await this.prisma.$executeRaw`
+      UPDATE "User" SET "mfaRecoveryHashes" = array_remove("mfaRecoveryHashes", ${recoveryHash})
+      WHERE id = ${user.id} AND ${recoveryHash} = ANY("mfaRecoveryHashes")`;
+    if (used === 1) return this.completeLogin(user, client);
 
     await this.registerFailure(user);
     throw new AppException(ErrorCode.MFA_INVALID);
@@ -183,7 +182,9 @@ export class AuthService {
         expiresAt: new Date(Date.now() + RESET_TTL_MS),
       },
     });
-    await this.mail.send(
+    // Not awaited: waiting on the mail server would make known addresses
+    // answer measurably slower than unknown ones. send() never throws.
+    void this.mail.send(
       user.email,
       passwordResetMail(isLocale(user.locale) ? user.locale : 'en', {
         url: this.config.url(`/reset-password?token=${encodeURIComponent(token)}`),
@@ -230,19 +231,21 @@ export class AuthService {
     }
   }
 
-  /** Every fifth failure locks the account, for twice as long each time. */
+  /**
+   * Every fifth failure locks the account, for twice as long each time. The
+   * counter is incremented in the database, so parallel guesses are all counted.
+   */
   private async registerFailure(user: User): Promise<void> {
-    const failures = user.failedLogins + 1;
-    const lockedUntil =
-      failures % LOCK_AFTER_FAILURES === 0
-        ? new Date(
-            Date.now() +
-              Math.min(BASE_LOCK_MS * 2 ** (failures / LOCK_AFTER_FAILURES - 1), MAX_LOCK_MS),
-          )
-        : user.lockedUntil;
+    const { failedLogins: failures } = await this.prisma.user.update({
+      where: { id: user.id },
+      data: { failedLogins: { increment: 1 } },
+      select: { failedLogins: true },
+    });
+    if (failures % LOCK_AFTER_FAILURES !== 0) return;
+    const lockMs = Math.min(BASE_LOCK_MS * 2 ** (failures / LOCK_AFTER_FAILURES - 1), MAX_LOCK_MS);
     await this.prisma.user.update({
       where: { id: user.id },
-      data: { failedLogins: failures, lockedUntil },
+      data: { lockedUntil: new Date(Date.now() + lockMs) },
     });
   }
 }

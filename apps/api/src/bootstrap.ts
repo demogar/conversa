@@ -15,7 +15,6 @@ export function configureApp(app: NestExpressApplication): void {
   app.useLogger(app.get(Logger));
 
   app.disable('x-powered-by');
-  if (typeof config.env.TRUST_PROXY === 'number') app.set('trust proxy', config.env.TRUST_PROXY);
   app.use(
     helmet({
       // The API serves JSON and redirects only, so nothing may load or frame it.

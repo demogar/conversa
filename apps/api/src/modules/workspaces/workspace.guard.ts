@@ -24,7 +24,11 @@ export class WorkspaceGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
-    if (typeof workspaceId !== 'string') return true;
+    if (typeof workspaceId !== 'string') {
+      // A role requirement on a route without a workspace would check nothing.
+      if (required) throw AppException.forbidden();
+      return true;
+    }
     if (!request.auth) throw new AppException('UNAUTHENTICATED');
 
     const membership = await this.prisma.membership.findUnique({

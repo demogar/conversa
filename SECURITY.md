@@ -28,8 +28,8 @@ Out of scope: an attacker with shell access to the host or to the `.env` file, a
 ### Authentication
 
 - **Passwords** hashed with **argon2id** (19 MiB, 2 iterations, OWASP parameters); 12 to 128 characters. Unknown emails take the same time as wrong passwords.
-- **Account lockout**: every fifth consecutive failure locks the account, for 15 minutes first and twice as long each time after, up to 24 hours.
-- **Two-factor authentication**: TOTP (RFC 6238, one step of clock drift), with 8 one-time recovery codes stored as hashes. A TOTP code is accepted **once**: a replay within its window is rejected.
+- **Account lockout**: every fifth consecutive failure (counted atomically, so parallel guesses all count) locks the account, for 15 minutes first and twice as long each time after, up to 24 hours.
+- **Two-factor authentication**: TOTP (RFC 6238, one step of clock drift), with 8 one-time recovery codes stored as hashes. A TOTP code is accepted **once**: a replay within its window is rejected, and a recovery code cannot be used twice even by requests racing with it.
 - **Turnstile** (optional) on sign-up, sign-in and password reset.
 - **Sign-up** is invite-only by default after the first account.
 - Password reset and invitation tokens are random, single-use, expiring, and stored only as SHA-256 hashes.
@@ -43,7 +43,7 @@ Out of scope: an attacker with shell access to the host or to the `.env` file, a
 ### Requests
 
 - **CSRF**: on top of SameSite cookies, every state-changing request must carry an `Origin` equal to `APP_URL`'s origin (or `Sec-Fetch-Site: same-origin`). Only signed server-to-server callbacks skip the check.
-- **Rate limits** in Valkey, shared by every API process, keyed by the client IP resolved per `TRUST_PROXY`: 300 requests per minute in general, 10 per minute on sign-in, sign-up, MFA and reset (blocked 5 minutes after), 5 per 15 minutes for reset emails.
+- **Rate limits** in Valkey, shared by every API process, keyed by the client IP. The web server appends the address it was connected from to `X-Forwarded-For`; the API trusts only as many entries as `TRUST_PROXY` declares proxies, and ignores forwarding headers from anything but a private-network peer, so a client cannot pick its own address. Limits: 300 requests per minute in general, 10 per minute on sign-in, sign-up, MFA and reset (blocked 5 minutes after), 5 per 15 minutes for reset emails.
 - **Validation**: every body and query goes through a zod schema shared with the web app. JSON bodies are capped at 256 KB.
 - **Errors** are stable codes; stack traces and internal messages never reach clients.
 
