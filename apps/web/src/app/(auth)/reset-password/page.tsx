@@ -39,7 +39,12 @@ function ResetForm() {
   if (!token) {
     return (
       <AuthCard title={t('reset.title')}>
-        <Callout tone="danger">{t('reset.missingToken')}</Callout>
+        <Stack gap="md">
+          <Callout tone="danger">{t('reset.missingToken')}</Callout>
+          <LinkButton render={<NextLink href="/forgot-password" />}>
+            {t('reset.requestNew')}
+          </LinkButton>
+        </Stack>
       </AuthCard>
     );
   }

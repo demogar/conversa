@@ -1,16 +1,6 @@
 'use client';
 
-import {
-  Button,
-  Callout,
-  EmptyState,
-  Field,
-  Form,
-  Input,
-  Link,
-  LinkButton,
-  Stack,
-} from '@demogar/mola-ui';
+import { Button, Callout, Field, Form, Input, Link, LinkButton, Stack } from '@demogar/mola-ui';
 import { type Locale, signupSchema } from '@conversa/shared';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import NextLink from 'next/link';
@@ -72,17 +62,8 @@ function SignupForm() {
   const open = instance.data?.signupOpen || Boolean(invitation.data);
   if (instance.data && !open && !invitation.isLoading) {
     return (
-      <AuthCard title={t('signup.closedTitle')}>
-        <EmptyState
-          kind="no-permission"
-          size="sm"
-          headingLevel={2}
-          title={t('signup.closedTitle')}
-          description={t('signup.closedDescription')}
-          actions={
-            <LinkButton render={<NextLink href="/login" />}>{t('signup.signIn')}</LinkButton>
-          }
-        />
+      <AuthCard title={t('signup.closedTitle')} description={t('signup.closedDescription')}>
+        <LinkButton render={<NextLink href="/login" />}>{t('signup.signIn')}</LinkButton>
       </AuthCard>
     );
   }

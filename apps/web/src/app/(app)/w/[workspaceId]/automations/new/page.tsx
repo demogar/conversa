@@ -1,4 +1,7 @@
 import { NewAutomationScreen } from '@/features/automations/automation-builder';
+import { pageTitle } from '@/lib/metadata';
+
+export const generateMetadata = pageTitle((t) => t('automations.builder.newTitle'));
 
 type Search = Record<string, string | string[] | undefined>;
 

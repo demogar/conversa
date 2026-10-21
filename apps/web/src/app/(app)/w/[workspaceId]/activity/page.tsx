@@ -1,4 +1,7 @@
 import { ActivityScreen } from '@/features/activity/activity-screen';
+import { pageTitle } from '@/lib/metadata';
+
+export const generateMetadata = pageTitle((t) => t('nav.activity'));
 
 export default async function ActivityPage({
   params,

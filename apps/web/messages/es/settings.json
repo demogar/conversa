@@ -12,7 +12,7 @@
     "general": "General",
     "members": "Miembros",
     "integrations": "Integraciones",
-    "audit": "Registro de actividad"
+    "audit": "Registro de cambios"
   },
   "loading": "Cargando la configuración",
   "general": {
@@ -43,7 +43,7 @@
       "leaveDescription": "Pierdes el acceso a {workspace} hasta que alguien te vuelva a invitar.",
       "leaveButton": "Salir del espacio",
       "leaveDialogTitle": "¿Salir de {workspace}?",
-      "leaveDialogDescription": "Pierdes el acceso a sus automatizaciones, bandeja de entrada y contactos. Para volver, un propietario o administrador tiene que invitarte de nuevo.",
+      "leaveDialogDescription": "Pierdes el acceso a sus automatizaciones, bandeja y contactos. Para volver, un propietario o administrador tiene que invitarte de nuevo.",
       "left": "Saliste de {workspace}",
       "leaveFailed": "Sigues siendo miembro. {reason}"
     }
@@ -82,7 +82,7 @@
       "formLabel": "Invita a alguien",
       "email": "Correo",
       "role": "Rol",
-      "roleHint": "Los administradores conectan cuentas, invitan personas y cambian roles. Los miembros trabajan con automatizaciones, la bandeja de entrada y los contactos.",
+      "roleHint": "Los administradores conectan cuentas, invitan personas y cambian roles. Los miembros trabajan con automatizaciones, la bandeja y los contactos.",
       "submit": "Enviar invitación",
       "sent": "Invitación enviada",
       "sentDescription": "Le enviamos a {email} un enlace para unirse.",
@@ -113,18 +113,18 @@
     }
   },
   "audit": {
-    "title": "Registro de actividad",
+    "title": "Registro de cambios",
     "description": "Quién cambió qué en este espacio, de lo más reciente a lo más antiguo.",
-    "label": "Registro de actividad",
+    "label": "Registro de cambios",
     "actor": "Quién",
     "action": "Qué pasó",
     "time": "Cuándo",
     "system": "Conversa",
-    "loading": "Cargando el registro de actividad",
+    "loading": "Cargando el registro de cambios",
     "empty": "Todavía no hay nada registrado",
     "emptyDescription": "Los cambios en el espacio aparecen aquí a medida que ocurren.",
-    "loadFailed": "El registro de actividad no cargó",
-    "noPermission": "Solo propietarios y administradores pueden ver el registro de actividad",
+    "loadFailed": "El registro de cambios no cargó",
+    "noPermission": "Solo propietarios y administradores pueden ver el registro de cambios",
     "noPermissionDescription": "Si necesitas saber quién cambió algo, pregúntale a un propietario o administrador de {workspace}.",
     "unknownAction": "Pasó otra cosa ({code})",
     "actions": {
@@ -162,7 +162,7 @@
         "disconnected": "Desconectó Buffer"
       },
       "inbox": {
-        "message_sent": "Envió un mensaje desde la bandeja de entrada"
+        "message_sent": "Envió un mensaje desde la bandeja"
       }
     }
   }

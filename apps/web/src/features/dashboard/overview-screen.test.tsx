@@ -36,7 +36,10 @@ describe('OverviewScreen', () => {
       'GET /workspaces/w1/automations': [{ id: 'a1' }],
     });
     renderWithProviders(<OverviewScreen workspaceId="w1" />);
-    expect(await screen.findByRole('heading', { level: 1, name: 'Bakery' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: 'Overview' })).toBeInTheDocument();
+    expect(
+      await screen.findByText('How the automations in Bakery did in the last 30 days.'),
+    ).toBeInTheDocument();
     expect(await screen.findByText('1,284')).toBeInTheDocument();
     expect(screen.getByText('2 active automations')).toBeInTheDocument();
     const top = screen.getByRole('table', { name: 'Automations with the most messages sent' });

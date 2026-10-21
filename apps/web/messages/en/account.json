@@ -11,9 +11,13 @@
     "name": "Name",
     "email": "Email",
     "emailHint": "Your sign-in address. It cannot be changed here.",
-    "language": "Language",
-    "languageHint": "Used for the app and for the emails Conversa sends you.",
     "saved": "Profile saved"
+  },
+  "language": {
+    "title": "Language",
+    "description": "Saved to your account, so it follows you to every device.",
+    "hint": "Used for the app and for the emails Conversa sends you.",
+    "label": "Language"
   },
   "theme": {
     "title": "Appearance",
@@ -67,7 +71,7 @@
   },
   "sessions": {
     "title": "Where you are signed in",
-    "description": "Sign out of any device you do not recognise, then change your password.",
+    "description": "Sign out of any device you do not recognize, then change your password.",
     "label": "Active sessions",
     "device": "Device",
     "ip": "IP address",

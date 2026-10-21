@@ -24,5 +24,18 @@
   "theme": { "label": "Theme", "system": "System", "light": "Light", "dark": "Dark" },
   "language": { "label": "Language", "en": "English", "es": "Español" },
   "never": "Never",
-  "none": "None"
+  "none": "None",
+  "notFound": {
+    "heading": "Page not found",
+    "title": "This page does not exist",
+    "description": "The address may be mistyped, or the page has moved.",
+    "action": "Go to your workspace"
+  },
+  "errorPage": {
+    "heading": "Page error",
+    "title": "Something went wrong on this page",
+    "description": "Nothing was changed. Try again, and if it keeps happening, reload the page.",
+    "reference": "Reference: <code>{digest}</code>",
+    "home": "Go to your workspace"
+  }
 }

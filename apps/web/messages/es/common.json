@@ -26,5 +26,18 @@
   "theme": { "label": "Tema", "system": "Sistema", "light": "Claro", "dark": "Oscuro" },
   "language": { "label": "Idioma", "en": "English", "es": "Español" },
   "never": "Nunca",
-  "none": "Ninguno"
+  "none": "Ninguno",
+  "notFound": {
+    "heading": "Página no encontrada",
+    "title": "Esta página no existe",
+    "description": "Puede que la dirección esté mal escrita o que la página se haya movido.",
+    "action": "Ir a tu espacio"
+  },
+  "errorPage": {
+    "heading": "Error en la página",
+    "title": "Algo falló en esta página",
+    "description": "No se cambió nada. Vuelve a intentarlo y, si sigue pasando, recarga la página.",
+    "reference": "Referencia: <code>{digest}</code>",
+    "home": "Ir a tu espacio"
+  }
 }

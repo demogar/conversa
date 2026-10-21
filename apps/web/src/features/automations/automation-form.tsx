@@ -24,14 +24,13 @@ import {
   Panel,
   Radio,
   RadioGroup,
-  SegmentedControl,
   Select,
   Stack,
   Switch,
   Text,
   Textarea,
 } from '@demogar/mola-ui';
-import { MessageCircle, MessageSquare, Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import NextLink from 'next/link';
 import { useTranslations } from 'next-intl';
 import { type FormEvent, type ReactNode, useId, useRef, useState } from 'react';
@@ -243,23 +242,24 @@ export function AutomationForm({
             </FormSection>
 
             <FormSection id={`${ids}-trigger`} title={t('trigger.title')}>
-              <Stack gap="sm">
-                <Text weight="medium" id={`${ids}-trigger-type`}>
-                  {t('trigger.type')}
-                </Text>
-                <SegmentedControl
-                  aria-labelledby={`${ids}-trigger-type`}
-                  value={draft.triggerType}
-                  onValueChange={(triggerType) => update({ triggerType })}
-                  options={[
-                    { value: 'COMMENT', label: t('trigger.comment'), icon: <MessageSquare /> },
-                    { value: 'MESSAGE', label: t('trigger.message'), icon: <MessageCircle /> },
-                  ]}
+              <RadioGroup
+                label={t('trigger.type')}
+                value={draft.triggerType}
+                onValueChange={(value) =>
+                  update({ triggerType: value as AutomationDraft['triggerType'] })
+                }
+              >
+                <Radio
+                  value="COMMENT"
+                  label={t('trigger.comment')}
+                  description={t('trigger.commentHint')}
                 />
-                <Text size="sm" variant="secondary">
-                  {isComment ? t('trigger.commentHint') : t('trigger.messageHint')}
-                </Text>
-              </Stack>
+                <Radio
+                  value="MESSAGE"
+                  label={t('trigger.message')}
+                  description={t('trigger.messageHint')}
+                />
+              </RadioGroup>
 
               {isComment ? (
                 <Stack gap="md">
@@ -642,7 +642,8 @@ export function AutomationForm({
               />
             </FormSection>
 
-            <div className="flex flex-wrap justify-end gap-3">
+            {/* On a phone the buttons stack full width, the main one on top. */}
+            <div className="flex flex-col-reverse gap-3 sm:flex-row sm:flex-wrap sm:justify-end">
               {automation ? (
                 <Button type="submit" loading={saving} onClick={() => (intent.current = 'UPDATE')}>
                   {t('saveChanges')}

@@ -1,6 +1,14 @@
 'use client';
 
-import { AppShell, NavItem, NavSection, Sidebar, Topbar } from '@demogar/mola-ui';
+import {
+  AppShell,
+  EmptyState,
+  LinkButton,
+  NavItem,
+  NavSection,
+  Sidebar,
+  Topbar,
+} from '@demogar/mola-ui';
 import {
   Activity,
   AtSign,
@@ -118,9 +126,28 @@ export function WorkspaceShell({
           </Sidebar>
         }
       >
-        {children}
+        {me.data && !workspace ? <WorkspaceMissing /> : children}
       </AppShell>
       <CreateWorkspaceDialog open={creating} onOpenChange={setCreating} />
     </>
+  );
+}
+
+/** A workspace id that is not one of the person's: deleted, left, or mistyped. */
+function WorkspaceMissing() {
+  const t = useTranslations('nav.workspaceMissing');
+  const tCommon = useTranslations('common.notFound');
+  return (
+    <div className="p-4 sm:p-6">
+      <h1 className="sr-only">{tCommon('heading')}</h1>
+      <EmptyState
+        kind="no-permission"
+        size="lg"
+        headingLevel={2}
+        title={t('title')}
+        description={t('description')}
+        actions={<LinkButton render={<NextLink href="/" />}>{t('action')}</LinkButton>}
+      />
+    </div>
   );
 }

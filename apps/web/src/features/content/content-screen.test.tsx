@@ -64,7 +64,7 @@ describe('ContentScreen', () => {
     renderWithProviders(<ContentScreen workspaceId="w1" />);
 
     expect(await screen.findByText('Connect Buffer to see your posts here')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Open integrations' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Connect Buffer' })).toHaveAttribute(
       'href',
       '/w/w1/settings/integrations',
     );

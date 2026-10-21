@@ -63,6 +63,7 @@ export function AccountPage() {
               {me.data ? (
                 <>
                   <ProfileSection key={me.data.user.name} user={me.data.user} />
+                  <LanguageSection user={me.data.user} />
                   <AppearanceSection />
                   <PasswordSection />
                   <MfaSection enabled={me.data.user.mfaEnabled} />
@@ -80,7 +81,6 @@ export function AccountPage() {
 function ProfileSection({ user }: { user: UserDto }) {
   const t = useTranslations('account.profile');
   const tCommon = useTranslations('common');
-  const router = useRouter();
   const toast = useToast();
   const update = useUpdateProfile();
   const errorMessage = useErrorMessage();
@@ -97,19 +97,6 @@ function ProfileSection({ user }: { user: UserDto }) {
       onSuccess: () => toast.success({ title: t('saved') }),
       onError: (error) => setErrors(toFieldErrors(error)),
     });
-  }
-
-  function changeLocale(locale: Locale | null) {
-    if (!locale || locale === user.locale) return;
-    update.mutate(
-      { locale },
-      {
-        onSuccess: () => {
-          setLocaleCookie(locale);
-          router.refresh();
-        },
-      },
-    );
   }
 
   return (
@@ -131,27 +118,53 @@ function ProfileSection({ user }: { user: UserDto }) {
             {(control) => <Input {...control} type="email" value={user.email} readOnly />}
           </Field>
           <div className="flex justify-end">
-            <Button
-              type="submit"
-              loading={update.isPending && update.variables?.name !== undefined}
-              disabled={name.trim() === user.name}
-            >
+            <Button type="submit" loading={update.isPending} disabled={name.trim() === user.name}>
               {tCommon('actions.save')}
             </Button>
           </div>
         </div>
       </Form>
-      <Field label={t('language')} hint={t('languageHint')}>
-        {(control) => (
-          <Select<Locale>
-            {...control}
-            value={user.locale}
-            disabled={update.isPending}
-            onValueChange={changeLocale}
-            items={LOCALES.map((value) => ({ value, label: tCommon(`language.${value}`) }))}
-          />
-        )}
-      </Field>
+    </SettingsSection>
+  );
+}
+
+function LanguageSection({ user }: { user: UserDto }) {
+  const t = useTranslations('account.language');
+  const tCommon = useTranslations('common');
+  const router = useRouter();
+  const update = useUpdateProfile();
+  const errorMessage = useErrorMessage();
+
+  // Saved to the account, so emails follow it; the cookie switches this browser right away.
+  function changeLocale(locale: Locale | null) {
+    if (!locale || locale === user.locale) return;
+    update.mutate(
+      { locale },
+      {
+        onSuccess: () => {
+          setLocaleCookie(locale);
+          router.refresh();
+        },
+      },
+    );
+  }
+
+  return (
+    <SettingsSection id="account-language" title={t('title')} description={t('description')}>
+      <div className="flex flex-col gap-5">
+        {update.error ? <Callout tone="danger">{errorMessage(update.error)}</Callout> : null}
+        <Field label={t('label')} hint={t('hint')}>
+          {(control) => (
+            <Select<Locale>
+              {...control}
+              value={user.locale}
+              disabled={update.isPending}
+              onValueChange={changeLocale}
+              items={LOCALES.map((value) => ({ value, label: tCommon(`language.${value}`) }))}
+            />
+          )}
+        </Field>
+      </div>
     </SettingsSection>
   );
 }

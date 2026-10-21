@@ -7,7 +7,7 @@
   "notConnected": {
     "title": "Connect Buffer to see your posts here",
     "description": "Schedule posts in Buffer and attach an automation to each one. When Buffer publishes a post, the automation starts answering its comments on its own.",
-    "action": "Open integrations",
+    "action": "Connect Buffer",
     "member": "Ask an owner or an admin to connect Buffer in Settings."
   },
   "noOrganization": {

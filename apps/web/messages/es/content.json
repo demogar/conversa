@@ -7,7 +7,7 @@
   "notConnected": {
     "title": "Conecta Buffer para ver tus publicaciones aquí",
     "description": "Programa publicaciones en Buffer y asocia una automatización a cada una. Cuando Buffer publique una, la automatización empieza a responder sus comentarios por su cuenta.",
-    "action": "Abrir integraciones",
+    "action": "Conectar Buffer",
     "member": "Pídele a un propietario o administrador que conecte Buffer en Configuración."
   },
   "noOrganization": {

@@ -14,5 +14,10 @@
   "newWorkspace": "Crear espacio",
   "account": "Configuración de la cuenta",
   "signOut": "Cerrar sesión",
-  "userMenu": "Menú de la cuenta de {name}"
+  "userMenu": "Menú de la cuenta de {name}",
+  "workspaceMissing": {
+    "title": "Este espacio no está disponible",
+    "description": "Puede que lo hayan eliminado o que ya no seas miembro. Pídele a un propietario o administrador que te vuelva a invitar.",
+    "action": "Ir a tus espacios"
+  }
 }

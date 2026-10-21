@@ -25,7 +25,11 @@ test('the first person sets up the installation and signs back in', async ({ pag
 
   await test.step('lands on the overview with the getting-started checklist', async () => {
     await expect(page).toHaveURL(/\/w\/[^/]+$/);
-    await expect(page.getByText('How your automations did in the last 30 days.')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Overview', level: 1 })).toBeVisible();
+    // The first workspace is named after its owner.
+    await expect(
+      page.getByText(`How the automations in ${owner.name} did in the last 30 days.`),
+    ).toBeVisible();
     const checklist = page.getByRole('region', { name: 'Get started' });
     await expect(checklist).toBeVisible();
     await expect(checklist.getByText('Connect your Instagram account')).toBeVisible();
@@ -53,7 +57,7 @@ test('the first person sets up the installation and signs back in', async ({ pag
     await page.getByLabel('Password').fill(owner.password);
     await page.getByRole('button', { name: 'Sign in' }).click();
     await expect(page).toHaveURL(/\/w\/[^/]+$/);
-    await expect(page.getByText('How your automations did in the last 30 days.')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Overview', level: 1 })).toBeVisible();
   });
 
   await page.context().storageState({ path: ownerStateFile });

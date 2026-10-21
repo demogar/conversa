@@ -1,7 +1,7 @@
 'use client';
 
 import { LIMITS } from '@conversa/shared';
-import { Button, Field, Inline, Input, Stack, TagGroup } from '@demogar/mola-ui';
+import { Button, Field, Input, Stack, TagGroup } from '@demogar/mola-ui';
 import { Plus } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { type KeyboardEvent, useState } from 'react';
@@ -48,7 +48,8 @@ export function KeywordsEditor({ keywords, onChange, error }: KeywordsEditorProp
         }
       >
         {(control) => (
-          <Inline gap="sm" wrap={false}>
+          // Side by side when there is room; on a phone the button goes under the field.
+          <div className="flex flex-col gap-2 sm:flex-row">
             <Input
               {...control}
               required={false}
@@ -59,7 +60,6 @@ export function KeywordsEditor({ keywords, onChange, error }: KeywordsEditorProp
               placeholder={t('keywordPlaceholder')}
               disabled={full}
               autoComplete="off"
-              className="min-w-0 flex-1"
             />
             <Button
               type="button"
@@ -70,7 +70,7 @@ export function KeywordsEditor({ keywords, onChange, error }: KeywordsEditorProp
             >
               {t('keywordAdd')}
             </Button>
-          </Inline>
+          </div>
         )}
       </Field>
       <TagGroup

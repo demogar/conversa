@@ -1,15 +1,6 @@
 'use client';
 
-import {
-  Button,
-  Callout,
-  EmptyState,
-  Inline,
-  LinkButton,
-  Skeleton,
-  Stack,
-  Text,
-} from '@demogar/mola-ui';
+import { Button, Callout, Inline, LinkButton, Skeleton, Stack, Text } from '@demogar/mola-ui';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import NextLink from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -47,24 +38,14 @@ export default function InvitationPage() {
 
   if (invitation.isLoading || me.isLoading) {
     return (
-      <AuthCard title="…">
+      <AuthCard title={t('heading')}>
         <Skeleton className="h-24" />
       </AuthCard>
     );
   }
 
   if (!invitation.data) {
-    return (
-      <AuthCard title={t('invalidTitle')}>
-        <EmptyState
-          kind="error"
-          size="sm"
-          headingLevel={2}
-          title={t('invalidTitle')}
-          description={t('invalidDescription')}
-        />
-      </AuthCard>
-    );
+    return <AuthCard title={t('invalidTitle')} description={t('invalidDescription')} />;
   }
 
   const { workspaceName, email, role } = invitation.data;

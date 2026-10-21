@@ -4,8 +4,7 @@ import { openWorkspace } from '../support/app';
 test('the language can be switched to Spanish and back', async ({ page }) => {
   const workspaceId = await openWorkspace(page);
   const nav = page.getByRole('navigation');
-  // The profile's language, saved to the account (the account page also has a
-  // language picker for this browser only).
+  // The profile's language, saved to the account.
   const profileLanguage = (name: string, hint: string) =>
     page.getByRole('combobox', { name, description: hint });
   const english = ['Language', 'Used for the app and for the emails Conversa sends you.'] as const;

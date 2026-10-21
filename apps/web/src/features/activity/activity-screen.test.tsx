@@ -62,7 +62,7 @@ describe('ActivityScreen', () => {
     expect(within(table).getByText('Unknown')).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole('button', { name: 'Show more' }));
-    expect(await within(table).findByText('Waiting for follow')).toBeInTheDocument();
+    expect(await within(table).findByText('Waiting for a follow')).toBeInTheDocument();
     expect(calls.map((call) => call.path)).toContain('/workspaces/w1/activity');
     expect(screen.queryByRole('button', { name: 'Show more' })).not.toBeInTheDocument();
   });
@@ -73,7 +73,7 @@ describe('ActivityScreen', () => {
       'GET /workspaces/w1/activity?limit=50': { items: [], nextCursor: null },
     });
     renderWithProviders(<ActivityScreen workspaceId="w1" />);
-    expect(await screen.findByText('Nothing has happened yet')).toBeInTheDocument();
+    expect(await screen.findByText('No activity yet')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Create automation' })).toHaveAttribute(
       'href',
       '/w/w1/automations/new',

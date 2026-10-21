@@ -50,8 +50,8 @@ export function OverviewScreen({ workspaceId }: { workspaceId: string }) {
   return (
     <>
       <PageHeader
-        title={workspace?.name ?? t('title')}
-        description={t('description', { days })}
+        title={t('title')}
+        description={workspace ? t('description', { workspace: workspace.name, days }) : undefined}
         actions={
           <SegmentedControl
             aria-label={t('range.label')}

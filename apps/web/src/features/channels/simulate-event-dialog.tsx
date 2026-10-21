@@ -8,7 +8,8 @@ import {
   Field,
   Form,
   Input,
-  SegmentedControl,
+  Radio,
+  RadioGroup,
   Select,
   Stack,
   Textarea,
@@ -42,7 +43,6 @@ export function SimulateEventDialog({
   const errorMessage = useErrorMessage();
   const toFieldErrors = useFieldErrors();
   const formId = useId();
-  const kindLabelId = useId();
 
   const [kind, setKind] = useState<Kind>('comment');
   const [username, setUsername] = useState('');
@@ -113,20 +113,14 @@ export function SimulateEventDialog({
             {simulate.error ? (
               <Callout tone="danger">{errorMessage(simulate.error)}</Callout>
             ) : null}
-            <div className="flex flex-col gap-2">
-              <span id={kindLabelId} className="block rotulo text-ink-2">
-                {t('kind')}
-              </span>
-              <SegmentedControl<Kind>
-                aria-labelledby={kindLabelId}
-                value={kind}
-                onValueChange={setKind}
-                options={[
-                  { value: 'comment', label: t('kinds.comment') },
-                  { value: 'message', label: t('kinds.message') },
-                ]}
-              />
-            </div>
+            <RadioGroup
+              label={t('kind')}
+              value={kind}
+              onValueChange={(value) => setKind(value as Kind)}
+            >
+              <Radio value="comment" label={t('kinds.comment')} />
+              <Radio value="message" label={t('kinds.message')} />
+            </RadioGroup>
             <Field label={t('username')} hint={t('usernameHint')} required error={errors.username}>
               {(control) => (
                 <Input

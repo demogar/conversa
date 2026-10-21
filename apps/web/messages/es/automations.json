@@ -11,7 +11,7 @@
       "trigger": "Disparador",
       "channel": "Cuenta",
       "status": "Estado",
-      "triggered": "Activadas",
+      "triggered": "Activaciones",
       "sent": "Enviados",
       "clicks": "Clics",
       "actions": "Acciones"
@@ -19,8 +19,8 @@
     "trigger": {
       "commentKeywords": "Comentario · {count, plural, one {# palabra clave} other {# palabras clave}}",
       "commentAnything": "Comentario · cualquier texto",
-      "messageKeywords": "DM · {count, plural, one {# palabra clave} other {# palabras clave}}",
-      "messageAnything": "DM · cualquier texto"
+      "messageKeywords": "Mensaje · {count, plural, one {# palabra clave} other {# palabras clave}}",
+      "messageAnything": "Mensaje · cualquier texto"
     },
     "unknownChannel": "Cuenta eliminada",
     "rowActions": "Acciones de {name}",
@@ -65,7 +65,7 @@
     "loading": "Cargando la automatización",
     "loadFailed": "No se pudo cargar esta automatización",
     "notFound": "Esta automatización ya no existe",
-    "notFoundDescription": "Puede que alguien del espacio de trabajo la haya eliminado.",
+    "notFoundDescription": "Puede que alguien del espacio la haya eliminado.",
     "backToList": "Volver a automatizaciones",
     "summaryDescription": "Todavía no se guardó nada. Cada enlace te lleva a su campo.",
     "saveDraft": "Guardar como borrador",
@@ -86,7 +86,7 @@
     },
     "noChannel": {
       "title": "Primero conecta una cuenta de Instagram",
-      "description": "Una automatización responde desde una cuenta conectada, y este espacio de trabajo todavía no tiene ninguna.",
+      "description": "Una automatización responde desde una cuenta conectada, y este espacio todavía no tiene ninguna.",
       "action": "Ir a canales"
     },
     "basics": {
@@ -101,8 +101,8 @@
     "trigger": {
       "title": "Disparador",
       "type": "Qué la inicia",
-      "comment": "Comentario",
-      "message": "Mensaje directo",
+      "comment": "Un comentario",
+      "message": "Un mensaje directo",
       "commentHint": "Alguien comenta en una publicación o un reel.",
       "messageHint": "Alguien envía un mensaje directo o responde a una historia.",
       "scope": "En qué publicaciones",
@@ -161,13 +161,13 @@
     "response": {
       "title": "Respuesta",
       "publicReply": "Responder públicamente al comentario",
-      "publicReplyDescription": "Se elige una de estas respuestas al azar, para que no se vean todas iguales.",
+      "publicReplyDescription": "También responde el comentario en público. Se elige al azar una de tus respuestas, para que no se vean todas iguales.",
       "variant": "Respuesta {number}",
       "variantPlaceholder": "Te escribí por DM 📩",
       "addVariant": "Agregar respuesta",
       "removeVariant": "Quitar respuesta {number}",
       "opening": "Enviar primero un mensaje de apertura",
-      "openingDescription": "El contenido se envía cuando la persona toca el botón. Abre la conversación para que Instagram permita enviar enlaces.",
+      "openingDescription": "Instagram solo deja enviar enlaces cuando la persona ya respondió. Este mensaje le pide tocar su botón, y el contenido se envía cuando lo hace.",
       "openingText": "Mensaje de apertura",
       "openingPlaceholder": "¡Hola, {username}! Toca abajo y te mando el enlace.",
       "followGate": "Pedir que sigan la cuenta primero",
@@ -201,7 +201,7 @@
       "publicReply": "Respuesta pública",
       "dm": "Mensaje directo",
       "opening": "Mensaje de apertura",
-      "followGate": "Pedido de seguir",
+      "followGate": "Pedir que te sigan",
       "content": "Contenido",
       "taps": "Toca “{label}”",
       "emptyMessage": "Aquí aparece tu mensaje.",

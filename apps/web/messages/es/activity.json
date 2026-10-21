@@ -13,7 +13,7 @@
   },
   "status": {
     "SENT": "Enviado",
-    "AWAITING_TAP": "Esperando toque",
+    "AWAITING_TAP": "Esperando que toque",
     "AWAITING_FOLLOW": "Esperando que te siga",
     "FAILED": "Falló",
     "SKIPPED": "Omitido",
@@ -51,7 +51,7 @@
     "unknown": "No se pudo enviar el mensaje."
   },
   "empty": {
-    "title": "Todavía no pasa nada",
+    "title": "Todavía no hay actividad",
     "description": "Cuando alguien comente o escriba un mensaje que coincida con una automatización, lo verás aquí.",
     "action": "Crear automatización"
   },

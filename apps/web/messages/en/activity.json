@@ -13,8 +13,8 @@
   },
   "status": {
     "SENT": "Sent",
-    "AWAITING_TAP": "Waiting for tap",
-    "AWAITING_FOLLOW": "Waiting for follow",
+    "AWAITING_TAP": "Waiting for a tap",
+    "AWAITING_FOLLOW": "Waiting for a follow",
     "FAILED": "Failed",
     "SKIPPED": "Skipped",
     "PENDING": "Pending"
@@ -51,7 +51,7 @@
     "unknown": "The message could not be sent."
   },
   "empty": {
-    "title": "Nothing has happened yet",
+    "title": "No activity yet",
     "description": "When someone comments or writes a message that matches an automation, it shows up here.",
     "action": "Create automation"
   },

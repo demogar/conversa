@@ -14,5 +14,10 @@
   "newWorkspace": "Create workspace",
   "account": "Account settings",
   "signOut": "Sign out",
-  "userMenu": "Account menu for {name}"
+  "userMenu": "Account menu for {name}",
+  "workspaceMissing": {
+    "title": "This workspace is not available",
+    "description": "It may have been deleted, or you are no longer a member. Ask one of its owners or admins to invite you again.",
+    "action": "Go to your workspaces"
+  }
 }

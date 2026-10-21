@@ -1,4 +1,7 @@
 import { EditAutomationScreen } from '@/features/automations/automation-builder';
+import { pageTitle } from '@/lib/metadata';
+
+export const generateMetadata = pageTitle((t) => t('nav.automations'));
 
 export default async function EditAutomationPage({
   params,
