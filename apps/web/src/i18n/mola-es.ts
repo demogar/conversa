@@ -405,6 +405,7 @@ export const molaSpanish: MessagesOverride<typeof defaultMessages> = {
   numberInput: {
     increase: 'Aumentar',
     decrease: 'Disminuir',
+    roleDescription: 'Campo numérico',
   },
   pagination: {
     label: 'Paginación',
@@ -588,6 +589,7 @@ export const molaSpanish: MessagesOverride<typeof defaultMessages> = {
     warn: 'Advertencia:',
     running: 'En curso:',
     focusShortcut: 'Mover el foco a las notificaciones nuevas',
+    region: 'Notificaciones',
   },
   tokenUsage: {
     inlineInput: '{count} entrada',

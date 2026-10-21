@@ -16,6 +16,11 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
 
+# pnpm holds back releases younger than its minimum age. The design system is
+# our own package, so its new versions can be adopted as soon as they ship.
+minimumReleaseAgeExclude:
+  - '@demogar/mola-ui'
+
 # One copy of the icon set for the app and the design system.
 overrides:
   lucide-react: 1.60.0
