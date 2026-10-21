@@ -186,5 +186,17 @@
       "skipped": "Not set up",
       "later": "You can change any of these at any time from Instance settings, in your account menu."
     }
+  },
+  "version": {
+    "title": "Version",
+    "description": "Which release of Conversa this installation runs. The web app and the API are separate images and should run the same version.",
+    "web": "Web app",
+    "api": "API",
+    "loading": "Loading…",
+    "unavailable": "Not available",
+    "mismatch": {
+      "title": "The web app and the API run different versions",
+      "description": "The web app runs v{web} and the API runs v{api}. Update both images to the same release and restart them."
+    }
   }
 }

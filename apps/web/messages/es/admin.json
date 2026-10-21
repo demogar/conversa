@@ -186,5 +186,17 @@
       "skipped": "Sin configurar",
       "later": "Puedes cambiar cualquiera de estas opciones cuando quieras desde la configuración de la instancia, en el menú de tu cuenta."
     }
+  },
+  "version": {
+    "title": "Versión",
+    "description": "Qué versión de Conversa ejecuta esta instalación. La aplicación web y la API son imágenes separadas y deberían tener la misma versión.",
+    "web": "Aplicación web",
+    "api": "API",
+    "loading": "Cargando…",
+    "unavailable": "No disponible",
+    "mismatch": {
+      "title": "La aplicación web y la API tienen versiones distintas",
+      "description": "La aplicación web tiene la v{web} y la API la v{api}. Actualiza las dos imágenes a la misma versión y reinícialas."
+    }
   }
 }
