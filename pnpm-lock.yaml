@@ -22,7 +22,7 @@ importers:
         version: link:../../packages/shared
       '@nestjs/bullmq':
         specifier: 12.0.0
-        version: 12.0.0(@nestjs/common@12.2.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@12.2.0)(bullmq@5.81.5(supports-color@8.1.1))
+        version: 12.0.0(@nestjs/common@12.2.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@12.2.0)(bullmq@6.3.15(ioredis@5.11.1(supports-color@8.1.1))(pg@8.23.1))
       '@nestjs/common':
         specifier: 12.2.0
         version: 12.2.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1)
@@ -45,8 +45,8 @@ importers:
         specifier: 0.45.1
         version: 0.45.1
       bullmq:
-        specifier: 5.81.5
-        version: 5.81.5(supports-color@8.1.1)
+        specifier: 6.3.15
+        version: 6.3.15(ioredis@5.11.1(supports-color@8.1.1))(pg@8.23.1)
       cookie-parser:
         specifier: 1.4.7
         version: 1.4.7
@@ -2969,12 +2969,21 @@ packages:
   bser@2.1.2:
     resolution: {integrity: sha512-V2o8YS2EhrKMO9AumnkK0ynynfFlsajpYupwq7S46H5mhcanwxDkNTw3K67wPIcKTH1ffkA4vhMOtAc7gRmPZw==}
 
-  bullmq@5.81.5:
-    resolution: {integrity: sha512-pW7pFc/X+9AEIx91TWTdIpZ1icfbJnA0unsyzD7VICjCUw8a3qedSjej5dxxn6LjfM1kr2jvalOCGbCmoA5Kxg==}
-    engines: {node: '>=12.22.0'}
+  bullmq@6.3.15:
+    resolution: {integrity: sha512-J6EZH/DhfGnsIafSK2FfNJ6XtSAQnD4YM1vts5+jT4usLYkxV2uU72oKNpmyxUQl9U4sFEvK5MO5SJ+dGlwOLQ==}
+    engines: {node: '>=14.17.0'}
     peerDependencies:
+      bullmq-otel: '>=2.0.0'
+      ioredis: '>=5.0.0'
+      pg: '>=8.0.0'
       redis: '>=5.0.0'
     peerDependenciesMeta:
+      bullmq-otel:
+        optional: true
+      ioredis:
+        optional: true
+      pg:
+        optional: true
       redis:
         optional: true
 
@@ -3188,10 +3197,9 @@ packages:
     resolution: {integrity: sha512-tJtZBBHA6vjIAaF6EnIaq6laBBP9aq/Y3ouVJjEfoHbRBcHBAHYcMh/w8LDrk2PvIMMq8gmopa5D4V8RmbrxGw==}
     engines: {node: '>= 0.10'}
 
-  cron-parser@4.9.0:
-    resolution: {integrity: sha512-p0SaNjrHOnQeR8/VnfGbmg9te2kfyYSQ7Sc/j/6DtPL3JQvKxmjO9TSjNFpujqV3vEYYBvNNvXSxzyksBWAx1Q==}
-    engines: {node: '>=12.0.0'}
-    deprecated: v4 is no longer maintained, upgrade to v5
+  cron-parser@5.10.2:
+    resolution: {integrity: sha512-JfAYMY0LZaWQTuict8PhtF/ksSnq8xefSDmQUnnoqvkPYkU/y3UP0DTWzJKFBz0P1IXsDG8q0vY3zHkoFZOhvw==}
+    engines: {node: '>=18'}
 
   cross-env@10.1.0:
     resolution: {integrity: sha512-GsYosgnACZTADcmEyJctkJIoqAhHjttw7RsFrVoJNXbsWWqaq6Ym+7kZjq6mS45O0jij6vtiReppKQEtqWy6Dw==}
@@ -4623,8 +4631,8 @@ packages:
     resolution: {integrity: sha512-4kmO/MdyUIkLIvTPr8VHLil4AtoKIoniWPIEk5+CDy0xnWC84azhSFmuJ7PxZdsYtiP5kEeQsORAVIeMgxT+Hw==}
     hasBin: true
 
-  msgpackr@2.0.5:
-    resolution: {integrity: sha512-cef05H/dSYpLpqp3sj/qyZh5vhUYCalnaLO7j1yOmpsR0y/XwLVtK7r5gn+U/F7CTEfMowcGhlUQJDLcLf7jcA==}
+  msgpackr@2.1.0:
+    resolution: {integrity: sha512-p/pBCVO63CsvvpkomUnNNag6+n38rULuDA6HHe70o2gtC8ODI52foF/4ko2qQcp6OiErJXTmrZeXmsGGHsIQNQ==}
 
   multer@2.4.0:
     resolution: {integrity: sha512-7dqa0ZcFfzbefdTuIkzOSMvZWC0J7FLqBOjJUZvDCXShIURWKxAyTT1wHhnE5q19c7jOJf43IYYKjBmZVZmvhg==}
@@ -6954,12 +6962,12 @@ snapshots:
       '@nestjs/core': 12.2.0(@nestjs/common@12.2.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/platform-express@12.2.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       tslib: 2.8.1
 
-  '@nestjs/bullmq@12.0.0(@nestjs/common@12.2.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@12.2.0)(bullmq@5.81.5(supports-color@8.1.1))':
+  '@nestjs/bullmq@12.0.0(@nestjs/common@12.2.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@12.2.0)(bullmq@6.3.15(ioredis@5.11.1(supports-color@8.1.1))(pg@8.23.1))':
     dependencies:
       '@nestjs/bull-shared': 12.0.0(@nestjs/common@12.2.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@12.2.0)
       '@nestjs/common': 12.2.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1)
       '@nestjs/core': 12.2.0(@nestjs/common@12.2.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/platform-express@12.2.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      bullmq: 5.81.5(supports-color@8.1.1)
+      bullmq: 6.3.15(ioredis@5.11.1(supports-color@8.1.1))(pg@8.23.1)
       tslib: 2.8.1
 
   '@nestjs/cli@12.0.9(@swc/core@1.16.18(@swc/helpers@0.5.23))(@types/node@22.20.5)(prettier@3.9.10)':
@@ -8433,16 +8441,16 @@ snapshots:
     dependencies:
       node-int64: 0.4.0
 
-  bullmq@5.81.5(supports-color@8.1.1):
+  bullmq@6.3.15(ioredis@5.11.1(supports-color@8.1.1))(pg@8.23.1):
     dependencies:
-      cron-parser: 4.9.0
-      ioredis: 5.11.1(supports-color@8.1.1)
-      msgpackr: 2.0.5
+      cron-parser: 5.10.2
+      msgpackr: 2.1.0
       node-abort-controller: 3.1.1
       semver: 7.8.5
       tslib: 2.8.1
-    transitivePeerDependencies:
-      - supports-color
+    optionalDependencies:
+      ioredis: 5.11.1(supports-color@8.1.1)
+      pg: 8.23.1
 
   bundle-require@5.1.0(esbuild@0.28.2):
     dependencies:
@@ -8625,7 +8633,7 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cron-parser@4.9.0:
+  cron-parser@5.10.2:
     dependencies:
       luxon: 3.7.2
 
@@ -10397,7 +10405,7 @@ snapshots:
       '@msgpackr-extract/msgpackr-extract-win32-x64': 3.0.4
     optional: true
 
-  msgpackr@2.0.5:
+  msgpackr@2.1.0:
     optionalDependencies:
       msgpackr-extract: 3.0.4
 

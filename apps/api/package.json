@@ -28,7 +28,7 @@
     "@prisma/adapter-pg": "7.10.1",
     "@prisma/client": "7.10.1",
     "argon2": "0.45.1",
-    "bullmq": "5.81.5",
+    "bullmq": "6.3.15",
     "cookie-parser": "1.4.7",
     "dotenv": "^18.0.8",
     "helmet": "8.3.0",
