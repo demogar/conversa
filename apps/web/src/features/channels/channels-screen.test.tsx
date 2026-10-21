@@ -18,6 +18,7 @@ const instance: InstanceDto = {
   captchaSiteKey: null,
   providers: { instagram: true },
   sandbox: false,
+  version: '0.1.0',
 };
 
 const me = (role: 'OWNER' | 'MEMBER') =>

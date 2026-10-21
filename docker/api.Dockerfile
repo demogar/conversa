@@ -9,6 +9,9 @@
 # Build from the repository root:
 #
 #   docker build -f docker/api.Dockerfile -t conversa-api .
+#
+# CONVERSA_VERSION and CONVERSA_COMMIT (the git commit) label the image; the
+# commit is also reported by GET /api/v1/health. The release workflow sets both.
 
 ARG NODE_VERSION=22.23.3
 
@@ -53,9 +56,19 @@ FROM node:${NODE_VERSION}-bookworm-slim AS runtime
 RUN apt-get update \
  && apt-get install -y --no-install-recommends openssl ca-certificates \
  && rm -rf /var/lib/apt/lists/*
+# Declared after the slow layers, so a new commit does not rebuild them.
+ARG CONVERSA_VERSION=dev
+ARG CONVERSA_COMMIT=
+LABEL org.opencontainers.image.title="conversa-api" \
+      org.opencontainers.image.description="Conversa API and queue worker: self-hosted automation for Instagram comments and DMs" \
+      org.opencontainers.image.version="${CONVERSA_VERSION}" \
+      org.opencontainers.image.revision="${CONVERSA_COMMIT}" \
+      org.opencontainers.image.source="https://github.com/demogar/conversa" \
+      org.opencontainers.image.licenses="MIT"
 ENV NODE_ENV=production \
     API_PORT=4000 \
-    CHECKPOINT_DISABLE=1
+    CHECKPOINT_DISABLE=1 \
+    CONVERSA_COMMIT=${CONVERSA_COMMIT}
 WORKDIR /app
 # The code stays owned by root; the processes run as the unprivileged node user.
 COPY --from=build /out/package.json ./package.json

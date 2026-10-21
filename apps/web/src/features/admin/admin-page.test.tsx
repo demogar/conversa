@@ -1,7 +1,8 @@
-import type { InstanceSettingsDto, MeDto } from '@conversa/shared';
-import { screen, within } from '@testing-library/react';
+import type { InstanceDto, InstanceSettingsDto, MeDto } from '@conversa/shared';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MockError, mockApi, renderWithProviders } from '@/test/render';
+import { WEB_VERSION } from '@/lib/version';
 import { AdminPage } from './admin-page';
 
 jest.mock('next/navigation', () => ({
@@ -54,9 +55,20 @@ const settings: InstanceSettingsDto = {
   sandbox: false,
 };
 
+const instance = (version = WEB_VERSION): InstanceDto => ({
+  needsSetup: false,
+  signupOpen: false,
+  mailEnabled: true,
+  captchaSiteKey: null,
+  providers: { instagram: false },
+  sandbox: false,
+  version,
+});
+
 function routes(overrides: Record<string, unknown> = {}) {
   return mockApi({
     'GET /me': adminMe(),
+    'GET /instance': instance(),
     'GET /instance/settings': settings,
     'GET /instance/admins': [
       {
@@ -156,5 +168,35 @@ describe('AdminPage', () => {
     renderWithProviders(<AdminPage />);
     expect(await screen.findByText('The instance settings did not load')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Try again' })).toBeInTheDocument();
+  });
+
+  it('shows the version of the web app and of the API, linked to their release notes', async () => {
+    routes();
+    renderWithProviders(<AdminPage />);
+
+    const version = await screen.findByRole('region', { name: 'Version' });
+    const name = new RegExp(`^v${WEB_VERSION.replaceAll('.', '\\.')}`);
+    await waitFor(() => expect(within(version).getAllByRole('link', { name })).toHaveLength(2));
+    for (const link of within(version).getAllByRole('link', { name })) {
+      expect(link).toHaveAttribute(
+        'href',
+        `https://github.com/demogar/conversa/releases/tag/v${WEB_VERSION}`,
+      );
+    }
+    expect(screen.queryByText('The web app and the API run different versions')).toBeNull();
+  });
+
+  it('warns when the web app and the API run different versions', async () => {
+    routes({ 'GET /instance': instance('99.0.0') });
+    renderWithProviders(<AdminPage />);
+
+    expect(
+      await screen.findByText('The web app and the API run different versions'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        `The web app runs v${WEB_VERSION} and the API runs v99.0.0. Update both images to the same release and restart them.`,
+      ),
+    ).toBeInTheDocument();
   });
 });
