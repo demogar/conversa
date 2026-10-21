@@ -2,6 +2,7 @@ import { Controller, Get, HttpCode, ServiceUnavailableException } from '@nestjs/
 import { SkipThrottle } from '@nestjs/throttler';
 import { Redis } from 'ioredis';
 import { Public } from '../../common/http/decorators.js';
+import { BuildInfo } from '../../config/build-info.js';
 import { PrismaService } from '../../infra/prisma/prisma.service.js';
 import { InjectRedis } from '../../infra/redis/redis.module.js';
 
@@ -11,14 +12,15 @@ export class HealthController {
   constructor(
     private readonly prisma: PrismaService,
     @InjectRedis() private readonly redis: Redis,
+    private readonly build: BuildInfo,
   ) {}
 
-  /** Liveness: the process is up. */
+  /** Liveness: the process is up, and which build it runs. */
   @Public()
   @Get()
   @HttpCode(200)
-  live(): { status: 'ok' } {
-    return { status: 'ok' };
+  live(): { status: 'ok'; version: string; commit: string | null } {
+    return { status: 'ok', version: this.build.version, commit: this.build.commit };
   }
 
   /** Readiness: the database and Redis answer. */

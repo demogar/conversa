@@ -9,6 +9,10 @@
 # The /api and /l rewrites to the API are fixed when the app is built, so
 # API_INTERNAL_URL is a build argument. The default matches the `api` service
 # in docker/compose.yml.
+#
+# CONVERSA_VERSION and CONVERSA_COMMIT (the git commit) label the image, and
+# the commit is built into the app beside its version (shown at /admin). The
+# release workflow sets both.
 
 ARG NODE_VERSION=22.23.3
 
@@ -35,11 +39,21 @@ ENV API_INTERNAL_URL=${API_INTERNAL_URL} \
 COPY . .
 RUN --mount=type=cache,id=conversa-pnpm-store,target=/pnpm/store \
     pnpm install --frozen-lockfile --offline --filter @conversa/web...
+ARG CONVERSA_COMMIT=
+ENV CONVERSA_COMMIT=${CONVERSA_COMMIT}
 RUN pnpm --filter @conversa/shared build \
  && pnpm --filter @conversa/web build \
  && mkdir -p apps/web/public
 
 FROM node:${NODE_VERSION}-bookworm-slim AS runtime
+ARG CONVERSA_VERSION=dev
+ARG CONVERSA_COMMIT=
+LABEL org.opencontainers.image.title="conversa-web" \
+      org.opencontainers.image.description="Conversa web app: self-hosted automation for Instagram comments and DMs" \
+      org.opencontainers.image.version="${CONVERSA_VERSION}" \
+      org.opencontainers.image.revision="${CONVERSA_COMMIT}" \
+      org.opencontainers.image.source="https://github.com/demogar/conversa" \
+      org.opencontainers.image.licenses="MIT"
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
     HOSTNAME=0.0.0.0 \

@@ -10,6 +10,7 @@ import { InstanceAdminsSection } from './instance-admins';
 import { MailSection } from './mail-settings';
 import { SignupSection } from './signup-settings';
 import { TurnstileSection } from './turnstile-settings';
+import { VersionSection } from './version-section';
 
 /** Settings for the whole installation, outside any workspace. */
 export function AdminPage() {
@@ -35,6 +36,7 @@ export function AdminPage() {
                 <TurnstileSection settings={settings.turnstile} />
                 <SignupSection mode={settings.signup.mode} />
                 <InstanceAdminsSection />
+                <VersionSection />
               </>
             )}
           </AdminGate>

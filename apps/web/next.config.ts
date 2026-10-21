@@ -1,5 +1,6 @@
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
+import packageJson from './package.json' with { type: 'json' };
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
@@ -13,6 +14,12 @@ const config: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   transpilePackages: ['@conversa/shared'],
+  // Inlined into the build, so the browser knows which version it runs
+  // (src/lib/version.ts). CONVERSA_COMMIT is a Docker build argument.
+  env: {
+    CONVERSA_VERSION: packageJson.version,
+    CONVERSA_COMMIT: process.env.CONVERSA_COMMIT ?? '',
+  },
   async rewrites() {
     return [
       { source: '/api/:path*', destination: `${apiUrl}/api/:path*` },

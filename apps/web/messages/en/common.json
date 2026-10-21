@@ -37,5 +37,6 @@
     "description": "Nothing was changed. Try again, and if it keeps happening, reload the page.",
     "reference": "Reference: <code>{digest}</code>",
     "home": "Go to your workspace"
-  }
+  },
+  "version": { "label": "Conversa v{version}" }
 }
