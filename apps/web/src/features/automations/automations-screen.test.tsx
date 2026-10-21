@@ -19,6 +19,7 @@ const channel: ChannelDto = {
   webhookSubscribed: true,
   tokenExpiresAt: null,
   connectedAt: '2026-01-01T00:00:00Z',
+  lastEventAt: null,
 };
 
 const automation: AutomationDto = {

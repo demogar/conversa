@@ -71,7 +71,7 @@
     "sandboxTitle": "Aquí Instagram es simulado",
     "sandboxDescription": "Esta instalación usa el sandbox de Instagram, así que la app de Meta no se usa. Igual puedes guardarla para cuando se apague el sandbox.",
     "appId": "ID de la app de Instagram",
-    "appIdHint": "Aparece en Instagram, configuración de la API con inicio de sesión empresarial de Instagram. No es el ID de la app de Meta que se ve arriba en el panel.",
+    "appIdHint": "Aparece en API setup with Instagram login. No es el App ID que se ve arriba en el panel de Meta, que es el de Facebook.",
     "appSecret": "Clave secreta de la app de Instagram",
     "appSecretHint": "Aparece junto al ID de la app de Instagram. Conversa la usa para comprobar que los webhooks vienen de verdad de Meta.",
     "verifyToken": "Token de verificación del webhook",
@@ -81,21 +81,131 @@
     "remove": "Quitar la app de Instagram",
     "removed": "App de Instagram quitada",
     "removeDialogTitle": "¿Quitar la app de Instagram?",
-    "removeDialogDescription": "Las cuentas conectadas dejan de recibir comentarios y mensajes, y nadie puede conectar una nueva hasta que vuelvas a agregar la app.",
-    "steps": {
-      "create": "En el panel de desarrolladores de Meta, crea una app con el caso de uso para administrar mensajes y contenido en Instagram.",
-      "copy": "Abre Instagram, configuración de la API con inicio de sesión empresarial de Instagram, y copia el ID y la clave secreta de la app en los campos de abajo.",
-      "login": "En la configuración del inicio de sesión empresarial, pega las direcciones de redirección OAuth, de desautorización y de eliminación de datos.",
-      "webhooks": "En Configurar webhooks, pega la dirección del webhook y tu token de verificación, y suscríbete a comments, messages y messaging_postbacks.",
-      "basic": "En Configuración de la app, Básica, pega las direcciones de la política de privacidad y de los términos."
+    "removeDialogDescription": "Las cuentas conectadas dejan de recibir comentarios y mensajes, y nadie puede conectar una nueva hasta que vuelvas a agregar la app."
+  },
+  "guide": {
+    "title": "Configura tu app de Meta",
+    "intro": "Son nueve pasos en el panel de desarrolladores de Meta y en la app de Instagram. Toma unos 20 minutos.",
+    "menuNote": "Los menús y campos de Meta aparecen como se ven con el panel en inglés, con los nombres de 2026. Meta los cambia de vez en cuando, así que busca el más parecido.",
+    "stepsLabel": "Pasos para configurar la app de Meta",
+    "progress": "Paso {current} de {total}",
+    "where": "Dónde, en Meta",
+    "see": "Qué vas a ver",
+    "mistake": "Error frecuente",
+    "subscribe": "Luego activa Suscribirse en estos tres campos:",
+    "verifyTokenHidden": "El token de verificación solo se muestra hasta que lo guardas. Para pegarlo de nuevo, haz clic en Reemplazar en el campo del token de verificación de abajo, genera uno nuevo, guárdalo y pega ese.",
+    "previous": "Paso anterior",
+    "next": "Siguiente paso",
+    "openApps": "Abrir tus apps de Meta",
+    "openTesterInvites": "Abrir las invitaciones de evaluador de Instagram",
+    "fields": {
+      "callbackUrl": "Callback URL",
+      "verifyToken": "Verify token",
+      "oauthRedirect": "OAuth redirect URIs",
+      "deauthorize": "Deauthorize callback URL",
+      "dataDeletion": "Data deletion request URL",
+      "privacyPolicy": "Privacy Policy URL",
+      "termsOfService": "Terms of Service URL",
+      "userDataDeletion": "Data deletion callback URL"
     },
-    "urls": {
-      "oauthRedirect": "URI de redirección OAuth",
-      "webhook": "URL de devolución del webhook",
-      "deauthorize": "URL de devolución de desautorización",
-      "dataDeletion": "URL de solicitud de eliminación de datos",
-      "privacyPolicy": "URL de la política de privacidad",
-      "termsOfService": "URL de los términos del servicio"
+    "steps": {
+      "create": {
+        "title": "Crea la app",
+        "where": "developers.facebook.com/apps › Create app",
+        "see": "Un asistente corto que te pide el nombre de la app, un correo de contacto y un caso de uso.",
+        "do": "Ponle un nombre a la app (por ejemplo, “Conversa”), elige el caso de uso “Manage messaging & content on Instagram” y elige Business si te pide un tipo de app. Puedes saltarte la conexión con un portafolio comercial."
+      },
+      "credentials": {
+        "title": "Copia el ID y la clave secreta de la app de Instagram",
+        "where": "Tu app › Use cases › Manage messaging & content on Instagram › Customize › API setup with Instagram login",
+        "see": "Un recuadro con el nombre de la app de Instagram, el Instagram app ID y el Instagram app secret (haz clic en Show para verla).",
+        "do": "Pega el Instagram app ID y el Instagram app secret en el formulario de abajo. Haz clic en Generar token para el token de verificación del webhook y guarda.",
+        "mistake": "El Instagram app ID no es el App ID que aparece arriba en el panel ni en App settings › Basic: ese es el ID de la app de Facebook. Si lo usas, la conexión falla con “Invalid redirect_uri” o “Invalid platform app”."
+      },
+      "webhooks": {
+        "title": "Conecta los webhooks",
+        "where": "API setup with Instagram login › Configure webhooks",
+        "see": "Un campo Callback URL, un campo Verify token y un botón Verify and save, y después una lista de campos del webhook.",
+        "do": "Pega los dos valores y haz clic en Verify and save.",
+        "mistake": "Guarda el formulario en Conversa antes de hacer clic en Verify and save. Meta llama a Conversa en ese momento con el token, y la verificación falla si Conversa todavía no lo tiene."
+      },
+      "login": {
+        "title": "Configura el inicio de sesión empresarial de Instagram",
+        "where": "API setup with Instagram login › Set up Instagram business login › Business login settings",
+        "see": "Un panel con OAuth redirect URIs, Deauthorize callback URL y Data deletion request URL.",
+        "do": "Pega las tres direcciones y guarda.",
+        "mistake": "La URI de redirección va aquí, en la configuración del inicio de sesión empresarial de Instagram, no en Facebook Login › Settings › Valid OAuth Redirect URIs. Instagram ignora esa lista y responde “Invalid redirect_uri”."
+      },
+      "basic": {
+        "title": "Completa la configuración básica",
+        "where": "App settings › Basic",
+        "see": "El nombre visible de la app, el correo de contacto, los enlaces legales, el ícono y la categoría.",
+        "do": "Pega las direcciones de la política de privacidad y de los términos. En User data deletion, elige Data deletion callback URL y pega esa dirección. Elige una categoría, sube un ícono de la app y guarda los cambios.",
+        "mistake": "El ícono de la app tiene que medir 1024 × 1024 píxeles. Sin el ícono, la política de privacidad y los términos, Meta no te deja pasar la app a Live en el paso 8."
+      },
+      "roles": {
+        "title": "Agrega tu cuenta de Instagram como evaluadora",
+        "where": "App roles › Roles › Add people › Instagram Tester",
+        "see": "Un diálogo que te pide un nombre de usuario de Instagram.",
+        "do": "Agrega cada cuenta de Instagram que vas a conectar. Después, con la sesión de esa cuenta abierta en Instagram, abre la pestaña de invitaciones de evaluador en Apps y sitios web y acepta la invitación.",
+        "mistake": "Una cuenta que no es Instagram Tester con la invitación aceptada no se puede conectar y aparece “Insufficient developer role”. La invitación cuenta solo cuando la aceptas en Instagram."
+      },
+      "account": {
+        "title": "Prepara la cuenta de Instagram",
+        "where": "App de Instagram › Configuración y actividad",
+        "see": "El tipo de cuenta y la configuración de mensajes.",
+        "do": "Conviértela en cuenta profesional (de empresa o de creador) en Tipo de cuenta y herramientas. Luego abre Mensajes y respuestas a historias › Herramientas conectadas y activa Permitir el acceso a los mensajes.",
+        "mistake": "Si Permitir el acceso a los mensajes está desactivado, los mensajes directos nunca llegan a Conversa y no se pueden enviar respuestas privadas, aunque los comentarios sí lleguen."
+      },
+      "publish": {
+        "title": "Pasa la app a Live",
+        "where": "Publish, en el menú de la izquierda (o el selector App mode arriba en el panel)",
+        "see": "Una lista de lo que Meta todavía necesita antes de que la app pueda estar en Live.",
+        "do": "Corrige lo que marque la lista, normalmente el ícono, la política de privacidad o los términos del paso 5, y publica hasta que App mode diga Live.",
+        "mistake": "Mientras la app está en modo de desarrollo, Meta no envía webhooks reales. Verify and save funciona, pero los comentarios y mensajes nunca llegan a Conversa.",
+        "note": "Live con acceso estándar alcanza para las cuentas que tienen un rol en la app. Para conectar cuentas de otras personas, la app necesita acceso avanzado mediante App Review: consulta docs/instagram.md."
+      },
+      "connect": {
+        "title": "Conecta la cuenta en Conversa",
+        "where": "Conversa › tu espacio de trabajo › Canales",
+        "see": "Tus cuentas conectadas y un botón Conectar cuenta de Instagram.",
+        "do": "Haz clic en Conectar cuenta de Instagram, inicia sesión con la cuenta evaluadora y acepta los permisos. Luego comenta en una de sus publicaciones desde otra cuenta: el estado de la conexión debería mostrar un evento en menos de un minuto."
+      }
+    }
+  },
+  "status": {
+    "title": "Estado de la conexión",
+    "refresh": "Volver a comprobar",
+    "retry": "Reintentar",
+    "loading": "Comprobando la app de Meta",
+    "loadFailed": "El estado de la conexión no cargó. No se cambió nada.",
+    "sandbox": "En esta instalación Instagram es simulado, así que no hay una app de Meta que comprobar.",
+    "credentials": "ID y clave secreta de la app",
+    "credentialsState": {
+      "valid": "Meta los aceptó",
+      "invalid": "Meta los rechazó",
+      "unknown": "No se pudo saber",
+      "not_configured": "Sin guardar"
+    },
+    "credentialsHow": "Meta no tiene una forma directa de comprobar las apps con inicio de sesión de Instagram. Conversa le pide a Meta canjear un código de inicio de sesión que no puede funcionar y lee por qué lo rechaza, así que es una buena señal, no una garantía.",
+    "webhookVerified": "Webhook verificado",
+    "lastEvent": "Último evento de Instagram",
+    "never": "Nunca",
+    "showStep": "Ver el paso {step}",
+    "hints": {
+      "invalid": {
+        "title": "Meta no aceptó el ID o la clave secreta de la app",
+        "body": "Revisa que copiaste el ID y la clave secreta de la app de Instagram desde API setup with Instagram login, y no el ID de la app de Facebook que aparece arriba en el panel."
+      },
+      "unknown": "Meta respondió de una forma que Conversa no reconoce, o no se pudo contactar. Vuelve a comprobar en un minuto.",
+      "notVerified": {
+        "title": "Meta todavía no verificó el webhook",
+        "body": "Primero guarda la app de Instagram en Conversa y luego haz clic en Verify and save, en Configure webhooks de Meta."
+      },
+      "quiet": {
+        "title": "Todavía no llegan eventos de Instagram",
+        "body": "Meta verificó el webhook, pero no ha enviado nada desde entonces. ¿Tu app de Meta está en modo Live? ¿Está activado Permitir el acceso a los mensajes en la app de Instagram?"
+      }
     }
   },
   "turnstile": {
@@ -185,7 +295,9 @@
       "configured": "Configurado",
       "skipped": "Sin configurar",
       "later": "Puedes cambiar cualquiera de estas opciones cuando quieras desde la configuración de la instancia, en el menú de tu cuenta."
-    }
+    },
+    "saveInstagram": "Guardar la app de Instagram",
+    "instagramSaved": "App de Instagram guardada"
   },
   "version": {
     "title": "Versión",

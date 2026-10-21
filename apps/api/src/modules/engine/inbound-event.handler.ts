@@ -37,7 +37,9 @@ export class InboundEventHandler {
     const channel = await this.prisma.channel.findUnique({
       where: { type_externalId: { type, externalId: event.accountExternalId } },
     });
-    if (!channel || channel.status !== 'ACTIVE') return false;
+    if (!channel) return false;
+    await this.touchChannel(channel);
+    if (channel.status !== 'ACTIVE') return false;
 
     switch (event.kind) {
       case 'comment':
@@ -159,6 +161,16 @@ export class InboundEventHandler {
       { jobId: `start-${deliveryId}` },
     );
     return true;
+  }
+
+  /** Notes that the platform reached this account, at most once a minute. */
+  private async touchChannel(channel: Channel): Promise<void> {
+    const now = new Date();
+    if (channel.lastEventAt && now.getTime() - channel.lastEventAt.getTime() < 60_000) return;
+    await this.prisma.channel.updateMany({
+      where: { id: channel.id },
+      data: { lastEventAt: now },
+    });
   }
 
   private touchContact(

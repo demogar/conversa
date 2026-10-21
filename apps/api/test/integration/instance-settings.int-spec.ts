@@ -108,6 +108,7 @@ describe('instance settings', () => {
       .send({ to: 'member@example.com' })
       .expect(403);
     await member.get(`${API}/instance/admins`).expect(403);
+    await member.get(`${API}/instance/instagram/status`).expect(403);
     await member
       .patch(`${API}/instance/admins/${memberUser.id}`)
       .send({ isInstanceAdmin: true })
@@ -207,6 +208,16 @@ describe('instance settings', () => {
       .post(`${API}/webhooks/instagram/deauthorize`)
       .send({ signed_request: signedRequest('some-other-secret', '17841400000000000') })
       .expect(401);
+  });
+
+  it('reports the setup status without the app secret or the verify token', async () => {
+    const response = await admin.get(`${API}/instance/instagram/status`).expect(200);
+    // The tests run the sandbox, which never asks Meta.
+    expect(response.body).toMatchObject({ sandbox: true, credentials: 'unknown' });
+    const body = JSON.stringify(response.body);
+    expect(body).not.toContain(SECRETS.appSecret);
+    expect(body).not.toContain(SECRETS.verifyToken);
+    expect(body).not.toContain('1234567890');
   });
 
   it('publishes the Turnstile site key but never the secret', async () => {

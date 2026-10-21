@@ -24,9 +24,11 @@ import { ChannelsService } from '../channels/channels.service.js';
 import { ProviderRegistry } from '../channels/provider/provider.registry.js';
 import { InboundEventIngestor } from './inbound-event.ingestor.js';
 import { parseSignedRequest } from './signed-request.js';
+import { WebhookStatusService } from './webhook-status.service.js';
 
 /**
- * Platform webhooks. The handler only verifies, stores and enqueues; all
+ * Platform webhooks. The handler only verifies, stores and enqueues (and notes
+ * when the platform last got through, for the setup status); all
  * matching and sending happens in the worker, so the platform always gets a
  * fast 200 and a redelivery never races a half-finished request.
  */
@@ -45,14 +47,19 @@ export class WebhooksController {
     private readonly config: AppConfig,
     private readonly ingestor: InboundEventIngestor,
     private readonly settings: InstanceSettingsService,
+    private readonly status: WebhookStatusService,
   ) {}
 
   @Get(':type')
-  verify(@Param('type') type: string, @Query() query: Record<string, unknown>): string {
+  async verify(
+    @Param('type') type: string,
+    @Query() query: Record<string, unknown>,
+  ): Promise<string> {
     const provider = this.providers.find(type);
     if (!provider) throw new NotFoundException();
     const challenge = provider.verifySubscription(query);
     if (challenge === null) throw new ForbiddenException();
+    await this.status.recordVerified(provider.type);
     return challenge;
   }
 
@@ -71,6 +78,7 @@ export class WebhooksController {
     }
 
     await this.ingestor.ingest(provider.type, request.body);
+    await this.status.recordEvent(provider.type);
     return { received: true };
   }
 

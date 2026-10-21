@@ -21,7 +21,7 @@ const instance: InstanceDto = {
   version: '0.1.0',
 };
 
-const me = (role: 'OWNER' | 'MEMBER') =>
+const me = (role: 'OWNER' | 'MEMBER', isInstanceAdmin = false) =>
   ({
     user: {
       id: 'u1',
@@ -29,7 +29,7 @@ const me = (role: 'OWNER' | 'MEMBER') =>
       name: 'Ana',
       locale: 'en',
       mfaEnabled: false,
-      isInstanceAdmin: false,
+      isInstanceAdmin,
       createdAt: '2026-01-01T00:00:00Z',
     },
     workspaces: [{ id: 'w1', name: 'Shop', role, createdAt: '2026-01-01T00:00:00Z' }],
@@ -46,6 +46,7 @@ const channel: ChannelDto = {
   webhookSubscribed: true,
   tokenExpiresAt: null,
   connectedAt: '2026-09-01T00:00:00Z',
+  lastEventAt: null,
 };
 
 beforeEach(() => {
@@ -97,5 +98,62 @@ describe('ChannelsScreen', () => {
       await screen.findByText('That Instagram account is already connected to another workspace.'),
     ).toBeInTheDocument();
     expect(await screen.findByRole('button', { name: 'Reconnect account' })).toBeInTheDocument();
+  });
+
+  describe('when Instagram has sent nothing', () => {
+    const minutesAgo = (minutes: number) => new Date(Date.now() - minutes * 60_000).toISOString();
+    const active = (overrides: Partial<ChannelDto> = {}): ChannelDto => ({
+      ...channel,
+      status: 'ACTIVE',
+      connectedAt: minutesAgo(60),
+      ...overrides,
+    });
+
+    function renderWith(channels: ChannelDto[], isInstanceAdmin = false) {
+      mockApi({
+        'GET /me': me('OWNER', isInstanceAdmin),
+        'GET /instance': instance,
+        'GET /workspaces/w1/channels': channels,
+        'GET /instance/instagram/status': {
+          sandbox: false,
+          credentials: 'valid',
+          webhookVerifiedAt: minutesAgo(90),
+          lastEventAt: null,
+        },
+      });
+      renderWithProviders(<ChannelsScreen workspaceId="w1" />);
+    }
+
+    it('asks an admin to check Live mode and message access, and who can fix it', async () => {
+      renderWith([active()]);
+      expect(await screen.findByText('No events from Instagram yet')).toBeInTheDocument();
+      expect(screen.getByText(/Ask the person who set up this installation/)).toBeInTheDocument();
+      expect(screen.getByText('None yet')).toBeInTheDocument();
+      expect(screen.queryByRole('link', { name: 'Open the setup guide' })).not.toBeInTheDocument();
+    });
+
+    it('links an instance admin to the guide and shows the Meta app status', async () => {
+      renderWith([active()], true);
+      expect(await screen.findByRole('link', { name: 'Open the setup guide' })).toHaveAttribute(
+        'href',
+        '/admin#meta-guide-publish',
+      );
+      expect(
+        screen.getByText(/Is your Meta app in Live mode\?/, { selector: 'article *' }),
+      ).toBeInTheDocument();
+      expect(await screen.findByRole('heading', { name: 'Connection status' })).toBeInTheDocument();
+      expect(await screen.findByText('Accepted by Meta')).toBeInTheDocument();
+    });
+
+    it('says nothing while the account is newly connected or once an event arrived', async () => {
+      renderWith([
+        active({ id: 'c1', username: 'new.one', connectedAt: minutesAgo(5) }),
+        active({ id: 'c2', username: 'busy.one', lastEventAt: minutesAgo(3) }),
+        active({ id: 'c3', username: 'unsubscribed', webhookSubscribed: false }),
+      ]);
+      expect(await screen.findByRole('heading', { name: '@busy.one' })).toBeInTheDocument();
+      expect(screen.getByText('3 minutes ago')).toBeInTheDocument();
+      expect(screen.queryByText('No events from Instagram yet')).not.toBeInTheDocument();
+    });
   });
 });

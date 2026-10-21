@@ -111,6 +111,16 @@ describe('engine (sandbox)', () => {
     return response.body as SandboxOutboxEntry[];
   }
 
+  it('notes when an event for the account last arrived, for the channels page', async () => {
+    const workspaceId = await firstWorkspaceId(owner);
+    const before = await owner.get(`${API}/workspaces/${workspaceId}/channels`).expect(200);
+    expect(before.body[0]).toMatchObject({ id: channelId, lastEventAt: null });
+
+    await processed(await comment('nobody', 'just saying hi'));
+    const after = await owner.get(`${API}/workspaces/${workspaceId}/channels`).expect(200);
+    expect(Date.parse(after.body[0].lastEventAt as string)).toBeGreaterThan(Date.now() - 60_000);
+  });
+
   it('answers a matching comment with a private reply carrying a tracked link, and a public reply', async () => {
     const eventId = await comment('alice', 'Send me the LINK please');
     const delivery = await deliveryFor('alice', 'SENT');

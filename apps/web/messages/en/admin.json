@@ -71,7 +71,7 @@
     "sandboxTitle": "Instagram is simulated here",
     "sandboxDescription": "This installation runs the Instagram sandbox, so the Meta app is not used. You can still save it for when the sandbox is turned off.",
     "appId": "Instagram app ID",
-    "appIdHint": "Shown under Instagram, API setup with Instagram business login. It is not the Meta app ID at the top of the dashboard.",
+    "appIdHint": "Shown under API setup with Instagram login. It is not the App ID at the top of the Meta dashboard, which belongs to Facebook.",
     "appSecret": "Instagram app secret",
     "appSecretHint": "Shown next to the Instagram app ID. Conversa uses it to check that webhooks really come from Meta.",
     "verifyToken": "Webhook verify token",
@@ -81,21 +81,131 @@
     "remove": "Remove Instagram app",
     "removed": "Instagram app removed",
     "removeDialogTitle": "Remove the Instagram app?",
-    "removeDialogDescription": "Connected accounts stop receiving comments and messages, and nobody can connect a new one until the app is added again.",
-    "steps": {
-      "create": "In the Meta developer dashboard, create an app with the use case for managing messaging and content on Instagram.",
-      "copy": "Open Instagram, API setup with Instagram business login, and copy the app ID and app secret into the fields below.",
-      "login": "Under Business login settings, paste the OAuth redirect, deauthorize and data deletion addresses.",
-      "webhooks": "Under Configure webhooks, paste the webhook address and your verify token, then subscribe to comments, messages and messaging_postbacks.",
-      "basic": "Under App settings, Basic, paste the privacy policy and terms addresses."
-    },
-    "urls": {
-      "oauthRedirect": "OAuth redirect URI",
-      "webhook": "Webhook callback URL",
+    "removeDialogDescription": "Connected accounts stop receiving comments and messages, and nobody can connect a new one until the app is added again."
+  },
+  "guide": {
+    "title": "Set up your Meta app",
+    "intro": "Nine steps in Meta's developer dashboard and the Instagram app. It takes about 20 minutes.",
+    "menuNote": "Menu names are as of 2026. Meta renames them now and then, so look for the closest match.",
+    "stepsLabel": "Meta app setup steps",
+    "progress": "Step {current} of {total}",
+    "where": "Where in Meta",
+    "see": "What you'll see",
+    "mistake": "Common mistake",
+    "subscribe": "Then turn on Subscribe for these three fields:",
+    "verifyTokenHidden": "The verify token is shown only until it is saved. To paste it again, click Replace on the webhook verify token field below, generate a new one, save, and paste that.",
+    "previous": "Previous step",
+    "next": "Next step",
+    "openApps": "Open your Meta apps",
+    "openTesterInvites": "Open Instagram tester invites",
+    "fields": {
+      "callbackUrl": "Callback URL",
+      "verifyToken": "Verify token",
+      "oauthRedirect": "OAuth redirect URIs",
       "deauthorize": "Deauthorize callback URL",
       "dataDeletion": "Data deletion request URL",
-      "privacyPolicy": "Privacy policy URL",
-      "termsOfService": "Terms of service URL"
+      "privacyPolicy": "Privacy Policy URL",
+      "termsOfService": "Terms of Service URL",
+      "userDataDeletion": "Data deletion callback URL"
+    },
+    "steps": {
+      "create": {
+        "title": "Create the app",
+        "where": "developers.facebook.com/apps › Create app",
+        "see": "A short wizard that asks for an app name, a contact email and a use case.",
+        "do": "Name the app (for example “Conversa”), choose the use case “Manage messaging & content on Instagram”, and choose Business if it asks for an app type. You can skip connecting a business portfolio."
+      },
+      "credentials": {
+        "title": "Copy the Instagram app ID and secret",
+        "where": "Your app › Use cases › Manage messaging & content on Instagram › Customize › API setup with Instagram login",
+        "see": "A box with the Instagram app name, the Instagram app ID and the Instagram app secret (click Show to see it).",
+        "do": "Paste the Instagram app ID and the Instagram app secret into the form below. Click Generate token for the webhook verify token, then save.",
+        "mistake": "The Instagram app ID is not the App ID at the top of the dashboard or under App settings › Basic: that one is the Facebook app ID. Using it makes connecting fail with “Invalid redirect_uri” or “Invalid platform app”."
+      },
+      "webhooks": {
+        "title": "Connect the webhooks",
+        "where": "API setup with Instagram login › Configure webhooks",
+        "see": "A Callback URL field, a Verify token field and a Verify and save button, then a list of webhook fields.",
+        "do": "Paste both values and click Verify and save.",
+        "mistake": "Save the form in Conversa before you click Verify and save. Meta calls Conversa right away with the token, and the check fails if Conversa does not have it yet."
+      },
+      "login": {
+        "title": "Set up Instagram business login",
+        "where": "API setup with Instagram login › Set up Instagram business login › Business login settings",
+        "see": "A panel with OAuth redirect URIs, a Deauthorize callback URL and a Data deletion request URL.",
+        "do": "Paste the three addresses and save.",
+        "mistake": "The redirect URI goes here, in Instagram's Business login settings, not under Facebook Login › Settings › Valid OAuth Redirect URIs. Instagram ignores that list and answers “Invalid redirect_uri”."
+      },
+      "basic": {
+        "title": "Fill in the basic settings",
+        "where": "App settings › Basic",
+        "see": "The app's display name, contact email, legal links, icon and category.",
+        "do": "Paste the privacy policy and terms addresses. Under User data deletion, choose Data deletion callback URL and paste that address. Choose a category, upload an app icon and save changes.",
+        "mistake": "The app icon must be 1024 × 1024 pixels. Without the icon, the privacy policy and the terms, Meta will not let you switch the app to Live in step 8."
+      },
+      "roles": {
+        "title": "Add your Instagram account as a tester",
+        "where": "App roles › Roles › Add people › Instagram Tester",
+        "see": "A dialog that asks for an Instagram username.",
+        "do": "Add each Instagram account you will connect. Then, signed in to Instagram as that account, open the Tester invites tab in Apps and websites and accept the invite.",
+        "mistake": "An account that is not an accepted Instagram Tester fails to connect with “Insufficient developer role”. The invite counts only once it is accepted on Instagram."
+      },
+      "account": {
+        "title": "Prepare the Instagram account",
+        "where": "Instagram app › Settings and activity",
+        "see": "The account type and the message settings of the account.",
+        "do": "Make it a professional account (Business or Creator) under Account type and tools. Then open Messages and story replies › Connected tools and turn on Allow access to messages.",
+        "mistake": "With Allow access to messages off, direct messages never reach Conversa and private replies cannot be sent, even when comments arrive."
+      },
+      "publish": {
+        "title": "Switch the app to Live",
+        "where": "Publish, in the left menu (or the App mode switch at the top of the dashboard)",
+        "see": "A checklist of what Meta still needs before the app can go Live.",
+        "do": "Fix anything the checklist marks, usually the icon, privacy policy or terms from step 5, then publish until App mode shows Live.",
+        "mistake": "While the app is in Development mode, Meta does not send real webhooks. Verify and save works, but comments and messages never reach Conversa.",
+        "note": "Live with standard access is enough for accounts that have a role on the app. To connect other people's accounts, the app needs advanced access through App Review: see docs/instagram.md."
+      },
+      "connect": {
+        "title": "Connect the account in Conversa",
+        "where": "Conversa › your workspace › Channels",
+        "see": "Your connected accounts and a Connect Instagram account button.",
+        "do": "Click Connect Instagram account, sign in as the tester account and allow the permissions. Then comment on one of its posts from another account: the connection status should show an event within a minute."
+      }
+    }
+  },
+  "status": {
+    "title": "Connection status",
+    "refresh": "Check again",
+    "retry": "Try again",
+    "loading": "Checking the Meta app",
+    "loadFailed": "The connection status did not load. Nothing was changed.",
+    "sandbox": "Instagram is simulated on this installation, so there is no Meta app to check.",
+    "credentials": "App ID and secret",
+    "credentialsState": {
+      "valid": "Accepted by Meta",
+      "invalid": "Rejected by Meta",
+      "unknown": "Could not tell",
+      "not_configured": "Not saved yet"
+    },
+    "credentialsHow": "Meta has no direct check for Instagram login apps. Conversa asks Meta to exchange a sign-in code that cannot work and reads why it was refused, so this is a good sign, not a guarantee.",
+    "webhookVerified": "Webhook verified",
+    "lastEvent": "Last event from Instagram",
+    "never": "Never",
+    "showStep": "Show step {step}",
+    "hints": {
+      "invalid": {
+        "title": "Meta did not accept the app ID or secret",
+        "body": "Check that you copied the Instagram app ID and secret from API setup with Instagram login, not the Facebook app ID at the top of the dashboard."
+      },
+      "unknown": "Meta answered in a way Conversa does not recognise, or could not be reached. Check again in a minute.",
+      "notVerified": {
+        "title": "Meta has not verified the webhook yet",
+        "body": "Save the Instagram app in Conversa first, then click Verify and save in Meta's Configure webhooks."
+      },
+      "quiet": {
+        "title": "No events from Instagram yet",
+        "body": "Meta verified the webhook but has not sent anything since. Is your Meta app in Live mode? Is Allow access to messages on in the Instagram app?"
+      }
     }
   },
   "turnstile": {
@@ -185,7 +295,9 @@
       "configured": "Set up",
       "skipped": "Not set up",
       "later": "You can change any of these at any time from Instance settings, in your account menu."
-    }
+    },
+    "saveInstagram": "Save Instagram app",
+    "instagramSaved": "Instagram app saved"
   },
   "version": {
     "title": "Version",

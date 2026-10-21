@@ -1,6 +1,7 @@
 import { randomBytes } from 'node:crypto';
 import { Injectable, Logger } from '@nestjs/common';
 import {
+  type AppCredentialsCheck,
   type ChannelType,
   type ConversationDto,
   LIMITS,
@@ -109,6 +110,11 @@ export class SandboxInstagramProvider implements ChannelProvider {
   }
 
   async subscribeWebhooks(): Promise<void> {}
+
+  /** The simulation has no Meta app, so there is nothing to check. */
+  async checkAppCredentials(): Promise<AppCredentialsCheck> {
+    return 'unknown';
+  }
 
   // ---- Webhooks -----------------------------------------------------------
 

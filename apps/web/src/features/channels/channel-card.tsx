@@ -9,14 +9,19 @@ import {
   Callout,
   DescriptionList,
   Heading,
+  LinkButton,
   Panel,
+  RelativeTime,
   useToast,
 } from '@demogar/mola-ui';
 import type { ChannelDto, ChannelStatus } from '@conversa/shared';
 import { FlaskConical, RefreshCw, Unplug } from 'lucide-react';
-import { useFormatter, useTranslations } from 'next-intl';
+import NextLink from 'next/link';
+import { useFormatter, useLocale, useTranslations } from 'next-intl';
 import { useId, useState } from 'react';
 import { useConnectInstagram, useDisconnectChannel } from '@/lib/api/hooks/channels';
+import { metaGuideHash } from '@/features/admin/meta-setup-guide';
+import { QUIET_AFTER_MS } from '@/features/admin/meta-setup-status';
 import { useErrorMessage } from '@/lib/errors';
 import { SimulateEventDialog } from './simulate-event-dialog';
 
@@ -35,19 +40,37 @@ export function ChannelStatusBadge({ status }: { status: ChannelStatus }) {
   );
 }
 
+/**
+ * Connected and subscribed for a while, yet Meta has sent nothing. Usually the
+ * Meta app is still in development mode, or the account does not allow access
+ * to its messages.
+ */
+export function isWaitingForEvents(channel: ChannelDto, now = Date.now()): boolean {
+  return (
+    channel.status === 'ACTIVE' &&
+    channel.webhookSubscribed &&
+    channel.lastEventAt === null &&
+    now - Date.parse(channel.connectedAt) > QUIET_AFTER_MS
+  );
+}
+
 export function ChannelCard({
   workspaceId,
   channel,
   canManage,
   sandbox,
+  isInstanceAdmin = false,
 }: {
   workspaceId: string;
   channel: ChannelDto;
   canManage: boolean;
   sandbox: boolean;
+  /** Instance admins can open the Meta setup guide; others are told who can. */
+  isInstanceAdmin?: boolean;
 }) {
   const t = useTranslations('channels');
   const format = useFormatter();
+  const locale = useLocale();
   const toast = useToast();
   const errorMessage = useErrorMessage();
   const headingId = useId();
@@ -81,6 +104,25 @@ export function ChannelCard({
         <Callout tone="neutral" variant="flat">
           {t('card.disconnectedNote')}
         </Callout>
+      ) : canManage && !sandbox && isWaitingForEvents(channel) ? (
+        <Callout
+          tone="warn"
+          headingLevel={3}
+          title={t('card.noEvents.title')}
+          actions={
+            isInstanceAdmin ? (
+              <LinkButton
+                size="sm"
+                variant="secondary"
+                render={<NextLink href={`/admin#${metaGuideHash('publish')}`} />}
+              >
+                {t('card.noEvents.openGuide')}
+              </LinkButton>
+            ) : undefined
+          }
+        >
+          {isInstanceAdmin ? t('card.noEvents.body') : t('card.noEvents.askAdmin')}
+        </Callout>
       ) : null}
 
       <DescriptionList
@@ -95,6 +137,14 @@ export function ChannelCard({
             detail: channel.tokenExpiresAt ? date(channel.tokenExpiresAt) : t('card.tokenNever'),
           },
           { term: t('card.connectedAt'), detail: date(channel.connectedAt) },
+          {
+            term: t('card.lastEvent'),
+            detail: channel.lastEventAt ? (
+              <RelativeTime date={channel.lastEventAt} locale={locale} />
+            ) : (
+              t('card.lastEventNever')
+            ),
+          },
         ]}
       />
 

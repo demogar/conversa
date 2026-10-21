@@ -1,25 +1,19 @@
 'use client';
 
-import {
-  AlertDialog,
-  Button,
-  Callout,
-  CodeBlock,
-  Field,
-  Form,
-  Input,
-  useToast,
-} from '@demogar/mola-ui';
-import {
-  type InstagramAppSettingsDto,
-  type MetaAppUrlsDto,
-  updateInstagramSettingsSchema,
-} from '@conversa/shared';
+import { AlertDialog, Button, Callout, Field, Form, Input, useToast } from '@demogar/mola-ui';
+import { type InstagramAppSettingsDto, updateInstagramSettingsSchema } from '@conversa/shared';
 import { useTranslations } from 'next-intl';
-import { type FormEvent, useState } from 'react';
+import { type FormEvent, useEffect, useState } from 'react';
 import { SettingsSection } from '@/features/settings/settings-section';
 import { useClearInstanceSettings, useUpdateInstanceSettings } from '@/lib/api/hooks/admin';
 import { type FieldErrors, useErrorMessage, useFieldErrors } from '@/lib/errors';
+import {
+  isMetaGuideStep,
+  MetaSetupGuide,
+  type MetaGuideStep,
+  metaGuideHash,
+} from './meta-setup-guide';
+import { MetaSetupStatus } from './meta-setup-status';
 import { SecretField } from './secret-field';
 
 /** A random webhook verify token, made in the browser: 24 bytes, URL-safe. */
@@ -39,6 +33,8 @@ export function useInstagramForm(settings: InstagramAppSettingsDto) {
   const [appSecret, setAppSecret] = useState('');
   const [verifyToken, setVerifyToken] = useState('');
   const [errors, setErrors] = useState<FieldErrors>({});
+  // The server never returns the token, so keep the one just saved for the guide's webhook step.
+  const [savedVerifyToken, setSavedVerifyToken] = useState<string | null>(null);
   // Remounts the secret fields after a save, so a replaced secret shows as stored again.
   const [saves, setSaves] = useState(0);
 
@@ -53,6 +49,7 @@ export function useInstagramForm(settings: InstagramAppSettingsDto) {
     if (!parsed.success || Object.keys(next).length > 0) return false;
     try {
       await update.mutateAsync(parsed.data);
+      if (verifyToken.trim()) setSavedVerifyToken(verifyToken.trim());
       setSaves((count) => count + 1);
       setAppSecret('');
       setVerifyToken('');
@@ -69,6 +66,8 @@ export function useInstagramForm(settings: InstagramAppSettingsDto) {
     set: { appId: setAppId, appSecret: setAppSecret, verifyToken: setVerifyToken },
     errors,
     saves,
+    /** The verify token to paste into Meta, while this page still knows it. */
+    verifyTokenToPaste: verifyToken.trim() || savedVerifyToken,
     error: update.error,
     pending: update.isPending,
     save,
@@ -76,40 +75,6 @@ export function useInstagramForm(settings: InstagramAppSettingsDto) {
 }
 
 export type InstagramForm = ReturnType<typeof useInstagramForm>;
-
-/** The addresses to paste into the Meta app dashboard, each copyable. */
-export function MetaUrls({ urls }: { urls: MetaAppUrlsDto }) {
-  const t = useTranslations('admin.instagram.urls');
-  const rows: Array<[keyof MetaAppUrlsDto, string]> = [
-    ['oauthRedirect', t('oauthRedirect')],
-    ['webhook', t('webhook')],
-    ['deauthorize', t('deauthorize')],
-    ['dataDeletion', t('dataDeletion')],
-    ['privacyPolicy', t('privacyPolicy')],
-    ['termsOfService', t('termsOfService')],
-  ];
-  return (
-    <div className="flex flex-col gap-3">
-      {rows.map(([key, label]) => (
-        <CodeBlock key={key} label={label} code={urls[key]} />
-      ))}
-    </div>
-  );
-}
-
-/** How to create the Meta app, in the order the dashboard asks for things. */
-export function MetaSteps() {
-  const t = useTranslations('admin.instagram.steps');
-  return (
-    <ol className="m-0 flex list-decimal flex-col gap-2 ps-5 text-sm text-ink-2">
-      <li>{t('create')}</li>
-      <li>{t('copy')}</li>
-      <li>{t('login')}</li>
-      <li>{t('webhooks')}</li>
-      <li>{t('basic')}</li>
-    </ol>
-  );
-}
 
 export function InstagramFields({ form }: { form: InstagramForm }) {
   const t = useTranslations('admin.instagram');
@@ -177,6 +142,28 @@ export function InstagramSection({
   const clear = useClearInstanceSettings('instagram');
   const [confirming, setConfirming] = useState(false);
   const [clearError, setClearError] = useState<string | null>(null);
+  const [step, setStep] = useState<MetaGuideStep>(settings.configured ? 'webhooks' : 'create');
+
+  // A hint elsewhere links to /admin#meta-guide-<step>: open the guide there, once laid out.
+  useEffect(() => {
+    function openFromHash() {
+      const wanted = window.location.hash.replace(/^#meta-guide-/, '');
+      if (!isMetaGuideStep(wanted)) return;
+      setStep(wanted);
+      document.getElementById('admin-instagram')?.scrollIntoView();
+    }
+    const frame = requestAnimationFrame(openFromHash);
+    window.addEventListener('hashchange', openFromHash);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('hashchange', openFromHash);
+    };
+  }, []);
+
+  function showStep(next: MetaGuideStep) {
+    setStep(next);
+    document.getElementById(metaGuideHash(next))?.scrollIntoView({ block: 'nearest' });
+  }
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -204,8 +191,13 @@ export function InstagramSection({
           {t('off')}
         </Callout>
       ) : null}
-      <MetaSteps />
-      <MetaUrls urls={settings.urls} />
+      {sandbox ? null : <MetaSetupStatus onShowStep={showStep} />}
+      <MetaSetupGuide
+        urls={settings.urls}
+        verifyToken={form.verifyTokenToPaste}
+        step={step}
+        onStepChange={setStep}
+      />
       <Form onSubmit={submit} aria-label={t('title')}>
         <div className="flex flex-col gap-5">
           <InstagramFields form={form} />

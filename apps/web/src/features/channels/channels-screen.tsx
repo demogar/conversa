@@ -8,6 +8,7 @@ import {
   Grid,
   Heading,
   PageHeader,
+  Panel,
   Skeleton,
   SkeletonGroup,
   useToast,
@@ -19,7 +20,8 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef } from 'react';
 import { useChannels, useConnectInstagram } from '@/lib/api/hooks/channels';
-import { useCurrentWorkspace, useInstance } from '@/lib/api/hooks/session';
+import { useCurrentWorkspace, useInstance, useMe } from '@/lib/api/hooks/session';
+import { MetaSetupStatus } from '@/features/admin/meta-setup-status';
 import { keys } from '@/lib/api/keys';
 import { useErrorMessage } from '@/lib/errors';
 import { ChannelCard } from './channel-card';
@@ -44,6 +46,7 @@ export function ChannelsScreen({ workspaceId }: { workspaceId: string }) {
 
   const role = useCurrentWorkspace(workspaceId)?.role;
   const instance = useInstance().data;
+  const isInstanceAdmin = useMe().data?.user.isInstanceAdmin === true;
   const channels = useChannels(workspaceId);
   const connect = useConnectInstagram(workspaceId);
 
@@ -157,10 +160,17 @@ export function ChannelsScreen({ workspaceId }: { workspaceId: string }) {
                 channel={channel}
                 canManage={canManage}
                 sandbox={sandbox}
+                isInstanceAdmin={isInstanceAdmin}
               />
             ))}
           </Grid>
         )}
+
+        {canManage && isInstanceAdmin && !sandbox && instance?.providers.instagram ? (
+          <Panel padding="md" className="max-w-reading">
+            <MetaSetupStatus headingLevel={2} />
+          </Panel>
+        ) : null}
 
         {channels.isSuccess && list.length === 0 && canManage && !sandbox ? (
           <section

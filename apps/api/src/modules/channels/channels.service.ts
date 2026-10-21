@@ -39,6 +39,7 @@ export function toChannelDto(channel: Channel): ChannelDto {
     webhookSubscribed: channel.webhookSubscribed,
     tokenExpiresAt: channel.tokenExpiresAt?.toISOString() ?? null,
     connectedAt: channel.createdAt.toISOString(),
+    lastEventAt: channel.lastEventAt?.toISOString() ?? null,
   };
 }
 

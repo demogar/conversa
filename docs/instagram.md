@@ -4,25 +4,131 @@ Conversa uses Meta's **Instagram API with Instagram Login**. Each installation n
 
 Want to try Conversa first? The [sandbox](sandbox.md) needs no Meta app at all.
 
+The same guide is built into Conversa: **Instance settings → Instagram app** (account menu, instance admins only) and the first-run setup show it one step at a time, with this installation's real addresses and a copy button for each, next to a [connection status](#connection-status) that tells you whether Meta's side works.
+
 ## Before you start
 
 - Conversa running on a public **HTTPS** URL (`APP_URL`). Meta does not call plain-HTTP webhooks.
 - The Instagram accounts you will connect must be **professional accounts** (Business or Creator). Personal accounts cannot use the messaging API.
 - A Meta developer account at [developers.facebook.com](https://developers.facebook.com).
 
-The URLs below use `https://conversa.example.com` for `APP_URL`.
+The addresses below use `${APP_URL}` for your installation's address, for example `https://conversa.example.com`.
+
+> Menu names are as of 2026. Meta renames them now and then; look for the closest match.
 
 ## 1. Create the app
 
-1. **My Apps → Create app.** Choose the use case for managing messaging and content on Instagram (the dashboard names it along the lines of "Manage messaging & content on Instagram"), and the app type **Business** if asked.
-2. In the app, open **Instagram → API setup with Instagram business login**.
-3. Copy the **Instagram app ID** and **Instagram app secret** shown there. They are not the same as the Meta app ID at the top of the dashboard.
+**Where:** [developers.facebook.com/apps](https://developers.facebook.com/apps) → **Create app**.
 
-In Conversa, open **Instance settings → Instagram app** (account menu, instance admins only; the setup guide after the first sign-up shows the same step). Paste the app ID and the app secret, and click **Generate token** for the webhook verify token, or type any random string. Save.
+Name the app, choose the use case **Manage messaging & content on Instagram**, and the app type **Business** if asked. Connecting a business portfolio is optional.
 
-It applies at once, with no restart, and the channels page offers to connect Instagram. The app secret and the verify token are stored encrypted and never shown again; **Replace** sets a new one. The same screen lists every address the steps below ask for, each with a copy button.
+## 2. Copy the Instagram app ID and secret into Conversa
 
-## 2. Permissions
+**Where:** your app → **Use cases** → **Manage messaging & content on Instagram** → **Customize** → **API setup with Instagram login**.
+
+You'll see the Instagram app name, the **Instagram app ID** and the **Instagram app secret** (click **Show**).
+
+In Conversa, open **Instance settings → Instagram app**. Paste the app ID and the app secret, click **Generate token** for the webhook verify token (or type any random string), and **save**. It applies at once, with no restart. The app secret and the verify token are stored encrypted and never shown again; **Replace** sets a new one. The guide keeps a token you just generated on screen so you can paste it in the next step.
+
+> **Common mistake:** the Instagram app ID is **not** the App ID at the top of the dashboard or under **App settings → Basic**. That one is the Facebook app ID, and using it ends in `Invalid redirect_uri` or `Invalid platform app` when you connect an account.
+
+## 3. Webhooks
+
+**Where:** **API setup with Instagram login** → **Configure webhooks**.
+
+| Meta field   | Value                                  |
+| ------------ | -------------------------------------- |
+| Callback URL | `${APP_URL}/api/v1/webhooks/instagram` |
+| Verify token | the verify token you saved in step 2   |
+
+Click **Verify and save**. Meta calls the URL with a challenge, and Conversa answers only if the token matches. Then turn on **Subscribe** for these fields:
+
+| Field                 | Why                                         |
+| --------------------- | ------------------------------------------- |
+| `comments`            | Comment triggers                            |
+| `messages`            | DM and story-reply triggers                 |
+| `messaging_postbacks` | Taps on the opening and follow-gate buttons |
+
+Every webhook is checked against its `X-Hub-Signature-256` HMAC (the app secret) and rejected with `401` if it does not match. Conversa subscribes each account to the app's webhooks when it is connected, so there is nothing to do per account.
+
+> **Common mistake:** save the app in Conversa **before** clicking **Verify and save**. Meta checks the token right away, and the check fails if Conversa does not have it yet.
+
+## 4. Business login settings
+
+**Where:** **API setup with Instagram login** → **Set up Instagram business login** → **Business login settings**.
+
+| Meta field                | Value                                                 |
+| ------------------------- | ----------------------------------------------------- |
+| OAuth redirect URIs       | `${APP_URL}/api/v1/channels/oauth/instagram/callback` |
+| Deauthorize callback URL  | `${APP_URL}/api/v1/webhooks/instagram/deauthorize`    |
+| Data deletion request URL | `${APP_URL}/api/v1/webhooks/instagram/data-deletion`  |
+
+The redirect URI must match `APP_URL` exactly, scheme and host included.
+
+- **Deauthorize**: when someone removes the app from their Instagram account, Conversa disconnects that channel.
+- **Data deletion**: Conversa deletes the channel and everything learned through it (contacts, deliveries), and answers Meta with a status URL under `/legal/data-deletion`.
+
+Both callbacks carry a `signed_request` verified with the app secret.
+
+> **Common mistake:** the redirect URI goes **here**, in Instagram's business login settings, not under **Facebook Login → Settings → Valid OAuth Redirect URIs**. Instagram ignores that list and answers `Invalid redirect_uri`.
+
+## 5. App settings → Basic
+
+**Where:** **App settings** → **Basic**.
+
+| Meta field                                      | Value                                                |
+| ----------------------------------------------- | ---------------------------------------------------- |
+| Privacy Policy URL                              | `${APP_URL}/legal/privacy`                           |
+| Terms of Service URL                            | `${APP_URL}/legal/terms`                             |
+| User data deletion → Data deletion callback URL | `${APP_URL}/api/v1/webhooks/instagram/data-deletion` |
+| App icon                                        | 1024 × 1024 pixels                                   |
+| Category, contact email                         | Your own                                             |
+
+The legal pages are public and ship with Conversa. Review their text and adapt it to how you run your installation.
+
+> **Common mistake:** without an app icon of exactly 1024 × 1024 pixels, a privacy policy and terms of service, Meta will not let you switch the app to Live in step 8.
+
+## 6. Roles: add the account as an Instagram Tester
+
+**Where:** **App roles** → **Roles** → **Add people** → **Instagram Tester**, and enter the Instagram username of each account you will connect.
+
+Then accept the invite **from Instagram**: signed in as that account, open [instagram.com/accounts/manage_access](https://www.instagram.com/accounts/manage_access/) → **Tester invites** → **Accept**.
+
+> **Common mistake:** an account that is not an accepted Instagram Tester fails to connect with `Insufficient developer role`. The invite counts only once it is accepted on Instagram.
+
+## 7. The Instagram account
+
+In the Instagram app, on the account itself:
+
+- **Settings and activity → Account type and tools**: make it a professional account (Business or Creator).
+- **Settings and activity → Messages and story replies → Connected tools**: turn on **Allow access to messages**.
+
+> **Common mistake:** with **Allow access to messages** off, direct messages never reach Conversa and private replies cannot be sent, even when comments arrive.
+
+## 8. Publish: switch the app to Live
+
+**Where:** **Publish** in the left menu, or the **App mode** switch at the top of the dashboard.
+
+Fix anything the checklist marks (usually the icon, privacy policy or terms from step 5), then publish until **App mode** shows **Live**.
+
+> **Common mistake:** while the app is in **Development mode**, Meta does not send real webhooks. **Verify and save** works, but comments and messages never reach Conversa.
+
+Live with standard access is enough for accounts that have a role on the app, which suits a team managing its own accounts. To connect accounts that do not have a role on the app, the app needs **Advanced Access** for the three permissions, which means **App Review** (and usually **business verification**). Notes for the review:
+
+- **Screencast**: show connecting an account, creating a comment automation with a keyword, commenting from a second account, and the private reply arriving. Then a DM automation, and the public reply under the comment.
+- **Why each permission**: `instagram_business_basic` lists the account's posts so the person can choose which posts an automation listens to; `instagram_business_manage_comments` receives comments and posts the optional public reply; `instagram_business_manage_messages` sends the private reply and DMs the person asked for.
+- **Test credentials**: give the reviewers an account on your Conversa instance, and say which keyword to comment.
+- Messages are sent only in response to the person's own comment, message or button tap. Conversa never sends unsolicited messages.
+
+## 9. Connect the account in Conversa
+
+An owner or admin opens **Channels → Connect Instagram account**, signs in to Instagram as the tester account and approves the permissions. One workspace can connect several accounts; an account can belong to only one workspace at a time.
+
+Then comment on one of the account's posts from another account. Within a minute the channel card shows **Last event**, and the connection status shows **Last event from Instagram**.
+
+Tokens are long-lived (60 days) and refreshed automatically by the worker well before they expire. If a token stops working, the channel shows **Needs reconnecting**.
+
+## Permissions
 
 Conversa asks for exactly these:
 
@@ -32,77 +138,17 @@ Conversa asks for exactly these:
 | `instagram_business_manage_messages` | Sending and reading direct messages, private replies |
 | `instagram_business_manage_comments` | Reading comments and posting public replies          |
 
-## 3. Business login (OAuth)
+## Connection status
 
-Under **Set up Instagram business login → Business login settings**:
+**Instance settings → Instagram app** (and the Channels page, for instance admins) shows what Conversa can tell about Meta's side:
 
-| Setting                   | Value                                                                   |
-| ------------------------- | ----------------------------------------------------------------------- |
-| OAuth redirect URI        | `https://conversa.example.com/api/v1/channels/oauth/instagram/callback` |
-| Deauthorize callback URL  | `https://conversa.example.com/api/v1/webhooks/instagram/deauthorize`    |
-| Data deletion request URL | `https://conversa.example.com/api/v1/webhooks/instagram/data-deletion`  |
+| Row                       | Meaning                                                                                                                                                                                                                                                                                                                               |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| App ID and secret         | Meta has no endpoint that checks an Instagram Login app's ID and secret on their own. Conversa asks Meta to exchange a sign-in code that cannot work and reads the refusal: a complaint about the code means the app ID and secret passed, a complaint about the app or secret means they did not. Anything else is "Could not tell". |
+| Webhook verified          | When Meta's **Verify and save** last reached this installation with the right token.                                                                                                                                                                                                                                                  |
+| Last event from Instagram | When a webhook with a valid signature last arrived, for any account. Each channel card shows the same for its own account.                                                                                                                                                                                                            |
 
-The redirect URI must match `APP_URL` exactly, scheme and host included.
-
-- **Deauthorize**: when someone removes the app from their Instagram account, Conversa disconnects that channel.
-- **Data deletion**: Conversa deletes the channel and everything learned through it (contacts, deliveries), and answers Meta with a status URL under `/legal/data-deletion`.
-
-Both callbacks carry a `signed_request` verified with the app secret.
-
-## 4. Webhooks
-
-Under **Configure webhooks**:
-
-| Setting      | Value                                                    |
-| ------------ | -------------------------------------------------------- |
-| Callback URL | `https://conversa.example.com/api/v1/webhooks/instagram` |
-| Verify token | the verify token saved in Instance settings              |
-
-Click **Verify and save**. Meta calls the URL with a challenge, and Conversa answers only if the token matches. Then subscribe these fields:
-
-| Field                 | Why                                         |
-| --------------------- | ------------------------------------------- |
-| `comments`            | Comment triggers                            |
-| `messages`            | DM and story-reply triggers                 |
-| `messaging_postbacks` | Taps on the opening and follow-gate buttons |
-
-Every webhook is checked against its `X-Hub-Signature-256` HMAC (the app secret) and rejected with `401` if it does not match.
-
-Conversa subscribes each account to the app's webhooks when it is connected, so there is nothing to do per account.
-
-## 5. App settings
-
-Under **App settings → Basic**:
-
-| Setting                           | Value                                        |
-| --------------------------------- | -------------------------------------------- |
-| Privacy policy URL                | `https://conversa.example.com/legal/privacy` |
-| Terms of service URL              | `https://conversa.example.com/legal/terms`   |
-| User data deletion                | Data deletion callback URL, as above         |
-| App icon, category, contact email | Your own                                     |
-
-The legal pages are public and ship with Conversa. Review their text and adapt it to how you run your installation.
-
-## 6. Connect an account
-
-On the Instagram account itself, in the Instagram app: **Settings → Messages and story replies → Message controls → Connected tools**, turn on **Allow access to messages**. Without it the messaging API refuses to send.
-
-Then in Conversa, an owner or admin opens **Channels → Connect Instagram**, signs in to Instagram and approves the permissions. One workspace can connect several accounts; an account can belong to only one workspace at a time.
-
-Tokens are long-lived (60 days) and refreshed automatically by the worker well before they expire. If a token stops working, the channel shows **Needs reconnecting**.
-
-## 7. Development mode and going live
-
-While the app is in **development mode**, only people with a role on the app (admins, developers, testers added under **App roles**) can connect their accounts, and webhooks are delivered only for those accounts. That is enough for a single team managing its own accounts.
-
-To connect accounts that do not have a role on the app, the app needs **Advanced Access** for the three permissions, which means **App Review** (and usually **business verification**). Notes for the review:
-
-- **Screencast**: show connecting an account, creating a comment automation with a keyword, commenting from a second account, and the private reply arriving. Then a DM automation, and the public reply under the comment.
-- **Why each permission**: `instagram_business_basic` lists the account's posts so the person can choose which posts an automation listens to; `instagram_business_manage_comments` receives comments and posts the optional public reply; `instagram_business_manage_messages` sends the private reply and DMs the person asked for.
-- **Test credentials**: give the reviewers an account on your Conversa instance, and say which keyword to comment.
-- Messages are sent only in response to the person's own comment, message or button tap. Conversa never sends unsolicited messages.
-
-Finally switch the app to **Live**.
+If the webhook was verified more than 15 minutes ago and nothing has arrived since, or an account has been connected for 15 minutes without an event, Conversa asks whether the app is Live and **Allow access to messages** is on. The credentials are never shown or logged by these checks.
 
 ## Platform limits
 
@@ -129,10 +175,14 @@ Only one tool should answer a conversation.
 
 ## Troubleshooting
 
-| Symptom                                               | Check                                                                                                                                                                                 |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Verify and save fails                                 | `APP_URL` is reachable over HTTPS from the internet; the verify token matches; a WAF or Access is not challenging `/api/v1/webhooks/*` ([cloudflare.md](cloudflare.md)).              |
-| Connect returns to Channels with an error             | The OAuth redirect URI matches exactly; the Instagram app ID and secret (not the Meta app ID) are saved in Instance settings; in development mode, the account has a role on the app. |
-| Comments arrive but no DM is sent                     | **Allow access to messages** is on; the automation is active and its keywords match; check **Activity** for the delivery and its skip or error reason.                                |
-| Channel shows Needs reconnecting                      | The token was revoked or the password changed. Reconnect it from Channels.                                                                                                            |
-| API logs `Rejected webhook with an invalid signature` | The app secret in Instance settings is the Instagram app secret of this app.                                                                                                          |
+| Error or symptom                                              | Cause                                                                                                               | Fix                                                                                                                                                                                            |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Invalid redirect_uri` when connecting                        | The Facebook app ID was saved instead of the Instagram app ID, or the redirect URI was pasted under Facebook Login. | Save the **Instagram app ID** and secret from **API setup with Instagram login** (step 2), and paste the OAuth redirect URI under Instagram's **Business login settings** (step 4).            |
+| `Insufficient developer role` when connecting                 | The Instagram account has no role on the app, or its tester invite was not accepted.                                | Add it under **App roles → Roles → Instagram Tester**, then accept at [instagram.com/accounts/manage_access](https://www.instagram.com/accounts/manage_access/) → **Tester invites** (step 6). |
+| Verify and save works, but no comment or message ever arrives | The Meta app is still in **Development mode**: Meta does not send real webhooks.                                    | Add the app icon (1024 × 1024), privacy policy and terms (step 5), then **Publish** to Live (step 8).                                                                                          |
+| Comments arrive, but DMs never do and private replies fail    | **Allow access to messages** is off on the Instagram account.                                                       | In the Instagram app: **Settings → Messages and story replies → Connected tools → Allow access to messages** (step 7).                                                                         |
+| Verify and save fails                                         | The verify token was not saved in Conversa first, or `APP_URL` is not reachable over HTTPS.                         | Save the app in Conversa, then verify again. Check that a WAF or Access is not challenging `/api/v1/webhooks/*` ([cloudflare.md](cloudflare.md)).                                              |
+| Connect returns to Channels with another error                | The redirect URI does not match `APP_URL` exactly.                                                                  | Compare the scheme and host with the OAuth redirect URI shown in Instance settings.                                                                                                            |
+| Comments arrive but no DM is sent                             | The automation is not active or its keywords do not match.                                                          | Check **Activity** for the delivery and its skip or error reason.                                                                                                                              |
+| Channel shows Needs reconnecting                              | The token was revoked or the password changed.                                                                      | Reconnect it from Channels.                                                                                                                                                                    |
+| API logs `Rejected webhook with an invalid signature`         | The app secret in Instance settings is not this app's Instagram app secret.                                         | Replace it with the Instagram app secret from step 2.                                                                                                                                          |

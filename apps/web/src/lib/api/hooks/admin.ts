@@ -1,4 +1,5 @@
 import type {
+  InstagramSetupStatusDto,
   InstanceSettingsDto,
   InstanceSettingsSection,
   InstanceUserDto,
@@ -32,6 +33,17 @@ export const instanceAdminsQuery = (get: ApiGet = api.get) =>
     queryFn: ({ signal }) => get<InstanceUserDto[]>('/instance/admins', signal),
   });
 
+/** Whether Meta accepts the app and has reached the webhooks. Asks Meta, so it is not refetched on focus. */
+export function useInstagramSetupStatus(enabled = true) {
+  return useQuery({
+    queryKey: keys.instagramStatus,
+    queryFn: ({ signal }) => api.get<InstagramSetupStatusDto>('/instance/instagram/status', signal),
+    enabled,
+    refetchOnWindowFocus: false,
+    refetchInterval: 60_000,
+  });
+}
+
 export function useInstanceSettings(enabled = true) {
   return useQuery({ ...instanceSettingsQuery(), enabled });
 }
@@ -44,6 +56,8 @@ export function useUpdateInstanceSettings<S extends InstanceSettingsSection>(sec
       api.patch<InstanceSettingsDto>(`/instance/settings/${section}`, input),
     onSuccess: async (settings) => {
       queryClient.setQueryData(keys.instanceSettings, settings);
+      if (section === 'instagram')
+        void queryClient.invalidateQueries({ queryKey: keys.instagramStatus });
       await queryClient.invalidateQueries({ queryKey: keys.instance, exact: true });
     },
   });

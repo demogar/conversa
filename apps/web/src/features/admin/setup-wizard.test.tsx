@@ -111,4 +111,30 @@ describe('SetupWizard', () => {
       fromAddress: 'no-reply@example.com',
     });
   });
+
+  it('guides through the Meta app and saves it without leaving the step', async () => {
+    const calls = mockApi({
+      'GET /me': me,
+      'GET /instance/settings': settings,
+      'PATCH /instance/settings/instagram': settings,
+    });
+    renderWithProviders(<SetupWizard />);
+    await userEvent.click(await screen.findByRole('button', { name: 'Skip for now' }));
+    expect(
+      await screen.findByRole('navigation', { name: 'Meta app setup steps' }),
+    ).toBeInTheDocument();
+
+    await userEvent.type(screen.getByRole('textbox', { name: /Instagram app ID/ }), '1234567890');
+    await userEvent.type(screen.getByLabelText(/Instagram app secret/), 'app-secret');
+    await userEvent.click(screen.getByRole('button', { name: 'Generate token' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Save Instagram app' }));
+
+    expect(await screen.findByText('Instagram app saved')).toBeInTheDocument();
+    expect(calls.find((call) => call.method === 'PATCH')?.body).toMatchObject({
+      appId: '1234567890',
+    });
+    // Still on the Instagram step, so the rest of the guide is at hand.
+    expect(screen.getByRole('navigation', { name: 'Meta app setup steps' })).toBeInTheDocument();
+    expect(screen.queryByRole('textbox', { name: /Site key/ })).not.toBeInTheDocument();
+  });
 });

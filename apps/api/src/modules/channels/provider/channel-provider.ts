@@ -4,7 +4,13 @@
  * interfaces, so adding a platform means adding one provider and registering
  * it in ProvidersModule, without touching the engine.
  */
-import type { ChannelType, ConversationDto, MediaDto, MessageDto } from '@conversa/shared';
+import type {
+  AppCredentialsCheck,
+  ChannelType,
+  ConversationDto,
+  MediaDto,
+  MessageDto,
+} from '@conversa/shared';
 
 /** Decrypted credentials for one connected account, for the duration of a call. */
 export interface ChannelSession {
@@ -111,6 +117,11 @@ export interface ChannelConnector {
   completeAuthorization(code: string, redirectUri: string): Promise<ConnectedAccount>;
   refreshCredentials(accessToken: string): Promise<RefreshedCredentials>;
   subscribeWebhooks(session: ChannelSession): Promise<void>;
+  /**
+   * Asks the platform whether it recognises the instance's app credentials,
+   * without connecting an account. Never throws.
+   */
+  checkAppCredentials(redirectUri: string): Promise<AppCredentialsCheck>;
 }
 
 /** Receiving the platform's webhooks. */

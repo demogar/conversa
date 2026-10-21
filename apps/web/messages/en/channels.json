@@ -50,6 +50,14 @@
     "tokenExpires": "Access expires",
     "tokenNever": "Does not expire",
     "connectedAt": "Connected",
+    "lastEvent": "Last event",
+    "lastEventNever": "None yet",
+    "noEvents": {
+      "title": "No events from Instagram yet",
+      "body": "This account was connected a while ago and Instagram has sent nothing for it. Is your Meta app in Live mode? Is Allow access to messages on in the Instagram app?",
+      "askAdmin": "This account was connected a while ago and Instagram has sent nothing for it. Ask the person who set up this installation to check that the Meta app is in Live mode, and check that Allow access to messages is on in the Instagram app.",
+      "openGuide": "Open the setup guide"
+    },
     "needsReauth": "Instagram stopped accepting this account's access. Its automations are paused until someone reconnects it.",
     "disconnectedNote": "Conversa no longer has access to this account. Reconnect it to use it again."
   },

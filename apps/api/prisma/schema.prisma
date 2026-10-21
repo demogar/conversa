@@ -168,6 +168,8 @@ model Channel {
   status            ChannelStatus @default(ACTIVE)
   webhookSubscribed Boolean       @default(false)
   lastError         String?
+  /// When a webhook for this account last arrived (written at most once a minute).
+  lastEventAt       DateTime?
   connectedById     String?
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
@@ -408,6 +410,16 @@ model BufferConnection {
 /// (mail, instagram, turnstile, signup). The whole value is encrypted JSON, so
 /// secrets such as the SMTP password or the Meta app secret are never readable
 /// from a database dump without ENCRYPTION_KEY.
+/// When a platform last reached this installation's webhooks, for the setup
+/// status in the admin area. One row per platform.
+model WebhookStatus {
+  channelType ChannelType @id
+  /// The platform's subscription check (Meta's "Verify and save") last passed.
+  verifiedAt  DateTime?
+  /// A webhook with a valid signature last arrived, for any account.
+  lastEventAt DateTime?
+}
+
 model InstanceSetting {
   key         String   @id
   value       String
