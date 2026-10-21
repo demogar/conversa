@@ -13,4 +13,5 @@
 - [ ] UI uses Mola UI components and tokens only, no ad hoc styling or other component libraries
 - [ ] No secrets, tokens, real hostnames, IP addresses or personal data in code, fixtures, logs or screenshots
 - [ ] Database changes come with a Prisma migration
+- [ ] Migrations are backward compatible (expand/contract), and queue payloads and cache keys still work with the previous release
 - [ ] New configuration is documented in `.env.example`

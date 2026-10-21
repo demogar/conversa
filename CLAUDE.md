@@ -46,6 +46,7 @@ pnpm --filter @conversa/shared build           # after changing packages/shared
 - **Encrypt** tokens and keys with `CryptoService`; store tokens sent to people as hashes; sign anything that comes back from outside.
 - **UI: Mola UI only** (`@demogar/mola-ui`). No other component library, no hand-made buttons/inputs/dialogs, no radius, no borders on controls, tokens only, logical properties, every state (loading, empty, no results, error, no permission). See `DESIGN.md` and `docs/contributing/frontend-guide.md`.
 - **Every visible word in both `en` and `es`**, same keys. Spanish is Latin American, `tú`, natural.
+- **Migrations are backward compatible with the previous release** (upgrades are rolling: old and new code run together). Expand/contract: add nullable columns and tables first, drop, rename or set `NOT NULL` only in a later release; enums add values only; big backfills are idempotent jobs. Queue payloads and Valkey keys stay compatible across one version. See `docs/contributing/backend-guide.md#database-migrations`.
 - Comments explain why. Match the surrounding code's density and naming.
 
 ## Commits and releases

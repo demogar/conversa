@@ -42,6 +42,7 @@ pnpm dev && pnpm dev:worker
 8. Never commit or print secrets, `.env` contents, real hostnames, IPs, emails or personal data. Do not read `.env`.
 9. Do not mention other projects as sources or inspiration.
 10. Run `pnpm check` before declaring work done and report the real result.
+11. Prisma migrations must be backward compatible with the previous release, because upgrades are rolling and both versions run at once. Use expand/contract: add nullable columns and tables first; drop, rename or make `NOT NULL` only in a later release; enums add values only; long backfills are idempotent jobs. Queue payloads and Valkey keys stay compatible across one version. Details: `docs/contributing/backend-guide.md#database-migrations`.
 
 ## Commits and releases
 
