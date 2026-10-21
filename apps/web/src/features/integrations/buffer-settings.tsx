@@ -66,15 +66,29 @@ export function BufferSettings({ workspaceId }: { workspaceId: string }) {
   }
 
   return (
-    <SkeletonGroup loading={status.isPending || !workspace} label={t('loading')} fallback={<BufferSkeleton />}>
+    <SkeletonGroup
+      loading={status.isPending || !workspace}
+      label={t('loading')}
+      fallback={<BufferSkeleton />}
+    >
       {status.data && workspace ? (
         <>
           {!canEdit ? (
-            <Callout tone="info" variant="flat" headingLevel={2} title={t('buffer.readOnly.title')} className="mb-4">
+            <Callout
+              tone="info"
+              variant="flat"
+              headingLevel={2}
+              title={t('buffer.readOnly.title')}
+              className="mb-4"
+            >
               {t('buffer.readOnly.description')}
             </Callout>
           ) : null}
-          <SettingsSection id="integrations-buffer" title={t('buffer.title')} description={t('buffer.description')}>
+          <SettingsSection
+            id="integrations-buffer"
+            title={t('buffer.title')}
+            description={t('buffer.description')}
+          >
             <Text size="sm" variant="secondary">
               {t('buffer.howItWorks')}
             </Text>
@@ -89,7 +103,9 @@ export function BufferSettings({ workspaceId }: { workspaceId: string }) {
               />
             )}
           </SettingsSection>
-          {status.data.connected && status.data.organizationId ? <LinkedChannels workspaceId={workspaceId} /> : null}
+          {status.data.connected && status.data.organizationId ? (
+            <LinkedChannels workspaceId={workspaceId} />
+          ) : null}
         </>
       ) : null}
     </SkeletonGroup>
@@ -179,7 +195,9 @@ function ConnectedBuffer({
 
   const options = (organizations.data ?? []).map((org) => ({ value: org.id, label: org.name }));
   const choosable = canEdit && (options.length > 1 || !status.organizationId);
-  const syncError = SYNC_ERRORS.find((kind) => kind === status.lastError) ?? (status.lastError ? 'unavailable' : null);
+  const syncError =
+    SYNC_ERRORS.find((kind) => kind === status.lastError) ??
+    (status.lastError ? 'unavailable' : null);
 
   function choose(organizationId: string | null) {
     if (!organizationId || organizationId === status.organizationId) return;
@@ -211,10 +229,16 @@ function ConnectedBuffer({
               </Badge>
             ),
           },
-          ...(choosable ? [] : [{ term: t('organization'), detail: status.organizationName ?? tCommon('none') }]),
+          ...(choosable
+            ? []
+            : [{ term: t('organization'), detail: status.organizationName ?? tCommon('none') }]),
           {
             term: t('lastSync'),
-            detail: status.lastSyncedAt ? <RelativeTime date={status.lastSyncedAt} /> : tCommon('never'),
+            detail: status.lastSyncedAt ? (
+              <RelativeTime date={status.lastSyncedAt} />
+            ) : (
+              tCommon('never')
+            ),
           },
         ]}
       />
@@ -274,7 +298,11 @@ function LinkedChannels({ workspaceId }: { workspaceId: string }) {
   const channelsHref = workspacePath(workspaceId, '/channels');
 
   return (
-    <SettingsSection id="integrations-buffer-channels" title={t('title')} description={t('description')}>
+    <SettingsSection
+      id="integrations-buffer-channels"
+      title={t('title')}
+      description={t('description')}
+    >
       {remote.isPending ? (
         <SkeletonText lines={3} />
       ) : remote.isError ? (
@@ -293,11 +321,17 @@ function LinkedChannels({ workspaceId }: { workspaceId: string }) {
           {t('empty')}
         </Text>
       ) : (
-        <ul aria-label={t('listLabel')} className="m-0 flex list-none flex-col divide-y divide-keyline p-0">
+        <ul
+          aria-label={t('listLabel')}
+          className="m-0 flex list-none flex-col divide-y divide-keyline p-0"
+        >
           {remote.data.map((channel) => {
             const linked = local.data?.find((item) => item.id === channel.linkedChannelId);
             return (
-              <li key={channel.id} className="flex flex-wrap items-center gap-3 py-3 first:pt-0 last:pb-0">
+              <li
+                key={channel.id}
+                className="flex flex-wrap items-center gap-3 py-3 first:pt-0 last:pb-0"
+              >
                 <Avatar name={channel.name} src={channel.avatar ?? undefined} size="sm" />
                 <span className="min-w-0 flex-1 truncate text-sm font-medium">{channel.name}</span>
                 {channel.linkedChannelId ? (

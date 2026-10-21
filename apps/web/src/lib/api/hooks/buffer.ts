@@ -26,7 +26,8 @@ export function useBufferStatus(workspaceId: string) {
 export function useBufferOrganizations(workspaceId: string, enabled: boolean) {
   return useQuery({
     queryKey: keys.bufferOrganizations(workspaceId),
-    queryFn: ({ signal }) => api.get<BufferOrganizationDto[]>(`${base(workspaceId)}/organizations`, signal),
+    queryFn: ({ signal }) =>
+      api.get<BufferOrganizationDto[]>(`${base(workspaceId)}/organizations`, signal),
     enabled,
   });
 }
@@ -42,7 +43,8 @@ export function useBufferChannels(workspaceId: string, enabled: boolean) {
 export function useBufferPosts(workspaceId: string, view: BufferPostView, enabled: boolean) {
   return useQuery({
     queryKey: keys.bufferPosts(workspaceId, view),
-    queryFn: ({ signal }) => api.get<BufferPostDto[]>(`${base(workspaceId)}/posts?view=${view}`, signal),
+    queryFn: ({ signal }) =>
+      api.get<BufferPostDto[]>(`${base(workspaceId)}/posts?view=${view}`, signal),
     enabled,
   });
 }

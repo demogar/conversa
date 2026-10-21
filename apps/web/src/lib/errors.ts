@@ -32,7 +32,8 @@ export function useFieldErrors(): (source: z.ZodError | unknown) => FieldErrors 
     (source: unknown) => {
       let fields: Record<string, string[]> = {};
       if (source instanceof ApiError) fields = source.fields;
-      else if (source && typeof source === 'object' && 'issues' in source) fields = issuesToFields(source as z.ZodError);
+      else if (source && typeof source === 'object' && 'issues' in source)
+        fields = issuesToFields(source as z.ZodError);
       const result: FieldErrors = {};
       for (const [path, codes] of Object.entries(fields)) {
         const code = codes[0] ?? 'required';

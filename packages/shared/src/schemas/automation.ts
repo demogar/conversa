@@ -113,4 +113,3 @@ export const setAutomationStatusSchema = z.object({
   status: z.enum([AutomationStatus.ACTIVE, AutomationStatus.PAUSED]),
 });
 export type SetAutomationStatusInput = z.infer<typeof setAutomationStatusSchema>;
-

@@ -47,13 +47,19 @@ export function buildCommentPayload(
   };
 }
 
-export function buildMessagePayload(input: SimulatedBase & { messageId: string; username: string; text: string }) {
-  return messagingPayload(input, sandboxUserId(input.username), { message: { mid: input.messageId, text: input.text } });
+export function buildMessagePayload(
+  input: SimulatedBase & { messageId: string; username: string; text: string },
+) {
+  return messagingPayload(input, sandboxUserId(input.username), {
+    message: { mid: input.messageId, text: input.text },
+  });
 }
 
 /** A tap on a postback button, sent by the contact who received it. */
 export function buildPostbackPayload(input: SimulatedBase & { senderId: string; payload: string }) {
-  return messagingPayload(input, input.senderId, { postback: { title: 'Tap', payload: input.payload } });
+  return messagingPayload(input, input.senderId, {
+    postback: { title: 'Tap', payload: input.payload },
+  });
 }
 
 function messagingPayload(input: SimulatedBase, senderId: string, body: Record<string, unknown>) {

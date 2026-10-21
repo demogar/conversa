@@ -42,7 +42,10 @@ export function OverviewScreen({ workspaceId }: { workspaceId: string }) {
   const automations = useAutomationOptions(workspaceId);
   const data = dashboard.data;
 
-  const showChecklist = data !== undefined && automations.data !== undefined && (data.channels === 0 || automations.data.length === 0);
+  const showChecklist =
+    data !== undefined &&
+    automations.data !== undefined &&
+    (data.channels === 0 || automations.data.length === 0);
 
   return (
     <>
@@ -97,7 +100,10 @@ export function OverviewScreen({ workspaceId }: { workspaceId: string }) {
             }
           >
             {data ? (
-              <div className="flex flex-col gap-6" aria-busy={dashboard.isPlaceholderData || undefined}>
+              <div
+                className="flex flex-col gap-6"
+                aria-busy={dashboard.isPlaceholderData || undefined}
+              >
                 <h2 className="sr-only">{t('stats.label')}</h2>
                 <StatGroup columns={5}>
                   <Stat
@@ -136,7 +142,13 @@ export function OverviewScreen({ workspaceId }: { workspaceId: string }) {
   );
 }
 
-function TopAutomations({ workspaceId, rows }: { workspaceId: string; rows: DashboardDto['topAutomations'] }) {
+function TopAutomations({
+  workspaceId,
+  rows,
+}: {
+  workspaceId: string;
+  rows: DashboardDto['topAutomations'];
+}) {
   const t = useTranslations('dashboard.top');
   const format = useFormatter();
   return (
@@ -161,7 +173,13 @@ function TopAutomations({ workspaceId, rows }: { workspaceId: string; rows: Dash
             rows.map((row) => (
               <TableRow key={row.id}>
                 <TableCell truncate>
-                  <Link render={<NextLink href={workspacePath(workspaceId, `/automations/${row.id}`)} />}>{row.name}</Link>
+                  <Link
+                    render={
+                      <NextLink href={workspacePath(workspaceId, `/automations/${row.id}`)} />
+                    }
+                  >
+                    {row.name}
+                  </Link>
                 </TableCell>
                 <TableCell numeric>{format.number(row.sent)}</TableCell>
                 <TableCell numeric>{format.number(row.clicks)}</TableCell>

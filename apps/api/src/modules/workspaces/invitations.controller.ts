@@ -30,7 +30,9 @@ export class InvitationsController {
       where: { id: auth.userId },
       select: { id: true, email: true },
     });
-    const workspaceId = await this.prisma.$transaction((tx) => this.invitations.accept(tx, body.token, user));
+    const workspaceId = await this.prisma.$transaction((tx) =>
+      this.invitations.accept(tx, body.token, user),
+    );
     return { workspaceId };
   }
 }

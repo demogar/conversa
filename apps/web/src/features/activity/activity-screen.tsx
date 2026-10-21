@@ -60,7 +60,10 @@ export function ActivityScreen({ workspaceId }: { workspaceId: string }) {
 
   const automationItems = [
     { value: ALL, label: t('filters.allAutomations') },
-    ...(automations.data ?? []).map((automation) => ({ value: automation.id, label: automation.name })),
+    ...(automations.data ?? []).map((automation) => ({
+      value: automation.id,
+      label: automation.name,
+    })),
   ];
   const statusItems = [
     { value: ALL, label: t('filters.allStatuses') },
@@ -83,7 +86,11 @@ export function ActivityScreen({ workspaceId }: { workspaceId: string }) {
       <PageHeader title={t('title')} description={t('description')} />
       <div className="flex flex-col gap-4 p-4 sm:p-6">
         <section aria-label={t('filters.label')} className="bg-cloth-pale shadow-cut">
-          <div role="search" aria-label={t('filters.label')} className="grid items-end gap-3 p-3 sm:grid-cols-[1fr_1fr_auto]">
+          <div
+            role="search"
+            aria-label={t('filters.label')}
+            className="grid items-end gap-3 p-3 sm:grid-cols-[1fr_1fr_auto]"
+          >
             <Field label={t('filters.automation')}>
               {(control) => (
                 <Select
@@ -126,7 +133,12 @@ export function ActivityScreen({ workspaceId }: { workspaceId: string }) {
         ) : (
           <>
             <h2 className="sr-only">{t('table.label')}</h2>
-            <Table aria-label={t('table.label')} aria-busy={activity.isPending || undefined} framed className="min-w-[64rem]">
+            <Table
+              aria-label={t('table.label')}
+              aria-busy={activity.isPending || undefined}
+              framed
+              className="min-w-[64rem]"
+            >
               <TableHeader>
                 <TableRow>
                   <TableHead>{t('table.time')}</TableHead>
@@ -144,7 +156,12 @@ export function ActivityScreen({ workspaceId }: { workspaceId: string }) {
                   <TableSkeletonRows columns={COLUMNS} />
                 ) : rows.length === 0 ? (
                   filtered ? (
-                    <TableEmpty colSpan={COLUMNS} kind="no-results" title={t('noResults.title')} actions={clearButton}>
+                    <TableEmpty
+                      colSpan={COLUMNS}
+                      kind="no-results"
+                      title={t('noResults.title')}
+                      actions={clearButton}
+                    >
                       {t('noResults.description')}
                     </TableEmpty>
                   ) : (
@@ -156,7 +173,9 @@ export function ActivityScreen({ workspaceId }: { workspaceId: string }) {
                           size="sm"
                           variant="secondary"
                           icon={<Plus />}
-                          render={<NextLink href={workspacePath(workspaceId, '/automations/new')} />}
+                          render={
+                            <NextLink href={workspacePath(workspaceId, '/automations/new')} />
+                          }
                         >
                           {t('empty.action')}
                         </LinkButton>
@@ -167,14 +186,22 @@ export function ActivityScreen({ workspaceId }: { workspaceId: string }) {
                   )
                 ) : (
                   rows.map((delivery) => (
-                    <DeliveryRow key={delivery.id} delivery={delivery} explanation={explain(delivery)} />
+                    <DeliveryRow
+                      key={delivery.id}
+                      delivery={delivery}
+                      explanation={explain(delivery)}
+                    />
                   ))
                 )}
               </TableBody>
             </Table>
             {activity.hasNextPage ? (
               <div>
-                <Button variant="secondary" loading={activity.isFetchingNextPage} onClick={() => activity.fetchNextPage()}>
+                <Button
+                  variant="secondary"
+                  loading={activity.isFetchingNextPage}
+                  onClick={() => activity.fetchNextPage()}
+                >
                   {tCommon('actions.loadMore')}
                 </Button>
               </div>
@@ -186,12 +213,22 @@ export function ActivityScreen({ workspaceId }: { workspaceId: string }) {
   );
 }
 
-function DeliveryRow({ delivery, explanation }: { delivery: DeliveryDto; explanation: string | null }) {
+function DeliveryRow({
+  delivery,
+  explanation,
+}: {
+  delivery: DeliveryDto;
+  explanation: string | null;
+}) {
   const t = useTranslations('activity');
   return (
     <TableRow>
       <TableCell>
-        <RelativeTime date={delivery.createdAt} format="short" className="whitespace-nowrap text-ink-muted" />
+        <RelativeTime
+          date={delivery.createdAt}
+          format="short"
+          className="whitespace-nowrap text-ink-muted"
+        />
       </TableCell>
       <TableCell>
         {delivery.contact.username ? (
@@ -205,7 +242,11 @@ function DeliveryRow({ delivery, explanation }: { delivery: DeliveryDto; explana
         {delivery.triggerText}
       </TableCell>
       <TableCell>
-        {delivery.matchedKeyword ? <Code>{delivery.matchedKeyword}</Code> : <span className="text-ink-muted">{t('anyText')}</span>}
+        {delivery.matchedKeyword ? (
+          <Code>{delivery.matchedKeyword}</Code>
+        ) : (
+          <span className="text-ink-muted">{t('anyText')}</span>
+        )}
       </TableCell>
       <TableCell>
         <DeliveryStatusBadge status={delivery.status} />
@@ -220,7 +261,11 @@ function DeliveryRow({ delivery, explanation }: { delivery: DeliveryDto; explana
                 <Code>{delivery.errorCode}</Code>
               </span>
             ) : null}
-            {delivery.attempts > 1 ? <span className="ms-1 text-ink-muted">· {t('attempts', { count: delivery.attempts })}</span> : null}
+            {delivery.attempts > 1 ? (
+              <span className="ms-1 text-ink-muted">
+                · {t('attempts', { count: delivery.attempts })}
+              </span>
+            ) : null}
           </Text>
         ) : (
           '—'

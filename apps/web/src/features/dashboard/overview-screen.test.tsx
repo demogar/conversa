@@ -4,7 +4,14 @@ import { mockApi, renderWithProviders } from '@/test/render';
 import { OverviewScreen } from './overview-screen';
 
 const me = {
-  user: { id: 'u1', email: 'ana@example.com', name: 'Ana', locale: 'en', mfaEnabled: false, createdAt: '2026-01-01T00:00:00Z' },
+  user: {
+    id: 'u1',
+    email: 'ana@example.com',
+    name: 'Ana',
+    locale: 'en',
+    mfaEnabled: false,
+    createdAt: '2026-01-01T00:00:00Z',
+  },
   workspaces: [{ id: 'w1', name: 'Bakery', role: 'MEMBER', createdAt: '2026-01-01T00:00:00Z' }],
 } satisfies MeDto;
 
@@ -33,7 +40,10 @@ describe('OverviewScreen', () => {
     expect(await screen.findByText('1,284')).toBeInTheDocument();
     expect(screen.getByText('2 active automations')).toBeInTheDocument();
     const top = screen.getByRole('table', { name: 'Automations with the most messages sent' });
-    expect(within(top).getByRole('link', { name: 'Price list' })).toHaveAttribute('href', '/w/w1/automations/a1');
+    expect(within(top).getByRole('link', { name: 'Price list' })).toHaveAttribute(
+      'href',
+      '/w/w1/automations/a1',
+    );
     expect(screen.queryByText('Get started')).not.toBeInTheDocument();
   });
 
@@ -47,6 +57,9 @@ describe('OverviewScreen', () => {
     expect(await screen.findByRole('heading', { name: 'Get started' })).toBeInTheDocument();
     expect(screen.getByText(/Only an owner or an admin/)).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Connect Instagram' })).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Create automation' })).toHaveAttribute('href', '/w/w1/automations/new');
+    expect(screen.getByRole('link', { name: 'Create automation' })).toHaveAttribute(
+      'href',
+      '/w/w1/automations/new',
+    );
   });
 });

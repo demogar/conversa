@@ -18,11 +18,7 @@ import { ShieldCheck } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { type FormEvent, useState } from 'react';
 import { SettingsSection } from '@/features/settings/settings-section';
-import {
-  useDisableMfa,
-  useEnableMfa,
-  useStartMfa,
-} from '@/lib/api/hooks/account';
+import { useDisableMfa, useEnableMfa, useStartMfa } from '@/lib/api/hooks/account';
 import { type FieldErrors, useErrorMessage, useFieldErrors } from '@/lib/errors';
 
 /**

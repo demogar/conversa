@@ -23,7 +23,9 @@ export class ContactsService {
       where: {
         workspaceId,
         ...(query.channelId ? { channelId: query.channelId } : {}),
-        ...(query.search ? { username: { contains: query.search.replace(/^@/, ''), mode: 'insensitive' } } : {}),
+        ...(query.search
+          ? { username: { contains: query.search.replace(/^@/, ''), mode: 'insensitive' } }
+          : {}),
       },
       orderBy: [{ lastInteractionAt: 'desc' }, { id: 'desc' }],
       take: query.limit + 1,
@@ -48,7 +50,10 @@ export class ContactsController {
   constructor(private readonly contacts: ContactsService) {}
 
   @Get()
-  list(@CurrentMembership() membership: MembershipContext, @ZodQuery(contactsQuery) query: ContactsQuery) {
+  list(
+    @CurrentMembership() membership: MembershipContext,
+    @ZodQuery(contactsQuery) query: ContactsQuery,
+  ) {
     return this.contacts.list(membership.workspaceId, query);
   }
 }

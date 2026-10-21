@@ -10,7 +10,11 @@ function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
 }
 
-function layout(paragraphs: string[], action: { label: string; url: string }, footer: string): string {
+function layout(
+  paragraphs: string[],
+  action: { label: string; url: string },
+  footer: string,
+): string {
   const body = paragraphs.map((p) => `<p style="margin:0 0 16px">${escapeHtml(p)}</p>`).join('');
   return `<!doctype html><html><body style="font-family:system-ui,sans-serif;color:#1d1b16;max-width:520px;margin:32px auto;padding:0 16px">
 ${body}
@@ -20,7 +24,12 @@ ${body}
 </body></html>`;
 }
 
-function build(paragraphs: string[], action: { label: string; url: string }, footer: string, subject: string): MailContent {
+function build(
+  paragraphs: string[],
+  action: { label: string; url: string },
+  footer: string,
+  subject: string,
+): MailContent {
   return {
     subject,
     text: [...paragraphs, `${action.label}: ${action.url}`, footer].join('\n\n'),

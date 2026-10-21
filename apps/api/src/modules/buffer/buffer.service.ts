@@ -58,7 +58,11 @@ export class BufferService {
       organizationName: only?.name ?? null,
       lastError: null,
     };
-    await this.prisma.bufferConnection.upsert({ where: { workspaceId }, create: { workspaceId, ...data }, update: data });
+    await this.prisma.bufferConnection.upsert({
+      where: { workspaceId },
+      create: { workspaceId, ...data },
+      update: data,
+    });
     await this.clearCache(workspaceId);
     await this.audit.record({ action: 'buffer.connected', actorId, workspaceId });
     return this.status(workspaceId);
@@ -72,11 +76,15 @@ export class BufferService {
 
   async organizations(workspaceId: string): Promise<BufferOrganizationDto[]> {
     const link = await this.requireLink(workspaceId);
-    return this.cached(workspaceId, 'organizations', () => this.client.organizations(this.key(link)));
+    return this.cached(workspaceId, 'organizations', () =>
+      this.client.organizations(this.key(link)),
+    );
   }
 
   async selectOrganization(workspaceId: string, organizationId: string): Promise<BufferStatusDto> {
-    const organization = (await this.organizations(workspaceId)).find((org) => org.id === organizationId);
+    const organization = (await this.organizations(workspaceId)).find(
+      (org) => org.id === organizationId,
+    );
     if (!organization) throw AppException.notFound();
     await this.prisma.bufferConnection.update({
       where: { workspaceId },
@@ -90,7 +98,9 @@ export class BufferService {
   async listChannels(workspaceId: string): Promise<BufferChannelDto[]> {
     const link = await this.requireOrganization(workspaceId);
     const [remote, local] = await Promise.all([
-      this.cached(workspaceId, 'channels', () => this.client.channels(this.key(link), link.organizationId)),
+      this.cached(workspaceId, 'channels', () =>
+        this.client.channels(this.key(link), link.organizationId),
+      ),
       this.prisma.channel.findMany({ where: { workspaceId, status: { not: 'DISCONNECTED' } } }),
     ]);
     return remote
@@ -142,9 +152,16 @@ export class BufferService {
    * became. Buffer reports the published post's URL; the media is found on
    * the channel by its shortcode. Run by the maintenance queue.
    */
-  async resolveArmedAutomations(bind: (automationId: string, mediaId: string) => Promise<boolean>): Promise<void> {
+  async resolveArmedAutomations(
+    bind: (automationId: string, mediaId: string) => Promise<boolean>,
+  ): Promise<void> {
     const waiting = await this.prisma.automation.findMany({
-      where: { postScope: 'BUFFER_POST', status: 'ACTIVE', scopeResolvedAt: null, bufferPostId: { not: null } },
+      where: {
+        postScope: 'BUFFER_POST',
+        status: 'ACTIVE',
+        scopeResolvedAt: null,
+        bufferPostId: { not: null },
+      },
       include: { channel: true, workspace: { include: { bufferLink: true } } },
       take: 50,
     });
@@ -161,7 +178,10 @@ export class BufferService {
           .listMedia(this.channels.session(automation.channel), 25);
         const match = media.find((item) => instagramShortcode(item.permalink) === shortcode);
         if (match && (await bind(automation.id, match.id))) {
-          this.logger.log({ automationId: automation.id, mediaId: match.id }, 'Bound automation to its Buffer post');
+          this.logger.log(
+            { automationId: automation.id, mediaId: match.id },
+            'Bound automation to its Buffer post',
+          );
         }
       } catch (error) {
         await this.recordError(link, error);
@@ -188,7 +208,9 @@ export class BufferService {
     return link;
   }
 
-  private async requireOrganization(workspaceId: string): Promise<BufferConnection & { organizationId: string }> {
+  private async requireOrganization(
+    workspaceId: string,
+  ): Promise<BufferConnection & { organizationId: string }> {
     const link = await this.requireLink(workspaceId);
     if (!link.organizationId) throw new AppException(ErrorCode.BUFFER_NOT_CONNECTED);
     return link as BufferConnection & { organizationId: string };
@@ -222,4 +244,3 @@ export class BufferService {
     }
   }
 }
-

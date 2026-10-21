@@ -13,5 +13,9 @@ import { BufferService } from './buffer.service.js';
 export class BufferModule {}
 
 /** The service alone, for the worker's sync job. */
-@Module({ imports: [ChannelsModule], providers: [BufferClient, BufferService], exports: [BufferService] })
+@Module({
+  imports: [ChannelsModule],
+  providers: [BufferClient, BufferService],
+  exports: [BufferService],
+})
 export class BufferSyncModule {}

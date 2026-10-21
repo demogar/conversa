@@ -36,11 +36,24 @@ export class WorkspacesService {
     const workspace = await this.prisma.workspace.create({
       data: { name, memberships: { create: { userId, role: WorkspaceRole.OWNER } } },
     });
-    await this.audit.record({ action: 'workspace.created', actorId: userId, workspaceId: workspace.id });
-    return { id: workspace.id, name: workspace.name, role: 'OWNER', createdAt: workspace.createdAt.toISOString() };
+    await this.audit.record({
+      action: 'workspace.created',
+      actorId: userId,
+      workspaceId: workspace.id,
+    });
+    return {
+      id: workspace.id,
+      name: workspace.name,
+      role: 'OWNER',
+      createdAt: workspace.createdAt.toISOString(),
+    };
   }
 
-  async rename(membership: MembershipContext, actorId: string, name: string): Promise<WorkspaceDto> {
+  async rename(
+    membership: MembershipContext,
+    actorId: string,
+    name: string,
+  ): Promise<WorkspaceDto> {
     const workspace = await this.prisma.workspace.update({
       where: { id: membership.workspaceId },
       data: { name },
@@ -77,7 +90,12 @@ export class WorkspacesService {
    * Admins manage members and admins; only owners touch ownership. A
    * workspace always keeps at least one owner.
    */
-  async changeRole(actor: MembershipContext, actorId: string, userId: string, role: WorkspaceRole): Promise<void> {
+  async changeRole(
+    actor: MembershipContext,
+    actorId: string,
+    userId: string,
+    role: WorkspaceRole,
+  ): Promise<void> {
     const target = await this.findMember(actor.workspaceId, userId);
     const touchesOwnership = target.role === WorkspaceRole.OWNER || role === WorkspaceRole.OWNER;
     if (touchesOwnership && actor.role !== WorkspaceRole.OWNER) throw AppException.forbidden();
@@ -103,7 +121,8 @@ export class WorkspacesService {
     const leaving = actorId === userId;
     if (!leaving) {
       if (!hasRole(actor.role, WorkspaceRole.ADMIN)) throw AppException.forbidden();
-      if (target.role === WorkspaceRole.OWNER && actor.role !== WorkspaceRole.OWNER) throw AppException.forbidden();
+      if (target.role === WorkspaceRole.OWNER && actor.role !== WorkspaceRole.OWNER)
+        throw AppException.forbidden();
     }
     await this.prisma.$transaction(async (tx) => {
       if (target.role === WorkspaceRole.OWNER) await this.assertNotLastOwner(tx, actor.workspaceId);

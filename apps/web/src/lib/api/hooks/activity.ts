@@ -31,6 +31,7 @@ export function useActivity(workspaceId: string, filters: ActivityFilters) {
 export function useAutomationOptions(workspaceId: string) {
   return useQuery({
     queryKey: keys.automations(workspaceId),
-    queryFn: ({ signal }) => api.get<AutomationDto[]>(`/workspaces/${workspaceId}/automations`, signal),
+    queryFn: ({ signal }) =>
+      api.get<AutomationDto[]>(`/workspaces/${workspaceId}/automations`, signal),
   });
 }

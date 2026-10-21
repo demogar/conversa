@@ -19,7 +19,12 @@ export type SendInboxMessageInput = z.infer<typeof sendInboxMessageSchema>;
 export const simulateEventSchema = z.object({
   kind: z.enum(['comment', 'message']),
   text: z.string().trim().min(1).max(2200),
-  username: z.string().trim().min(1).max(30).regex(/^[\w.]+$/, 'invalid_format'),
+  username: z
+    .string()
+    .trim()
+    .min(1)
+    .max(30)
+    .regex(/^[\w.]+$/, 'invalid_format'),
   mediaId: z.string().trim().max(64).optional(),
 });
 export type SimulateEventInput = z.infer<typeof simulateEventSchema>;

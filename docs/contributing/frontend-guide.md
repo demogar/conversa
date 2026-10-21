@@ -5,19 +5,19 @@ How the web app (`apps/web`) is put together, and the rules every screen follows
 ## Stack
 
 - Next.js 16 App Router (`src/app`). Pages are client components that fetch through TanStack Query; layouts may be server components.
-- UI comes **only** from [`@demogar/mola-ui`](https://demogar.github.io/molaui/). Do not write generic UI components (buttons, inputs, cards, tables, dialogs…). Feature components in `src/features/<area>/` *compose* Mola components; they never restyle or re-implement them.
+- UI comes **only** from [`@demogar/mola-ui`](https://demogar.github.io/molaui/). Do not write generic UI components (buttons, inputs, cards, tables, dialogs…). Feature components in `src/features/<area>/` _compose_ Mola components; they never restyle or re-implement them.
 - Tailwind v4 with Mola's layer (`@demogar/mola-ui/tailwind.css`): layout utilities (`grid`, `gap-4`, `p-6`) and Mola's token utilities (`text-ink-muted`, `bg-cloth`, `shadow-cut`). The ESLint plugin `@demogar/mola-ui/eslint` enforces the design rules.
 - `next-intl` without locale routing: the locale comes from the `conversa_locale` cookie, then the browser. English and Spanish.
 
 ## Where things go
 
-| What | Where |
-| --- | --- |
-| A route | `src/app/(app)/w/[workspaceId]/<area>/page.tsx` (inside the app shell) |
-| Screens and pieces of one area | `src/features/<area>/` |
+| What                                  | Where                                                                                                      |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| A route                               | `src/app/(app)/w/[workspaceId]/<area>/page.tsx` (inside the app shell)                                     |
+| Screens and pieces of one area        | `src/features/<area>/`                                                                                     |
 | API calls and query hooks of one area | `src/lib/api/hooks/<area>.ts` (use `api` from `src/lib/api/client.ts` and keys from `src/lib/api/keys.ts`) |
-| Words | `messages/en/<namespace>.json` and `messages/es/<namespace>.json` — always both, same keys |
-| Tests | beside the file, `*.test.tsx` (Jest + React Testing Library) |
+| Words                                 | `messages/en/<namespace>.json` and `messages/es/<namespace>.json` — always both, same keys                 |
+| Tests                                 | beside the file, `*.test.tsx` (Jest + React Testing Library)                                               |
 
 ## Rules
 
@@ -35,3 +35,5 @@ How the web app (`apps/web`) is put together, and the rules every screen follows
 
 - Component API: `node_modules/@demogar/mola-ui/docs/ai/components.json` or https://demogar.github.io/molaui/llms-components.txt
 - Whole-screen examples to copy from: the Mola patterns (settings page, filtered table, list and detail, confirmation, empty states).
+- The Mola MCP server (registered in `.mcp.json`) answers component and token questions for the installed version, and its `check_code` tool reviews a screen against the design rules. `pnpm --filter @conversa/web lint` runs the same rules.
+- The product's design direction and voice: [DESIGN.md](../../DESIGN.md). Adding words: [i18n.md](../i18n.md).

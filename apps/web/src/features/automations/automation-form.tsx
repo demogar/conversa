@@ -58,12 +58,19 @@ interface AutomationFormProps {
   automation?: AutomationDto;
   saving: boolean;
   saveError: unknown;
-  onSave: (input: CreateAutomationInput | UpdateAutomationInput, intent: SaveIntent) => Promise<unknown>;
+  onSave: (
+    input: CreateAutomationInput | UpdateAutomationInput,
+    intent: SaveIntent,
+  ) => Promise<unknown>;
 }
 
 /** A refusal the form can show next to its fields. */
 function isFieldError(error: unknown): error is ApiError {
-  return error instanceof ApiError && error.code === 'VALIDATION_FAILED' && Object.keys(error.fields).length > 0;
+  return (
+    error instanceof ApiError &&
+    error.code === 'VALIDATION_FAILED' &&
+    Object.keys(error.fields).length > 0
+  );
 }
 
 /** A titled region of the form, cut as its own panel. */
@@ -89,7 +96,15 @@ function CharacterCount({ count, max }: { count: number; max: number }) {
   );
 }
 
-export function AutomationForm({ workspaceId, channels, initial, automation, saving, saveError, onSave }: AutomationFormProps) {
+export function AutomationForm({
+  workspaceId,
+  channels,
+  initial,
+  automation,
+  saving,
+  saveError,
+  onSave,
+}: AutomationFormProps) {
   const t = useTranslations('automations.builder');
   const tErrors = useTranslations('errors.fields');
   const errorMessage = useErrorMessage();
@@ -121,7 +136,8 @@ export function AutomationForm({ workspaceId, channels, initial, automation, sav
   const errors: FieldErrors = { ...(submitted ? validate(draft).errors : {}), ...serverErrors };
 
   const bufferPosts = useScheduledBufferPosts(workspaceId);
-  const bufferMissing = bufferPosts.error instanceof ApiError && bufferPosts.error.code === 'BUFFER_NOT_CONNECTED';
+  const bufferMissing =
+    bufferPosts.error instanceof ApiError && bufferPosts.error.code === 'BUFFER_NOT_CONNECTED';
   const bufferOffered = !bufferMissing || draft.postScope === 'BUFFER_POST';
 
   const update = (patch: Partial<AutomationDraft>) => {
@@ -149,7 +165,10 @@ export function AutomationForm({ workspaceId, channels, initial, automation, sav
   const channelItems = selectableChannels.map((channel) => ({
     value: channel.id,
     label: `@${channel.username}`,
-    description: channel.status === 'NEEDS_REAUTH' ? t('basics.channelNeedsReauth') : (channel.displayName ?? undefined),
+    description:
+      channel.status === 'NEEDS_REAUTH'
+        ? t('basics.channelNeedsReauth')
+        : (channel.displayName ?? undefined),
   }));
 
   const test = testText.trim()
@@ -189,7 +208,12 @@ export function AutomationForm({ workspaceId, channels, initial, automation, sav
 
             <FormSection id={`${ids}-basics`} title={t('basics.title')}>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <Field label={t('basics.name')} required hint={t('basics.nameHint')} error={errors.name}>
+                <Field
+                  label={t('basics.name')}
+                  required
+                  hint={t('basics.nameHint')}
+                  error={errors.name}
+                >
                   {(control) => (
                     <Input
                       {...control}
@@ -242,15 +266,25 @@ export function AutomationForm({ workspaceId, channels, initial, automation, sav
                   <RadioGroup
                     label={t('trigger.scope')}
                     value={draft.postScope}
-                    onValueChange={(value) => update({ postScope: value as AutomationDraft['postScope'] })}
+                    onValueChange={(value) =>
+                      update({ postScope: value as AutomationDraft['postScope'] })
+                    }
                   >
-                    <Radio value="ANY" label={t('trigger.scopeAny')} description={t('trigger.scopeAnyDescription')} />
+                    <Radio
+                      value="ANY"
+                      label={t('trigger.scopeAny')}
+                      description={t('trigger.scopeAnyDescription')}
+                    />
                     <Radio
                       value="SPECIFIC"
                       label={t('trigger.scopeSpecific')}
                       description={t('trigger.scopeSpecificDescription')}
                     />
-                    <Radio value="NEXT_POST" label={t('trigger.scopeNext')} description={t('trigger.scopeNextDescription')} />
+                    <Radio
+                      value="NEXT_POST"
+                      label={t('trigger.scopeNext')}
+                      description={t('trigger.scopeNextDescription')}
+                    />
                     {bufferOffered ? (
                       <Radio
                         value="BUFFER_POST"
@@ -262,7 +296,11 @@ export function AutomationForm({ workspaceId, channels, initial, automation, sav
                   {bufferMissing ? (
                     <Text size="sm" variant="secondary">
                       {t('trigger.bufferNotConnected')}{' '}
-                      <Link render={<NextLink href={workspacePath(workspaceId, '/settings/integrations')} />}>
+                      <Link
+                        render={
+                          <NextLink href={workspacePath(workspaceId, '/settings/integrations')} />
+                        }
+                      >
                         {t('trigger.bufferConnect')}
                       </Link>
                     </Text>
@@ -293,10 +331,20 @@ export function AutomationForm({ workspaceId, channels, initial, automation, sav
               <RadioGroup
                 label={t('match.mode')}
                 value={draft.matchMode}
-                onValueChange={(value) => update({ matchMode: value as AutomationDraft['matchMode'] })}
+                onValueChange={(value) =>
+                  update({ matchMode: value as AutomationDraft['matchMode'] })
+                }
               >
-                <Radio value="KEYWORDS" label={t('match.keywords')} description={t('match.keywordsDescription')} />
-                <Radio value="ANYTHING" label={t('match.anything')} description={t('match.anythingDescription')} />
+                <Radio
+                  value="KEYWORDS"
+                  label={t('match.keywords')}
+                  description={t('match.keywordsDescription')}
+                />
+                <Radio
+                  value="ANYTHING"
+                  label={t('match.anything')}
+                  description={t('match.anythingDescription')}
+                />
               </RadioGroup>
               {draft.matchMode === 'KEYWORDS' ? (
                 <>
@@ -362,7 +410,10 @@ export function AutomationForm({ workspaceId, channels, initial, automation, sav
                     onCheckedChange={(enabled) =>
                       updateResponse('publicReply', {
                         enabled,
-                        variants: enabled && response.publicReply.variants.length === 0 ? [''] : response.publicReply.variants,
+                        variants:
+                          enabled && response.publicReply.variants.length === 0
+                            ? ['']
+                            : response.publicReply.variants,
                       })
                     }
                   />
@@ -384,7 +435,9 @@ export function AutomationForm({ workspaceId, channels, initial, automation, sav
                                 placeholder={t('response.variantPlaceholder')}
                                 onChange={(event) =>
                                   updateResponse('publicReply', {
-                                    variants: response.publicReply.variants.map((v, i) => (i === index ? event.target.value : v)),
+                                    variants: response.publicReply.variants.map((v, i) =>
+                                      i === index ? event.target.value : v,
+                                    ),
                                   })
                                 }
                               />
@@ -398,7 +451,9 @@ export function AutomationForm({ workspaceId, channels, initial, automation, sav
                               label={t('response.removeVariant', { number: index + 1 })}
                               onClick={() =>
                                 updateResponse('publicReply', {
-                                  variants: response.publicReply.variants.filter((_, i) => i !== index),
+                                  variants: response.publicReply.variants.filter(
+                                    (_, i) => i !== index,
+                                  ),
                                 })
                               }
                             >
@@ -419,7 +474,11 @@ export function AutomationForm({ workspaceId, channels, initial, automation, sav
                             variant="secondary"
                             size="sm"
                             icon={<Plus />}
-                            onClick={() => updateResponse('publicReply', { variants: [...response.publicReply.variants, ''] })}
+                            onClick={() =>
+                              updateResponse('publicReply', {
+                                variants: [...response.publicReply.variants, ''],
+                              })
+                            }
                           >
                             {t('response.addVariant')}
                           </Button>
@@ -443,7 +502,12 @@ export function AutomationForm({ workspaceId, channels, initial, automation, sav
                       label={t('response.openingText')}
                       required
                       error={errorFor('response.opening.text', response.opening.text)}
-                      labelAside={<CharacterCount count={response.opening.text.length} max={LIMITS.dmTextLength} />}
+                      labelAside={
+                        <CharacterCount
+                          count={response.opening.text.length}
+                          max={LIMITS.dmTextLength}
+                        />
+                      }
                     >
                       {(control) => (
                         <Textarea
@@ -452,7 +516,9 @@ export function AutomationForm({ workspaceId, channels, initial, automation, sav
                           rows={2}
                           value={response.opening.text}
                           placeholder={t('response.openingPlaceholder', { username: '{username}' })}
-                          onChange={(event) => updateResponse('opening', { text: event.target.value })}
+                          onChange={(event) =>
+                            updateResponse('opening', { text: event.target.value })
+                          }
                         />
                       )}
                     </Field>
@@ -460,7 +526,12 @@ export function AutomationForm({ workspaceId, channels, initial, automation, sav
                       label={t('response.buttonLabel')}
                       required
                       error={errorFor('response.opening.buttonLabel', response.opening.buttonLabel)}
-                      labelAside={<CharacterCount count={response.opening.buttonLabel.length} max={LIMITS.buttonLabelLength} />}
+                      labelAside={
+                        <CharacterCount
+                          count={response.opening.buttonLabel.length}
+                          max={LIMITS.buttonLabelLength}
+                        />
+                      }
                     >
                       {(control) => (
                         <Input
@@ -468,7 +539,9 @@ export function AutomationForm({ workspaceId, channels, initial, automation, sav
                           value={response.opening.buttonLabel}
                           maxLength={LIMITS.buttonLabelLength}
                           placeholder={t('response.openingButtonPlaceholder')}
-                          onChange={(event) => updateResponse('opening', { buttonLabel: event.target.value })}
+                          onChange={(event) =>
+                            updateResponse('opening', { buttonLabel: event.target.value })
+                          }
                           className="sm:max-w-80"
                         />
                       )}
@@ -490,7 +563,12 @@ export function AutomationForm({ workspaceId, channels, initial, automation, sav
                       label={t('response.followText')}
                       required
                       error={errorFor('response.followGate.text', response.followGate.text)}
-                      labelAside={<CharacterCount count={response.followGate.text.length} max={LIMITS.dmTextLength} />}
+                      labelAside={
+                        <CharacterCount
+                          count={response.followGate.text.length}
+                          max={LIMITS.dmTextLength}
+                        />
+                      }
                     >
                       {(control) => (
                         <Textarea
@@ -499,15 +577,25 @@ export function AutomationForm({ workspaceId, channels, initial, automation, sav
                           rows={2}
                           value={response.followGate.text}
                           placeholder={t('response.followPlaceholder')}
-                          onChange={(event) => updateResponse('followGate', { text: event.target.value })}
+                          onChange={(event) =>
+                            updateResponse('followGate', { text: event.target.value })
+                          }
                         />
                       )}
                     </Field>
                     <Field
                       label={t('response.buttonLabel')}
                       required
-                      error={errorFor('response.followGate.buttonLabel', response.followGate.buttonLabel)}
-                      labelAside={<CharacterCount count={response.followGate.buttonLabel.length} max={LIMITS.buttonLabelLength} />}
+                      error={errorFor(
+                        'response.followGate.buttonLabel',
+                        response.followGate.buttonLabel,
+                      )}
+                      labelAside={
+                        <CharacterCount
+                          count={response.followGate.buttonLabel.length}
+                          max={LIMITS.buttonLabelLength}
+                        />
+                      }
                     >
                       {(control) => (
                         <Input
@@ -515,7 +603,9 @@ export function AutomationForm({ workspaceId, channels, initial, automation, sav
                           value={response.followGate.buttonLabel}
                           maxLength={LIMITS.buttonLabelLength}
                           placeholder={t('response.followButtonPlaceholder')}
-                          onChange={(event) => updateResponse('followGate', { buttonLabel: event.target.value })}
+                          onChange={(event) =>
+                            updateResponse('followGate', { buttonLabel: event.target.value })
+                          }
                           className="sm:max-w-80"
                         />
                       )}
@@ -529,7 +619,9 @@ export function AutomationForm({ workspaceId, channels, initial, automation, sav
                 required
                 hint={t('response.messageHint', { username: '{username}' })}
                 error={errorFor('response.message.text', response.message.text)}
-                labelAside={<CharacterCount count={response.message.text.length} max={LIMITS.dmTextLength} />}
+                labelAside={
+                  <CharacterCount count={response.message.text.length} max={LIMITS.dmTextLength} />
+                }
               >
                 {(control) => (
                   <Textarea

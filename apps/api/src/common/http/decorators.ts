@@ -9,18 +9,21 @@ export const Public = (): MethodDecorator & ClassDecorator => SetMetadata(IS_PUB
 
 export const SKIP_ORIGIN_CHECK = 'conversa:skip-origin-check';
 /** For server-to-server callbacks (webhooks) that carry their own signature. */
-export const SkipOriginCheck = (): MethodDecorator & ClassDecorator => SetMetadata(SKIP_ORIGIN_CHECK, true);
+export const SkipOriginCheck = (): MethodDecorator & ClassDecorator =>
+  SetMetadata(SKIP_ORIGIN_CHECK, true);
 
 export const REQUIRED_ROLE = 'conversa:required-role';
 /** Minimum workspace role for the route; needs a `:workspaceId` param. */
 export const RequireRole = (role: WorkspaceRole): MethodDecorator & ClassDecorator =>
   SetMetadata(REQUIRED_ROLE, role);
 
-export const CurrentAuth = createParamDecorator((_: unknown, context: ExecutionContext): AuthContext => {
-  const auth = context.switchToHttp().getRequest<AppRequest>().auth;
-  if (!auth) throw new AppException('UNAUTHENTICATED');
-  return auth;
-});
+export const CurrentAuth = createParamDecorator(
+  (_: unknown, context: ExecutionContext): AuthContext => {
+    const auth = context.switchToHttp().getRequest<AppRequest>().auth;
+    if (!auth) throw new AppException('UNAUTHENTICATED');
+    return auth;
+  },
+);
 
 export const CurrentMembership = createParamDecorator(
   (_: unknown, context: ExecutionContext): MembershipContext => {
@@ -35,7 +38,9 @@ export const ClientIp = createParamDecorator(
     context.switchToHttp().getRequest<AppRequest>().clientIp ?? 'unknown',
 );
 
-export const UserAgent = createParamDecorator((_: unknown, context: ExecutionContext): string | null => {
-  const value = context.switchToHttp().getRequest<AppRequest>().headers['user-agent'];
-  return typeof value === 'string' ? value.slice(0, 300) : null;
-});
+export const UserAgent = createParamDecorator(
+  (_: unknown, context: ExecutionContext): string | null => {
+    const value = context.switchToHttp().getRequest<AppRequest>().headers['user-agent'];
+    return typeof value === 'string' ? value.slice(0, 300) : null;
+  },
+);

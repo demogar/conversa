@@ -36,7 +36,10 @@ export class OutboundProcessor extends WorkerHost {
       if (error instanceof DelayedError) throw error;
       if (!(error instanceof ProviderError)) throw error;
       if (error.kind === 'auth') {
-        const delivery = await this.prisma.delivery.findUnique({ where: { id: deliveryId }, select: { channelId: true } });
+        const delivery = await this.prisma.delivery.findUnique({
+          where: { id: deliveryId },
+          select: { channelId: true },
+        });
         if (delivery) await this.channels.markNeedsReauth(delivery.channelId, error);
       }
       if (error.retryable && !this.isLastAttempt(job)) throw error;
@@ -48,11 +51,19 @@ export class OutboundProcessor extends WorkerHost {
   @OnWorkerEvent('failed')
   async onFailed(job: Job<OutboundJobData> | undefined, error: Error): Promise<void> {
     if (!job || error instanceof DelayedError) return;
-    this.logger.warn({ err: error, deliveryId: job.data.deliveryId, attempt: job.attemptsMade }, 'Delivery step failed');
-    if (job.attemptsMade >= (job.opts.attempts ?? 1)) await this.deliveries.markFailed(job.data.deliveryId, error);
+    this.logger.warn(
+      { err: error, deliveryId: job.data.deliveryId, attempt: job.attemptsMade },
+      'Delivery step failed',
+    );
+    if (job.attemptsMade >= (job.opts.attempts ?? 1))
+      await this.deliveries.markFailed(job.data.deliveryId, error);
   }
 
-  private async defer(job: Job<OutboundJobData>, delayMs: number, token: string | undefined): Promise<void> {
+  private async defer(
+    job: Job<OutboundJobData>,
+    delayMs: number,
+    token: string | undefined,
+  ): Promise<void> {
     const deferrals = job.data.deferrals ?? 0;
     if (deferrals >= MAX_DEFERRALS || !token) {
       await this.deliveries.markSkipped(job.data.deliveryId, 'RATE_LIMITED');

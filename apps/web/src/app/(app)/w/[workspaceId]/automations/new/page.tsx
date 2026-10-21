@@ -2,7 +2,8 @@ import { NewAutomationScreen } from '@/features/automations/automation-builder';
 
 type Search = Record<string, string | string[] | undefined>;
 
-const first = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value) || null;
+const first = (value: string | string[] | undefined) =>
+  (Array.isArray(value) ? value[0] : value) || null;
 
 export default async function NewAutomationPage({
   params,

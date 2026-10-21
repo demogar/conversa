@@ -14,6 +14,8 @@ const loaders: Record<Locale, () => Promise<{ default: Record<string, unknown> }
  */
 export default getRequestConfig(async () => {
   const saved = (await cookies()).get(LOCALE_COOKIE)?.value;
-  const locale: Locale = isLocale(saved) ? saved : negotiateLocale((await headers()).get('accept-language'));
+  const locale: Locale = isLocale(saved)
+    ? saved
+    : negotiateLocale((await headers()).get('accept-language'));
   return { locale, messages: (await loaders[locale]()).default };
 });

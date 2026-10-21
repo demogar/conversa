@@ -47,10 +47,16 @@ const automation: AutomationDto = {
 
 describe('AutomationsScreen', () => {
   it('lists automations with their trigger, account, status and figures', async () => {
-    mockApi({ 'GET /workspaces/w1/automations': [automation], 'GET /workspaces/w1/channels': [channel] });
+    mockApi({
+      'GET /workspaces/w1/automations': [automation],
+      'GET /workspaces/w1/channels': [channel],
+    });
     renderWithProviders(<AutomationsScreen workspaceId="w1" />);
 
-    expect(await screen.findByRole('link', { name: 'Price list' })).toHaveAttribute('href', '/w/w1/automations/a1');
+    expect(await screen.findByRole('link', { name: 'Price list' })).toHaveAttribute(
+      'href',
+      '/w/w1/automations/a1',
+    );
     expect(screen.getByText('Comment · 3 keywords')).toBeInTheDocument();
     expect(await screen.findByText('@tienda')).toBeInTheDocument();
     expect(screen.getByText('Paused')).toBeInTheDocument();
@@ -63,15 +69,23 @@ describe('AutomationsScreen', () => {
     renderWithProviders(<AutomationsScreen workspaceId="w1" />);
 
     expect(await screen.findByRole('heading', { name: 'No automations yet' })).toBeInTheDocument();
-    expect(screen.getAllByRole('link', { name: 'Create automation' })[0]).toHaveAttribute('href', '/w/w1/automations/new');
+    expect(screen.getAllByRole('link', { name: 'Create automation' })[0]).toHaveAttribute(
+      'href',
+      '/w/w1/automations/new',
+    );
   });
 
   it('sends people to Channels when no account is connected yet', async () => {
     mockApi({ 'GET /workspaces/w1/automations': [], 'GET /workspaces/w1/channels': [] });
     renderWithProviders(<AutomationsScreen workspaceId="w1" />);
 
-    expect(await screen.findByRole('heading', { name: 'Connect an Instagram account first' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Go to channels' })).toHaveAttribute('href', '/w/w1/channels');
+    expect(
+      await screen.findByRole('heading', { name: 'Connect an Instagram account first' }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Go to channels' })).toHaveAttribute(
+      'href',
+      '/w/w1/channels',
+    );
     expect(screen.queryByRole('link', { name: 'Create automation' })).not.toBeInTheDocument();
   });
 });

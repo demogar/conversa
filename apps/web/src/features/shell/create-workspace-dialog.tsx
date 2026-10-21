@@ -1,6 +1,15 @@
 'use client';
 
-import { Button, Callout, Dialog, DialogContent, Field, Form, Input, Stack } from '@demogar/mola-ui';
+import {
+  Button,
+  Callout,
+  Dialog,
+  DialogContent,
+  Field,
+  Form,
+  Input,
+  Stack,
+} from '@demogar/mola-ui';
 import { createWorkspaceSchema } from '@conversa/shared';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -9,7 +18,13 @@ import { useCreateWorkspace } from '@/lib/api/hooks/session';
 import { type FieldErrors, useErrorMessage, useFieldErrors } from '@/lib/errors';
 import { workspacePath } from '@/lib/navigation';
 
-export function CreateWorkspaceDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+export function CreateWorkspaceDialog({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
   const t = useTranslations('settings.createWorkspace');
   const tCommon = useTranslations('common.actions');
   const router = useRouter();
@@ -53,7 +68,14 @@ export function CreateWorkspaceDialog({ open, onOpenChange }: { open: boolean; o
           <Stack gap="md">
             {create.error ? <Callout tone="danger">{errorMessage(create.error)}</Callout> : null}
             <Field label={t('name')} required error={errors.name}>
-              {(control) => <Input {...control} value={name} onChange={(e) => setName(e.target.value)} autoFocus />}
+              {(control) => (
+                <Input
+                  {...control}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  autoFocus
+                />
+              )}
             </Field>
           </Stack>
         </Form>

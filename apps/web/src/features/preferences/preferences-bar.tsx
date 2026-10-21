@@ -8,7 +8,11 @@ import { setLocaleCookie } from '@/lib/locale';
 import { type Theme, useTheme } from './theme';
 
 /** Language and theme, for screens outside the app shell. */
-export function PreferencesBar({ onLocaleChange }: { onLocaleChange?: (locale: Locale) => Promise<void> | void }) {
+export function PreferencesBar({
+  onLocaleChange,
+}: {
+  onLocaleChange?: (locale: Locale) => Promise<void> | void;
+}) {
   const t = useTranslations('common');
   const locale = useLocale() as Locale;
   const router = useRouter();

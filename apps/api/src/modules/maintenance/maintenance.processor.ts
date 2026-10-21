@@ -48,7 +48,9 @@ export class MaintenanceProcessor extends WorkerHost implements OnApplicationBoo
     switch (job.name as MaintenanceTask) {
       case MaintenanceTask.RESOLVE_SCOPES:
         await this.scopes.resolvePending();
-        await this.buffer.resolveArmedAutomations((automationId, mediaId) => this.scopes.bind(automationId, mediaId));
+        await this.buffer.resolveArmedAutomations((automationId, mediaId) =>
+          this.scopes.bind(automationId, mediaId),
+        );
         return;
       case MaintenanceTask.REFRESH_TOKENS:
         return this.refreshTokens();
@@ -60,7 +62,8 @@ export class MaintenanceProcessor extends WorkerHost implements OnApplicationBoo
   private async refreshTokens(): Promise<void> {
     const channels = await this.prisma.channel.findMany({ where: { status: 'ACTIVE' } });
     for (const channel of channels) {
-      const expiring = channel.tokenExpiresAt && channel.tokenExpiresAt.getTime() - Date.now() < REFRESH_WITHIN_MS;
+      const expiring =
+        channel.tokenExpiresAt && channel.tokenExpiresAt.getTime() - Date.now() < REFRESH_WITHIN_MS;
       const staleKey = this.crypto.needsReencryption(channel.credentials);
       if (!expiring && !staleKey) continue;
       try {
@@ -88,12 +91,23 @@ export class MaintenanceProcessor extends WorkerHost implements OnApplicationBoo
     const now = new Date();
     const [sessions, events, resets, invitations] = await Promise.all([
       this.prisma.session.deleteMany({ where: { expiresAt: { lt: now } } }),
-      this.prisma.inboundEvent.deleteMany({ where: { receivedAt: { lt: new Date(now.getTime() - KEEP_EVENTS_MS) } } }),
-      this.prisma.passwordReset.deleteMany({ where: { OR: [{ expiresAt: { lt: now } }, { usedAt: { not: null } }] } }),
-      this.prisma.invitation.deleteMany({ where: { expiresAt: { lt: new Date(now.getTime() - 30 * DAY_MS) } } }),
+      this.prisma.inboundEvent.deleteMany({
+        where: { receivedAt: { lt: new Date(now.getTime() - KEEP_EVENTS_MS) } },
+      }),
+      this.prisma.passwordReset.deleteMany({
+        where: { OR: [{ expiresAt: { lt: now } }, { usedAt: { not: null } }] },
+      }),
+      this.prisma.invitation.deleteMany({
+        where: { expiresAt: { lt: new Date(now.getTime() - 30 * DAY_MS) } },
+      }),
     ]);
     this.logger.log(
-      { sessions: sessions.count, events: events.count, resets: resets.count, invitations: invitations.count },
+      {
+        sessions: sessions.count,
+        events: events.count,
+        resets: resets.count,
+        invitations: invitations.count,
+      },
       'Cleanup finished',
     );
   }

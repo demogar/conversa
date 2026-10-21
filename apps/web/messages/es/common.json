@@ -1,5 +1,7 @@
 {
-  "meta": { "description": "Automatización autoalojada para comentarios y mensajes directos de Instagram." },
+  "meta": {
+    "description": "Automatización autoalojada para comentarios y mensajes directos de Instagram."
+  },
   "productName": "Conversa",
   "actions": {
     "save": "Guardar cambios",

@@ -1,6 +1,11 @@
 'use client';
 
-import type { AutomationDto, ChannelDto, CreateAutomationInput, UpdateAutomationInput } from '@conversa/shared';
+import type {
+  AutomationDto,
+  ChannelDto,
+  CreateAutomationInput,
+  UpdateAutomationInput,
+} from '@conversa/shared';
 import {
   AlertDialog,
   Breadcrumb,
@@ -47,13 +52,24 @@ function useBreadcrumb(workspaceId: string, current: string) {
   return (
     <Breadcrumb
       aria-label={t('breadcrumb')}
-      items={[{ label: t('back'), href: workspacePath(workspaceId, '/automations') }, { label: current }]}
+      items={[
+        { label: t('back'), href: workspacePath(workspaceId, '/automations') },
+        { label: current },
+      ]}
       renderLink={(props) => <NextLink {...props} />}
     />
   );
 }
 
-function LoadError({ workspaceId, error, onRetry }: { workspaceId: string; error: unknown; onRetry: () => void }) {
+function LoadError({
+  workspaceId,
+  error,
+  onRetry,
+}: {
+  workspaceId: string;
+  error: unknown;
+  onRetry: () => void;
+}) {
   const t = useTranslations('automations.builder');
   const tCommon = useTranslations('common.actions');
   const errorMessage = useErrorMessage();
@@ -66,7 +82,9 @@ function LoadError({ workspaceId, error, onRetry }: { workspaceId: string; error
       description={notFound ? t('notFoundDescription') : errorMessage(error)}
       actions={
         notFound ? (
-          <LinkButton render={<NextLink href={workspacePath(workspaceId, '/automations')} />}>{t('backToList')}</LinkButton>
+          <LinkButton render={<NextLink href={workspacePath(workspaceId, '/automations')} />}>
+            {t('backToList')}
+          </LinkButton>
         ) : (
           <Button variant="secondary" onClick={onRetry}>
             {tCommon('retry')}
@@ -95,7 +113,13 @@ function NoChannel({ workspaceId }: { workspaceId: string }) {
 }
 
 /** A new automation, optionally pre-filled for a scheduled Buffer post. */
-export function NewAutomationScreen({ workspaceId, defaults }: { workspaceId: string; defaults?: DraftDefaults }) {
+export function NewAutomationScreen({
+  workspaceId,
+  defaults,
+}: {
+  workspaceId: string;
+  defaults?: DraftDefaults;
+}) {
   const t = useTranslations('automations.builder');
   const tCommon = useTranslations('common.actions');
   const router = useRouter();
@@ -161,7 +185,13 @@ function pickChannel(channels: ChannelDto[], preferred: string | null | undefine
   return channels.length === 1 ? (channels[0]?.id ?? null) : null;
 }
 
-export function EditAutomationScreen({ workspaceId, automationId }: { workspaceId: string; automationId: string }) {
+export function EditAutomationScreen({
+  workspaceId,
+  automationId,
+}: {
+  workspaceId: string;
+  automationId: string;
+}) {
   const t = useTranslations('automations.builder');
   const tList = useTranslations('automations.list');
   const tDelete = useTranslations('automations.delete');
@@ -187,8 +217,10 @@ export function EditAutomationScreen({ workspaceId, automationId }: { workspaceI
     setStatus.mutate(
       { id: current.id, status },
       {
-        onSuccess: () => toast.success({ title: status === 'ACTIVE' ? tList('activated') : tList('paused') }),
-        onError: (error) => toast.danger({ title: tList('actionFailed'), description: errorMessage(error) }),
+        onSuccess: () =>
+          toast.success({ title: status === 'ACTIVE' ? tList('activated') : tList('paused') }),
+        onError: (error) =>
+          toast.danger({ title: tList('actionFailed'), description: errorMessage(error) }),
       },
     );
   }
@@ -204,7 +236,10 @@ export function EditAutomationScreen({ workspaceId, automationId }: { workspaceI
     router.push(workspacePath(workspaceId, '/automations'));
   }
 
-  const loaded = automation.data && channels.data ? { automation: automation.data, channels: channels.data } : null;
+  const loaded =
+    automation.data && channels.data
+      ? { automation: automation.data, channels: channels.data }
+      : null;
   const loadError = automation.error ?? channels.error;
 
   return (
@@ -213,7 +248,11 @@ export function EditAutomationScreen({ workspaceId, automationId }: { workspaceI
         breadcrumb={breadcrumb}
         title={automation.data?.name ?? t('formLabel')}
         description={t('editDescription')}
-        meta={automation.data ? [<AutomationStatusBadge key="status" status={automation.data.status} />] : undefined}
+        meta={
+          automation.data
+            ? [<AutomationStatusBadge key="status" status={automation.data.status} />]
+            : undefined
+        }
         actions={
           automation.data ? (
             <>

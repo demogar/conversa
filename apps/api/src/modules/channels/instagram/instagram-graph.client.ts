@@ -6,13 +6,24 @@ const GRAPH_HOST = 'https://graph.instagram.com';
 const TIMEOUT_MS = 15_000;
 
 interface GraphErrorBody {
-  error?: { message?: string; type?: string; code?: number; error_subcode?: number; fbtrace_id?: string };
+  error?: {
+    message?: string;
+    type?: string;
+    code?: number;
+    error_subcode?: number;
+    fbtrace_id?: string;
+  };
 }
 
 /** Meta's error codes mapped onto what Conversa does about them. */
-export function classifyGraphError(code: number | undefined, subcode: number | undefined, status: number): ProviderErrorKind {
+export function classifyGraphError(
+  code: number | undefined,
+  subcode: number | undefined,
+  status: number,
+): ProviderErrorKind {
   if (code === 190 || code === 102 || subcode === 463 || subcode === 460) return 'auth';
-  if (code === 4 || code === 17 || code === 32 || code === 613 || code === 80002 || status === 429) return 'rate_limit';
+  if (code === 4 || code === 17 || code === 32 || code === 613 || code === 80002 || status === 429)
+    return 'rate_limit';
   // Code 10 with this subcode: the 24-hour messaging window has closed.
   if (code === 10 && subcode === 2534022) return 'window_closed';
   if (code === 1 || code === 2 || status >= 500) return 'transient';
@@ -66,7 +77,8 @@ export class InstagramGraphClient {
       throw new ProviderError('transient', `Instagram request failed: ${(error as Error).message}`);
     }
 
-    const data = (await response.json().catch(() => ({}))) as T & GraphErrorBody & { error_message?: string };
+    const data = (await response.json().catch(() => ({}))) as T &
+      GraphErrorBody & { error_message?: string };
     if (!response.ok || data.error) {
       const code = data.error?.code;
       const subcode = data.error?.error_subcode;

@@ -17,7 +17,11 @@ export class LinksController {
     @ClientIp() ip: string,
     @Res() response: Response,
   ): Promise<void> {
-    const destination = await this.links.registerClick(slug, typeof ref === 'string' ? ref : undefined, ip);
+    const destination = await this.links.registerClick(
+      slug,
+      typeof ref === 'string' ? ref : undefined,
+      ip,
+    );
     if (!destination) throw new NotFoundException();
     response.setHeader('Cache-Control', 'no-store');
     response.setHeader('Referrer-Policy', 'no-referrer');

@@ -81,10 +81,14 @@ export class ChannelsController {
     }
     try {
       const channel = await this.channels.completeConnect(type.data, code, state, auth.userId);
-      response.redirect(303, this.config.url(`/w/${channel.workspaceId}/channels?connected=${channel.id}`));
+      response.redirect(
+        303,
+        this.config.url(`/w/${channel.workspaceId}/channels?connected=${channel.id}`),
+      );
     } catch (error) {
       const errorCode: ErrorCode = error instanceof AppException ? error.code : 'INTERNAL';
-      if (!(error instanceof AppException)) this.logger.error({ err: error }, 'Channel connection failed');
+      if (!(error instanceof AppException))
+        this.logger.error({ err: error }, 'Channel connection failed');
       response.redirect(303, this.config.url(`/channels?error=${errorCode}`));
     }
   }

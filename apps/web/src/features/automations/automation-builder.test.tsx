@@ -35,7 +35,10 @@ describe('NewAutomationScreen', () => {
     renderWithProviders(<NewAutomationScreen workspaceId="w1" />);
 
     await user.type(await screen.findByRole('textbox', { name: /^Name/ }), 'Price list');
-    await user.type(screen.getByRole('textbox', { name: /^Direct message/ }), 'Hi {{username}, here are the prices');
+    await user.type(
+      screen.getByRole('textbox', { name: /^Direct message/ }),
+      'Hi {{username}, here are the prices',
+    );
     await user.click(screen.getByRole('button', { name: 'Save and activate' }));
 
     expect(await screen.findByRole('region', { name: /1 field needs fixing/ })).toBeInTheDocument();
@@ -45,7 +48,9 @@ describe('NewAutomationScreen', () => {
     expect(calls.some((call) => call.method === 'POST')).toBe(false);
 
     await user.type(screen.getByRole('textbox', { name: /^Add a keyword/ }), 'precio{Enter}');
-    expect(within(screen.getByRole('grid', { name: 'Keywords' })).getByText('precio')).toBeInTheDocument();
+    expect(
+      within(screen.getByRole('grid', { name: 'Keywords' })).getByText('precio'),
+    ).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Save and activate' }));
 
     await waitFor(() => expect(push).toHaveBeenCalledWith('/w/w1/automations'));
@@ -67,7 +72,10 @@ describe('NewAutomationScreen', () => {
     mockApi({ 'GET /workspaces/w1/channels': [channel] });
     renderWithProviders(<NewAutomationScreen workspaceId="w1" />);
 
-    await user.type(await screen.findByRole('textbox', { name: /^Add a keyword/ }), 'precio{Enter}');
+    await user.type(
+      await screen.findByRole('textbox', { name: /^Add a keyword/ }),
+      'precio{Enter}',
+    );
     const tester = screen.getByRole('textbox', { name: /^Test a comment/ });
     await user.type(tester, '¿Cuál es el PRECIO?');
     expect(screen.getByText('Matches “precio”')).toBeInTheDocument();
@@ -80,6 +88,9 @@ describe('NewAutomationScreen', () => {
   it('points to Channels when no account is connected', async () => {
     mockApi({ 'GET /workspaces/w1/channels': [] });
     renderWithProviders(<NewAutomationScreen workspaceId="w1" />);
-    expect(await screen.findByRole('link', { name: 'Go to channels' })).toHaveAttribute('href', '/w/w1/channels');
+    expect(await screen.findByRole('link', { name: 'Go to channels' })).toHaveAttribute(
+      'href',
+      '/w/w1/channels',
+    );
   });
 });

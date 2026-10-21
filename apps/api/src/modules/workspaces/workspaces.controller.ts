@@ -11,11 +11,7 @@ import {
   type UpdateWorkspaceInput,
   updateWorkspaceSchema,
 } from '@conversa/shared';
-import {
-  CurrentAuth,
-  CurrentMembership,
-  RequireRole,
-} from '../../common/http/decorators.js';
+import { CurrentAuth, CurrentMembership, RequireRole } from '../../common/http/decorators.js';
 import type { AuthContext, MembershipContext } from '../../common/http/request.js';
 import { ZodBody, ZodQuery } from '../../common/validation/zod.pipe.js';
 import { AuditService } from '../audit/audit.service.js';
@@ -36,7 +32,10 @@ export class WorkspacesController {
   }
 
   @Post()
-  create(@CurrentAuth() auth: AuthContext, @ZodBody(createWorkspaceSchema) body: CreateWorkspaceInput) {
+  create(
+    @CurrentAuth() auth: AuthContext,
+    @ZodBody(createWorkspaceSchema) body: CreateWorkspaceInput,
+  ) {
     return this.workspaces.create(auth.userId, body.name);
   }
 

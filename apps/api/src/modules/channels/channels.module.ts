@@ -24,9 +24,11 @@ import { SandboxOutbox } from './sandbox/sandbox-outbox.js';
     {
       provide: CHANNEL_PROVIDERS,
       inject: [AppConfig, InstagramProvider, SandboxInstagramProvider],
-      useFactory: (config: AppConfig, instagram: InstagramProvider, sandbox: SandboxInstagramProvider) => [
-        config.sandbox ? sandbox : instagram,
-      ] satisfies ChannelProvider[],
+      useFactory: (
+        config: AppConfig,
+        instagram: InstagramProvider,
+        sandbox: SandboxInstagramProvider,
+      ) => [config.sandbox ? sandbox : instagram] satisfies ChannelProvider[],
     },
     ProviderRegistry,
     ChannelsService,

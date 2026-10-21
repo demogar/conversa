@@ -41,9 +41,15 @@ function parseMessaging(accountId: string, item: MessagingItem): InboundEvent | 
   // comes back as an echo; reacting to it could loop.
   if (!senderId || senderId === accountId) return null;
 
-  const postbackPayload = asString(item.postback?.payload) ?? asString(item.message?.quick_reply?.payload);
+  const postbackPayload =
+    asString(item.postback?.payload) ?? asString(item.message?.quick_reply?.payload);
   if (postbackPayload) {
-    return { kind: 'postback', accountExternalId: accountId, sender: { externalId: senderId }, payload: postbackPayload };
+    return {
+      kind: 'postback',
+      accountExternalId: accountId,
+      sender: { externalId: senderId },
+      payload: postbackPayload,
+    };
   }
 
   const message = item.message;

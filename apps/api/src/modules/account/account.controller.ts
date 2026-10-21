@@ -50,7 +50,10 @@ export class AccountController {
 
   @Delete('sessions/:sessionId')
   @HttpCode(204)
-  async revokeSession(@CurrentAuth() auth: AuthContext, @Param('sessionId') sessionId: string): Promise<void> {
+  async revokeSession(
+    @CurrentAuth() auth: AuthContext,
+    @Param('sessionId') sessionId: string,
+  ): Promise<void> {
     await this.account.revokeSession(auth, sessionId);
   }
 

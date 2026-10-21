@@ -8,7 +8,8 @@ import { keys } from '../keys';
 export function useInvitationPreview(token: string | null) {
   return useQuery({
     queryKey: keys.invitation(token ?? ''),
-    queryFn: ({ signal }) => api.get<InvitationPreviewDto>(`/invitations/${encodeURIComponent(token ?? '')}`, signal),
+    queryFn: ({ signal }) =>
+      api.get<InvitationPreviewDto>(`/invitations/${encodeURIComponent(token ?? '')}`, signal),
     enabled: Boolean(token),
     retry: false,
   });

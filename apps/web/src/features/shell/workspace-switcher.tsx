@@ -1,6 +1,15 @@
 'use client';
 
-import { Button, Menu, MenuContent, MenuGroup, MenuGroupLabel, MenuItem, MenuSeparator, MenuTrigger } from '@demogar/mola-ui';
+import {
+  Button,
+  Menu,
+  MenuContent,
+  MenuGroup,
+  MenuGroupLabel,
+  MenuItem,
+  MenuSeparator,
+  MenuTrigger,
+} from '@demogar/mola-ui';
 import type { WorkspaceDto } from '@conversa/shared';
 import { Check, ChevronsUpDown, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -22,7 +31,11 @@ export function WorkspaceSwitcher({
     <Menu>
       <MenuTrigger
         render={
-          <Button variant="ghost" size="sm" aria-label={t('switchWorkspace', { name: current?.name ?? '' })}>
+          <Button
+            variant="ghost"
+            size="sm"
+            aria-label={t('switchWorkspace', { name: current?.name ?? '' })}
+          >
             <span className="max-w-40 truncate">{current?.name ?? '…'}</span>
             <ChevronsUpDown />
           </Button>
@@ -34,7 +47,9 @@ export function WorkspaceSwitcher({
           {workspaces.map((workspace) => (
             <MenuItem
               key={workspace.id}
-              icon={workspace.id === current?.id ? <Check /> : <span aria-hidden className="size-4" />}
+              icon={
+                workspace.id === current?.id ? <Check /> : <span aria-hidden className="size-4" />
+              }
               onClick={() => router.push(workspacePath(workspace.id))}
             >
               {workspace.name}

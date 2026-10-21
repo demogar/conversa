@@ -51,7 +51,10 @@ export function ContactsScreen({ workspaceId }: { workspaceId: string }) {
   const settledSearch = useDebouncedValue(search.trim(), SEARCH_DELAY_MS);
 
   const filters = useMemo<ContactFilters>(
-    () => ({ search: settledSearch || undefined, channelId: channelId === ALL ? undefined : channelId }),
+    () => ({
+      search: settledSearch || undefined,
+      channelId: channelId === ALL ? undefined : channelId,
+    }),
     [settledSearch, channelId],
   );
   const filtered = search.trim() !== '' || channelId !== ALL;
@@ -63,7 +66,11 @@ export function ContactsScreen({ workspaceId }: { workspaceId: string }) {
 
   const rows = contacts.data?.pages.flatMap((page) => page.items) ?? [];
   const hasMore = contacts.hasNextPage;
-  const count = contacts.data ? (hasMore ? t('countMore', { count: rows.length }) : t('count', { count: rows.length })) : null;
+  const count = contacts.data
+    ? hasMore
+      ? t('countMore', { count: rows.length })
+      : t('count', { count: rows.length })
+    : null;
 
   function clearFilters() {
     setSearch('');
@@ -78,10 +85,18 @@ export function ContactsScreen({ workspaceId }: { workspaceId: string }) {
 
   return (
     <>
-      <PageHeader title={t('title')} description={t('description')} meta={count && !filtered ? [count] : undefined} />
+      <PageHeader
+        title={t('title')}
+        description={t('description')}
+        meta={count && !filtered ? [count] : undefined}
+      />
       <div className="flex flex-col gap-4 p-4 sm:p-6">
         <section aria-label={t('filters.label')} className="bg-cloth-pale shadow-cut">
-          <div role="search" aria-label={t('filters.label')} className="grid items-end gap-3 p-3 sm:grid-cols-[minmax(14rem,1fr)_16rem_auto]">
+          <div
+            role="search"
+            aria-label={t('filters.label')}
+            className="grid items-end gap-3 p-3 sm:grid-cols-[minmax(14rem,1fr)_16rem_auto]"
+          >
             <Field label={t('filters.search')}>
               {(control) => (
                 <SearchInput
@@ -103,7 +118,10 @@ export function ContactsScreen({ workspaceId }: { workspaceId: string }) {
                     size="sm"
                     items={[
                       { value: ALL, label: t('filters.allChannels') },
-                      ...channels.map((channel) => ({ value: channel.id, label: `@${channel.username}` })),
+                      ...channels.map((channel) => ({
+                        value: channel.id,
+                        label: `@${channel.username}`,
+                      })),
                     ]}
                     value={channelId}
                     onValueChange={(value) => setChannelId(value ?? ALL)}
@@ -136,7 +154,12 @@ export function ContactsScreen({ workspaceId }: { workspaceId: string }) {
                 {count}
               </p>
             ) : null}
-            <Table aria-label={t('table.label')} aria-busy={contacts.isPending || undefined} framed className="min-w-[44rem]">
+            <Table
+              aria-label={t('table.label')}
+              aria-busy={contacts.isPending || undefined}
+              framed
+              className="min-w-[44rem]"
+            >
               <TableHeader>
                 <TableRow>
                   <TableHead>{t('table.contact')}</TableHead>
@@ -152,7 +175,12 @@ export function ContactsScreen({ workspaceId }: { workspaceId: string }) {
                   <TableSkeletonRows columns={columns} />
                 ) : rows.length === 0 ? (
                   filtered ? (
-                    <TableEmpty colSpan={columns} kind="no-results" title={t('noResults.title')} actions={clearButton}>
+                    <TableEmpty
+                      colSpan={columns}
+                      kind="no-results"
+                      title={t('noResults.title')}
+                      actions={clearButton}
+                    >
                       {t('noResults.description')}
                     </TableEmpty>
                   ) : (
@@ -188,7 +216,11 @@ export function ContactsScreen({ workspaceId }: { workspaceId: string }) {
             </Table>
             {hasMore ? (
               <div>
-                <Button variant="secondary" loading={contacts.isFetchingNextPage} onClick={() => contacts.fetchNextPage()}>
+                <Button
+                  variant="secondary"
+                  loading={contacts.isFetchingNextPage}
+                  onClick={() => contacts.fetchNextPage()}
+                >
                   {tCommon('actions.loadMore')}
                 </Button>
               </div>
@@ -216,13 +248,21 @@ function ContactRow({ contact, channel }: { contact: ContactDto; channel: string
         )}
       </TableCell>
       {channel !== null ? <TableCell>{channel}</TableCell> : null}
-      <TableCell className={follows === 'unknown' ? 'text-ink-muted' : undefined}>{t(`follows.${follows}`)}</TableCell>
+      <TableCell className={follows === 'unknown' ? 'text-ink-muted' : undefined}>
+        {t(`follows.${follows}`)}
+      </TableCell>
       <TableCell numeric>{format.number(contact.interactions)}</TableCell>
       <TableCell>
-        <time dateTime={contact.firstSeenAt}>{format.dateTime(new Date(contact.firstSeenAt), { dateStyle: 'medium' })}</time>
+        <time dateTime={contact.firstSeenAt}>
+          {format.dateTime(new Date(contact.firstSeenAt), { dateStyle: 'medium' })}
+        </time>
       </TableCell>
       <TableCell>
-        <RelativeTime date={contact.lastInteractionAt} format="short" className="whitespace-nowrap" />
+        <RelativeTime
+          date={contact.lastInteractionAt}
+          format="short"
+          className="whitespace-nowrap"
+        />
       </TableCell>
     </TableRow>
   );

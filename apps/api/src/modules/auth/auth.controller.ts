@@ -80,7 +80,10 @@ export class AuthController {
 
   @Post('logout')
   @HttpCode(204)
-  async logout(@CurrentAuth() auth: AuthContext, @Res({ passthrough: true }) response: Response): Promise<void> {
+  async logout(
+    @CurrentAuth() auth: AuthContext,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<void> {
     await this.auth.logout(auth.sessionId, auth.userId);
     this.sessions.clearCookie(response);
   }
@@ -89,7 +92,10 @@ export class AuthController {
   @Throttle({ default: { limit: 5, ttl: 15 * 60_000 } })
   @Post('password/forgot')
   @HttpCode(202)
-  async forgot(@ZodBody(forgotPasswordSchema) body: ForgotPasswordInput, @ClientIp() ip: string): Promise<void> {
+  async forgot(
+    @ZodBody(forgotPasswordSchema) body: ForgotPasswordInput,
+    @ClientIp() ip: string,
+  ): Promise<void> {
     await this.auth.forgotPassword(body, ip);
   }
 
@@ -97,7 +103,10 @@ export class AuthController {
   @Throttle(STRICT)
   @Post('password/reset')
   @HttpCode(204)
-  async reset(@ZodBody(resetPasswordSchema) body: ResetPasswordInput, @ClientIp() ip: string): Promise<void> {
+  async reset(
+    @ZodBody(resetPasswordSchema) body: ResetPasswordInput,
+    @ClientIp() ip: string,
+  ): Promise<void> {
     await this.auth.resetPassword(body, ip);
   }
 }

@@ -15,6 +15,22 @@ import integrations from './integrations.json';
 import account from './account.json';
 import legal from './legal.json';
 
-const messages = { common, errors, auth, nav, dashboard, automations, channels, inbox, contacts, activity, content, settings, integrations, account, legal };
+const messages = {
+  common,
+  errors,
+  auth,
+  nav,
+  dashboard,
+  automations,
+  channels,
+  inbox,
+  contacts,
+  activity,
+  content,
+  settings,
+  integrations,
+  account,
+  legal,
+};
 
 export default messages;

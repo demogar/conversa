@@ -10,8 +10,7 @@ export interface InboundJob {
 }
 
 export type OutboundJob =
-  | { kind: 'start'; deliveryId: string }
-  | { kind: 'postback'; deliveryId: string };
+  { kind: 'start'; deliveryId: string } | { kind: 'postback'; deliveryId: string };
 
 export const MaintenanceTask = {
   REFRESH_TOKENS: 'refresh-tokens',

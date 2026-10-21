@@ -49,7 +49,8 @@ export function DmPreview({ draft }: { draft: AutomationDraft }) {
   const fill = (text: string) => renderTemplate(text, { username });
   const { response } = draft;
   const isComment = draft.triggerType === 'COMMENT';
-  const trigger = draft.matchMode === 'KEYWORDS' && draft.keywords[0] ? draft.keywords[0] : t('sampleAnything');
+  const trigger =
+    draft.matchMode === 'KEYWORDS' && draft.keywords[0] ? draft.keywords[0] : t('sampleAnything');
   const firstVariant = response.publicReply.variants.find((variant) => variant.trim());
   const buttonLabel = (label: string) => label.trim() || t('emptyButton');
 
@@ -67,7 +68,8 @@ export function DmPreview({ draft }: { draft: AutomationDraft }) {
         <Panel layer="shade" edge="none" padding="sm">
           <div className="flex flex-col gap-3">
             <Text as="span" size="xs" variant="muted" className="self-end">
-              <span className="literal">@{username}</span> · {isComment ? t('commentOn') : t('messageFrom')}
+              <span className="literal">@{username}</span> ·{' '}
+              {isComment ? t('commentOn') : t('messageFrom')}
             </Text>
             <ContactLine>{trigger}</ContactLine>
             {isComment && response.publicReply.enabled && firstVariant ? (
@@ -80,7 +82,9 @@ export function DmPreview({ draft }: { draft: AutomationDraft }) {
                   text={fill(response.opening.text) || t('emptyMessage')}
                   buttons={[buttonLabel(response.opening.buttonLabel)]}
                 />
-                <ContactLine>{t('taps', { label: buttonLabel(response.opening.buttonLabel) })}</ContactLine>
+                <ContactLine>
+                  {t('taps', { label: buttonLabel(response.opening.buttonLabel) })}
+                </ContactLine>
               </>
             ) : null}
             {response.followGate.enabled ? (
@@ -90,11 +94,15 @@ export function DmPreview({ draft }: { draft: AutomationDraft }) {
                   text={fill(response.followGate.text) || t('emptyMessage')}
                   buttons={[buttonLabel(response.followGate.buttonLabel)]}
                 />
-                <ContactLine>{t('taps', { label: buttonLabel(response.followGate.buttonLabel) })}</ContactLine>
+                <ContactLine>
+                  {t('taps', { label: buttonLabel(response.followGate.buttonLabel) })}
+                </ContactLine>
               </>
             ) : null}
             <Bubble
-              step={response.opening.enabled || response.followGate.enabled ? t('content') : t('dm')}
+              step={
+                response.opening.enabled || response.followGate.enabled ? t('content') : t('dm')
+              }
               text={fill(response.message.text) || t('emptyMessage')}
               buttons={response.message.buttons.map((button) => buttonLabel(button.label))}
             />

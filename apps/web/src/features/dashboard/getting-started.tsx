@@ -1,6 +1,14 @@
 'use client';
 
-import { Badge, Heading, LinkButton, Panel, StepList, type StepListItem, Text } from '@demogar/mola-ui';
+import {
+  Badge,
+  Heading,
+  LinkButton,
+  Panel,
+  StepList,
+  type StepListItem,
+  Text,
+} from '@demogar/mola-ui';
 import { AtSign, Plus } from 'lucide-react';
 import NextLink from 'next/link';
 import { useTranslations } from 'next-intl';
@@ -16,7 +24,12 @@ interface GettingStartedProps {
 }
 
 /** The first-run checklist: connect an account, then create an automation. */
-export function GettingStarted({ workspaceId, hasChannel, hasAutomation, canConnect }: GettingStartedProps) {
+export function GettingStarted({
+  workspaceId,
+  hasChannel,
+  hasAutomation,
+  canConnect,
+}: GettingStartedProps) {
   const t = useTranslations('dashboard.gettingStarted');
 
   const state = (done: boolean) =>
@@ -45,7 +58,11 @@ export function GettingStarted({ workspaceId, hasChannel, hasAutomation, canConn
       note: note(
         t('connect.note'),
         hasChannel ? null : canConnect ? (
-          <LinkButton size="sm" icon={<AtSign />} render={<NextLink href={workspacePath(workspaceId, '/channels')} />}>
+          <LinkButton
+            size="sm"
+            icon={<AtSign />}
+            render={<NextLink href={workspacePath(workspaceId, '/channels')} />}
+          >
             {t('connect.action')}
           </LinkButton>
         ) : (

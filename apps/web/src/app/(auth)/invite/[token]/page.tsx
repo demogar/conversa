@@ -1,6 +1,15 @@
 'use client';
 
-import { Button, Callout, EmptyState, Inline, LinkButton, Skeleton, Stack, Text } from '@demogar/mola-ui';
+import {
+  Button,
+  Callout,
+  EmptyState,
+  Inline,
+  LinkButton,
+  Skeleton,
+  Stack,
+  Text,
+} from '@demogar/mola-ui';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import NextLink from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -47,7 +56,13 @@ export default function InvitationPage() {
   if (!invitation.data) {
     return (
       <AuthCard title={t('invalidTitle')}>
-        <EmptyState kind="error" size="sm" headingLevel={2} title={t('invalidTitle')} description={t('invalidDescription')} />
+        <EmptyState
+          kind="error"
+          size="sm"
+          headingLevel={2}
+          title={t('invalidTitle')}
+          description={t('invalidDescription')}
+        />
       </AuthCard>
     );
   }

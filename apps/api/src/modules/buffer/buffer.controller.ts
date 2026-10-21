@@ -35,7 +35,10 @@ export class BufferController {
   @Delete()
   @RequireRole('ADMIN')
   @HttpCode(204)
-  async disconnect(@CurrentAuth() auth: AuthContext, @CurrentMembership() membership: MembershipContext): Promise<void> {
+  async disconnect(
+    @CurrentAuth() auth: AuthContext,
+    @CurrentMembership() membership: MembershipContext,
+  ): Promise<void> {
     await this.buffer.disconnect(membership.workspaceId, auth.userId);
   }
 
@@ -60,7 +63,10 @@ export class BufferController {
   }
 
   @Get('posts')
-  posts(@CurrentMembership() membership: MembershipContext, @ZodQuery(postsQuery) query: z.infer<typeof postsQuery>) {
+  posts(
+    @CurrentMembership() membership: MembershipContext,
+    @ZodQuery(postsQuery) query: z.infer<typeof postsQuery>,
+  ) {
     return this.buffer.listPosts(membership.workspaceId, query.view);
   }
 }

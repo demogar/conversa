@@ -160,12 +160,7 @@ function DangerZone({
   }
 
   return (
-    <SettingsSection
-      id="settings-danger"
-      title={t('title')}
-      description={t('description')}
-      danger
-    >
+    <SettingsSection id="settings-danger" title={t('title')} description={t('description')} danger>
       <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
         <div className="min-w-0 flex-1 basis-64">
           <p className="m-0 text-sm font-semibold text-ink">

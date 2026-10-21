@@ -15,7 +15,9 @@ export function BrandMark() {
   return (
     <span className="flex items-center gap-2 text-ink">
       <BrandLogo />
-      <span className="font-display text-base font-bold tracking-display wdth-display">Conversa</span>
+      <span className="font-display text-base font-bold tracking-display wdth-display">
+        Conversa
+      </span>
     </span>
   );
 }

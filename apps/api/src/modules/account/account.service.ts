@@ -83,7 +83,10 @@ export class AccountService {
     const user = await this.prisma.user.findUniqueOrThrow({ where: { id: userId } });
     if (user.mfaEnabledAt) throw new AppException(ErrorCode.CONFLICT);
     const { secret, otpauthUrl } = this.mfa.createSecret(user.email);
-    await this.prisma.user.update({ where: { id: userId }, data: { mfaSecret: this.crypto.encrypt(secret) } });
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { mfaSecret: this.crypto.encrypt(secret) },
+    });
     return { secret, otpauthUrl };
   }
 

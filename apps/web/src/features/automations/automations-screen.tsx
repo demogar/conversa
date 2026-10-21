@@ -67,7 +67,8 @@ export function AutomationsScreen({ workspaceId }: { workspaceId: string }) {
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const channelsById = useMemo(
-    () => new Map<string, ChannelDto>((channels.data ?? []).map((channel) => [channel.id, channel])),
+    () =>
+      new Map<string, ChannelDto>((channels.data ?? []).map((channel) => [channel.id, channel])),
     [channels.data],
   );
 
@@ -84,7 +85,8 @@ export function AutomationsScreen({ workspaceId }: { workspaceId: string }) {
     setStatus.mutate(
       { id: automation.id, status },
       {
-        onSuccess: () => toast.success({ title: status === 'ACTIVE' ? t('activated') : t('paused') }),
+        onSuccess: () =>
+          toast.success({ title: status === 'ACTIVE' ? t('activated') : t('paused') }),
         onError: failed,
       },
     );
@@ -196,7 +198,10 @@ export function AutomationsScreen({ workspaceId }: { workspaceId: string }) {
             <MenuItem icon={<Copy />} onClick={() => copy(row)}>
               {t('duplicate')}
             </MenuItem>
-            <MenuItem icon={row.status === 'ACTIVE' ? <Pause /> : <Play />} onClick={() => toggle(row)}>
+            <MenuItem
+              icon={row.status === 'ACTIVE' ? <Pause /> : <Play />}
+              onClick={() => toggle(row)}
+            >
               {row.status === 'ACTIVE' ? t('pause') : t('activate')}
             </MenuItem>
             <MenuSeparator />
@@ -249,7 +254,10 @@ export function AutomationsScreen({ workspaceId }: { workspaceId: string }) {
             title={t('empty.noChannelTitle')}
             description={t('empty.noChannelDescription')}
             actions={
-              <LinkButton render={<NextLink href={workspacePath(workspaceId, '/channels')} />} withArrow>
+              <LinkButton
+                render={<NextLink href={workspacePath(workspaceId, '/channels')} />}
+                withArrow
+              >
                 {t('empty.goToChannels')}
               </LinkButton>
             }

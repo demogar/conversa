@@ -20,11 +20,19 @@ export class ScopeResolver {
   ) {}
 
   /** Resolves pending automations against the commented media, updating them in place. */
-  async resolveForComment(channel: Channel, automations: Automation[], mediaId: string): Promise<void> {
-    const pending = automations.filter((a) => a.postScope === 'NEXT_POST' && !a.scopeResolvedAt && a.armedAt);
+  async resolveForComment(
+    channel: Channel,
+    automations: Automation[],
+    mediaId: string,
+  ): Promise<void> {
+    const pending = automations.filter(
+      (a) => a.postScope === 'NEXT_POST' && !a.scopeResolvedAt && a.armedAt,
+    );
     if (pending.length === 0) return;
 
-    const media = await this.providers.get(channel.type).getMedia(this.channels.session(channel), mediaId);
+    const media = await this.providers
+      .get(channel.type)
+      .getMedia(this.channels.session(channel), mediaId);
     if (!media) return;
     const publishedAt = new Date(media.publishedAt);
 
@@ -40,7 +48,12 @@ export class ScopeResolver {
   /** Polls each channel with pending automations for a newly published post. */
   async resolvePending(): Promise<void> {
     const pending = await this.prisma.automation.findMany({
-      where: { postScope: 'NEXT_POST', scopeResolvedAt: null, armedAt: { not: null }, status: 'ACTIVE' },
+      where: {
+        postScope: 'NEXT_POST',
+        scopeResolvedAt: null,
+        armedAt: { not: null },
+        status: 'ACTIVE',
+      },
       include: { channel: true },
       take: 200,
     });
@@ -54,11 +67,17 @@ export class ScopeResolver {
 
     for (const { channel, automations } of byChannel.values()) {
       try {
-        const media = await this.providers.get(channel.type).listMedia(this.channels.session(channel), 5);
+        const media = await this.providers
+          .get(channel.type)
+          .listMedia(this.channels.session(channel), 5);
         // Oldest first, so each automation gets the first post after it was armed.
-        const ordered = [...media].sort((a, b) => Date.parse(a.publishedAt) - Date.parse(b.publishedAt));
+        const ordered = [...media].sort(
+          (a, b) => Date.parse(a.publishedAt) - Date.parse(b.publishedAt),
+        );
         for (const automation of automations) {
-          const next = ordered.find((m) => automation.armedAt && new Date(m.publishedAt) >= automation.armedAt);
+          const next = ordered.find(
+            (m) => automation.armedAt && new Date(m.publishedAt) >= automation.armedAt,
+          );
           if (next) await this.bind(automation.id, next.id);
         }
       } catch (error) {

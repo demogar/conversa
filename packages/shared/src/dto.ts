@@ -36,8 +36,7 @@ export interface MeDto {
 }
 
 export type LoginResultDto =
-  | { status: 'authenticated'; user: UserDto }
-  | { status: 'mfa_required'; challenge: string };
+  { status: 'authenticated'; user: UserDto } | { status: 'mfa_required'; challenge: string };
 
 export interface InstanceDto {
   /** True until the first account has been created on this instance. */

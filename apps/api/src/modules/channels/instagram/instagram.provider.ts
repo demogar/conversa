@@ -1,6 +1,12 @@
 import { createHmac } from 'node:crypto';
 import { Injectable } from '@nestjs/common';
-import { type ChannelType, type ConversationDto, LIMITS, type MediaDto, type MessageDto } from '@conversa/shared';
+import {
+  type ChannelType,
+  type ConversationDto,
+  LIMITS,
+  type MediaDto,
+  type MessageDto,
+} from '@conversa/shared';
 import { AppConfig } from '../../../config/app-config.js';
 import { safeEqual } from '../../../common/crypto/crypto.service.js';
 import type {
@@ -58,7 +64,8 @@ function toMedia(media: GraphMedia): MediaDto {
     id: media.id,
     caption: media.caption ?? null,
     mediaType: media.media_type,
-    thumbnailUrl: media.thumbnail_url ?? (media.media_type === 'VIDEO' ? null : (media.media_url ?? null)),
+    thumbnailUrl:
+      media.thumbnail_url ?? (media.media_type === 'VIDEO' ? null : (media.media_url ?? null)),
     permalink: media.permalink ?? null,
     publishedAt: media.timestamp,
     commentsCount: media.comments_count ?? null,
@@ -77,8 +84,16 @@ function toPlatformMessage(message: OutboundMessage): unknown {
         text,
         buttons: message.buttons.slice(0, LIMITS.dmButtons).map((button) =>
           button.type === 'url'
-            ? { type: 'web_url', url: button.url, title: button.label.slice(0, LIMITS.buttonLabelLength) }
-            : { type: 'postback', payload: button.payload, title: button.label.slice(0, LIMITS.buttonLabelLength) },
+            ? {
+                type: 'web_url',
+                url: button.url,
+                title: button.label.slice(0, LIMITS.buttonLabelLength),
+              }
+            : {
+                type: 'postback',
+                payload: button.payload,
+                title: button.label.slice(0, LIMITS.buttonLabelLength),
+              },
         ),
       },
     },
@@ -192,12 +207,20 @@ export class InstagramProvider implements ChannelProvider {
     if (!app) return null;
     const token = query['hub.verify_token'];
     const challenge = query['hub.challenge'];
-    if (query['hub.mode'] !== 'subscribe' || typeof token !== 'string' || typeof challenge !== 'string') return null;
+    if (
+      query['hub.mode'] !== 'subscribe' ||
+      typeof token !== 'string' ||
+      typeof challenge !== 'string'
+    )
+      return null;
     if (!safeEqual(token, app.verifyToken)) return null;
     return /^[\w-]{1,128}$/.test(challenge) ? challenge : null;
   }
 
-  verifySignature(rawBody: Buffer, headers: Record<string, string | string[] | undefined>): boolean {
+  verifySignature(
+    rawBody: Buffer,
+    headers: Record<string, string | string[] | undefined>,
+  ): boolean {
     const app = this.config.instagram;
     const header = headers['x-hub-signature-256'];
     const signature = Array.isArray(header) ? header[0] : header;
@@ -212,11 +235,19 @@ export class InstagramProvider implements ChannelProvider {
 
   // ---- Messaging ----------------------------------------------------------
 
-  async sendPrivateReply(session: ChannelSession, commentId: string, message: OutboundMessage): Promise<SendResult> {
+  async sendPrivateReply(
+    session: ChannelSession,
+    commentId: string,
+    message: OutboundMessage,
+  ): Promise<SendResult> {
     return this.send(session, { comment_id: commentId }, message);
   }
 
-  async sendMessage(session: ChannelSession, recipientId: string, message: OutboundMessage): Promise<SendResult> {
+  async sendMessage(
+    session: ChannelSession,
+    recipientId: string,
+    message: OutboundMessage,
+  ): Promise<SendResult> {
     return this.send(session, { id: recipientId }, message);
   }
 
@@ -235,14 +266,20 @@ export class InstagramProvider implements ChannelProvider {
    */
   async getContactProfile(session: ChannelSession, userId: string): Promise<ContactProfile> {
     try {
-      const profile = await this.graph.request<{ username?: string; is_user_follow_business?: boolean }>({
+      const profile = await this.graph.request<{
+        username?: string;
+        is_user_follow_business?: boolean;
+      }>({
         path: `/${encodeURIComponent(userId)}`,
         query: { fields: 'username,is_user_follow_business' },
         accessToken: session.accessToken,
       });
       return {
         username: profile.username ?? null,
-        follows: typeof profile.is_user_follow_business === 'boolean' ? profile.is_user_follow_business : null,
+        follows:
+          typeof profile.is_user_follow_business === 'boolean'
+            ? profile.is_user_follow_business
+            : null,
       };
     } catch (error) {
       if (error instanceof ProviderError && error.kind === 'auth') throw error;
@@ -250,7 +287,11 @@ export class InstagramProvider implements ChannelProvider {
     }
   }
 
-  private async send(session: ChannelSession, recipient: Record<string, string>, message: OutboundMessage) {
+  private async send(
+    session: ChannelSession,
+    recipient: Record<string, string>,
+    message: OutboundMessage,
+  ) {
     const result = await this.graph.request<{ message_id?: string }>({
       method: 'POST',
       path: `/${session.externalId}/messages`,

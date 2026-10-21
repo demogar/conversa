@@ -79,7 +79,11 @@ export class AutomationsService {
     return toDto(automation, stats.get(automation.id));
   }
 
-  async create(workspaceId: string, actorId: string, input: CreateAutomationInput): Promise<AutomationDto> {
+  async create(
+    workspaceId: string,
+    actorId: string,
+    input: CreateAutomationInput,
+  ): Promise<AutomationDto> {
     await this.assertChannel(workspaceId, input.channelId);
     const columns = toColumns(input);
     const automation = await this.prisma.$transaction(async (tx) => {
@@ -90,7 +94,8 @@ export class AutomationsService {
           channelId: input.channelId,
           status: input.status,
           createdById: actorId,
-          armedAt: input.status === 'ACTIVE' && columns.postScope === 'NEXT_POST' ? new Date() : null,
+          armedAt:
+            input.status === 'ACTIVE' && columns.postScope === 'NEXT_POST' ? new Date() : null,
         },
       });
       await this.links.sync(tx, created, input.response.message.buttons);
@@ -106,9 +111,15 @@ export class AutomationsService {
     return toDto(automation);
   }
 
-  async update(workspaceId: string, actorId: string, id: string, input: UpdateAutomationInput): Promise<AutomationDto> {
+  async update(
+    workspaceId: string,
+    actorId: string,
+    id: string,
+    input: UpdateAutomationInput,
+  ): Promise<AutomationDto> {
     const current = await this.find(workspaceId, id);
-    if (input.channelId !== current.channelId) await this.assertChannel(workspaceId, input.channelId);
+    if (input.channelId !== current.channelId)
+      await this.assertChannel(workspaceId, input.channelId);
     const columns = toColumns(input);
     const scopeChanged =
       columns.postScope !== current.postScope || columns.bufferPostId !== current.bufferPostId;
@@ -120,7 +131,9 @@ export class AutomationsService {
           ...columns,
           channelId: input.channelId,
           // A resolved "next post" keeps its post unless the scope itself changed.
-          ...(scopeChanged ? { scopeResolvedAt: null, armedAt: current.status === 'ACTIVE' ? new Date() : null } : {}),
+          ...(scopeChanged
+            ? { scopeResolvedAt: null, armedAt: current.status === 'ACTIVE' ? new Date() : null }
+            : {}),
           ...(!scopeChanged && current.scopeResolvedAt ? { mediaIds: current.mediaIds } : {}),
         },
       });
@@ -137,7 +150,12 @@ export class AutomationsService {
     return this.get(workspaceId, automation.id);
   }
 
-  async setStatus(workspaceId: string, actorId: string, id: string, status: AutomationStatus): Promise<AutomationDto> {
+  async setStatus(
+    workspaceId: string,
+    actorId: string,
+    id: string,
+    status: AutomationStatus,
+  ): Promise<AutomationDto> {
     const current = await this.find(workspaceId, id);
     if (status === 'ACTIVE') {
       const channel = await this.prisma.channel.findUnique({ where: { id: current.channelId } });
@@ -147,7 +165,9 @@ export class AutomationsService {
       where: { id },
       data: {
         status,
-        ...(status === 'ACTIVE' && current.postScope === 'NEXT_POST' && !current.armedAt ? { armedAt: new Date() } : {}),
+        ...(status === 'ACTIVE' && current.postScope === 'NEXT_POST' && !current.armedAt
+          ? { armedAt: new Date() }
+          : {}),
       },
     });
     await this.audit.record({
@@ -189,7 +209,10 @@ export class AutomationsService {
   }
 
   private async assertChannel(workspaceId: string, channelId: string): Promise<void> {
-    const channel = await this.prisma.channel.findFirst({ where: { id: channelId, workspaceId }, select: { id: true } });
+    const channel = await this.prisma.channel.findFirst({
+      where: { id: channelId, workspaceId },
+      select: { id: true },
+    });
     if (!channel) throw new AppException(ErrorCode.VALIDATION_FAILED, { channelId: ['not_found'] });
   }
 

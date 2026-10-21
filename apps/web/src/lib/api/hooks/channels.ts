@@ -15,7 +15,8 @@ export function useChannels(workspaceId: string) {
 /** Starts the Instagram sign-in; the browser leaves for the platform and comes back to the channels page. */
 export function useConnectInstagram(workspaceId: string) {
   return useMutation({
-    mutationFn: () => api.post<{ url: string }>(`/workspaces/${workspaceId}/channels/instagram/connect`),
+    mutationFn: () =>
+      api.post<{ url: string }>(`/workspaces/${workspaceId}/channels/instagram/connect`),
     onSuccess: ({ url }) => window.location.assign(url),
   });
 }
@@ -23,7 +24,8 @@ export function useConnectInstagram(workspaceId: string) {
 export function useDisconnectChannel(workspaceId: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (channelId: string) => api.delete(`/workspaces/${workspaceId}/channels/${channelId}`),
+    mutationFn: (channelId: string) =>
+      api.delete(`/workspaces/${workspaceId}/channels/${channelId}`),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.workspace(workspaceId) }),
   });
 }
@@ -31,7 +33,8 @@ export function useDisconnectChannel(workspaceId: string) {
 export function useChannelMedia(workspaceId: string, channelId: string, enabled = true) {
   return useQuery({
     queryKey: keys.media(workspaceId, channelId),
-    queryFn: ({ signal }) => api.get<MediaDto[]>(`/workspaces/${workspaceId}/channels/${channelId}/media`, signal),
+    queryFn: ({ signal }) =>
+      api.get<MediaDto[]>(`/workspaces/${workspaceId}/channels/${channelId}/media`, signal),
     enabled,
   });
 }

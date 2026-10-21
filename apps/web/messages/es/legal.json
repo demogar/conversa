@@ -23,7 +23,9 @@
       },
       {
         "title": "Qué guarda Conversa",
-        "paragraphs": ["Para funcionar, Conversa guarda lo siguiente en la base de datos del propio operador:"],
+        "paragraphs": [
+          "Para funcionar, Conversa guarda lo siguiente en la base de datos del propio operador:"
+        ],
         "items": [
           "Datos de cuenta de quienes usan Conversa: nombre, correo electrónico, un hash de la contraseña, sesiones, idioma y configuración de verificación en dos pasos.",
           "Tokens de acceso de las cuentas de Instagram y otros servicios (como Buffer) conectados a un espacio de trabajo. Se guardan cifrados y solo se usan para actuar en nombre de esa cuenta.",

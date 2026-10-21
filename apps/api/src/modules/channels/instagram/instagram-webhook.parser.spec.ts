@@ -33,29 +33,53 @@ describe('parseInstagramWebhook', () => {
   });
 
   it("ignores the account's own comments", () => {
-    expect(parseInstagramWebhook(comment({ id: 'c1', from: { id: ACCOUNT }, media: { id: 'm' } }))).toEqual([]);
+    expect(
+      parseInstagramWebhook(comment({ id: 'c1', from: { id: ACCOUNT }, media: { id: 'm' } })),
+    ).toEqual([]);
   });
 
   it('parses direct messages and flags story replies', () => {
     const [event] = parseInstagramWebhook(
-      messaging({ sender: { id: 'u1' }, message: { mid: 'm1', text: ' info ', reply_to: { story: { id: 's' } } } }),
+      messaging({
+        sender: { id: 'u1' },
+        message: { mid: 'm1', text: ' info ', reply_to: { story: { id: 's' } } },
+      }),
     );
-    expect(event).toMatchObject({ kind: 'message', messageId: 'm1', text: 'info', isStoryReply: true });
+    expect(event).toMatchObject({
+      kind: 'message',
+      messageId: 'm1',
+      text: 'info',
+      isStoryReply: true,
+    });
   });
 
   it('drops echoes, deletions and attachment-only messages', () => {
-    expect(parseInstagramWebhook(messaging({ sender: { id: 'u1' }, message: { mid: 'm', text: 'x', is_echo: true } }))).toEqual([]);
-    expect(parseInstagramWebhook(messaging({ sender: { id: 'u1' }, message: { mid: 'm', is_deleted: true } }))).toEqual([]);
-    expect(parseInstagramWebhook(messaging({ sender: { id: 'u1' }, message: { mid: 'm' } }))).toEqual([]);
+    expect(
+      parseInstagramWebhook(
+        messaging({ sender: { id: 'u1' }, message: { mid: 'm', text: 'x', is_echo: true } }),
+      ),
+    ).toEqual([]);
+    expect(
+      parseInstagramWebhook(
+        messaging({ sender: { id: 'u1' }, message: { mid: 'm', is_deleted: true } }),
+      ),
+    ).toEqual([]);
+    expect(
+      parseInstagramWebhook(messaging({ sender: { id: 'u1' }, message: { mid: 'm' } })),
+    ).toEqual([]);
   });
 
   it('parses button postbacks and quick replies as postbacks', () => {
-    expect(parseInstagramWebhook(messaging({ sender: { id: 'u1' }, postback: { payload: 'p1' } }))[0]).toMatchObject({
+    expect(
+      parseInstagramWebhook(messaging({ sender: { id: 'u1' }, postback: { payload: 'p1' } }))[0],
+    ).toMatchObject({
       kind: 'postback',
       payload: 'p1',
     });
     expect(
-      parseInstagramWebhook(messaging({ sender: { id: 'u1' }, message: { mid: 'm', quick_reply: { payload: 'p2' } } }))[0],
+      parseInstagramWebhook(
+        messaging({ sender: { id: 'u1' }, message: { mid: 'm', quick_reply: { payload: 'p2' } } }),
+      )[0],
     ).toMatchObject({ kind: 'postback', payload: 'p2' });
   });
 

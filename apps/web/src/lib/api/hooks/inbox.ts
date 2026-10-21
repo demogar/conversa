@@ -5,7 +5,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../client';
 import { keys } from '../keys';
 
-const base = (workspaceId: string, channelId: string) => `/workspaces/${workspaceId}/channels/${channelId}/conversations`;
+const base = (workspaceId: string, channelId: string) =>
+  `/workspaces/${workspaceId}/channels/${channelId}/conversations`;
 
 /** Read live from Instagram on every load; Conversa keeps no copy. */
 export function useConversations(workspaceId: string, channelId: string | null) {
@@ -17,7 +18,11 @@ export function useConversations(workspaceId: string, channelId: string | null) 
 }
 
 /** Oldest first. */
-export function useMessages(workspaceId: string, channelId: string | null, conversationId: string | null) {
+export function useMessages(
+  workspaceId: string,
+  channelId: string | null,
+  conversationId: string | null,
+) {
   return useQuery({
     queryKey: keys.messages(workspaceId, channelId ?? '', conversationId ?? ''),
     queryFn: ({ signal }) =>
@@ -26,12 +31,20 @@ export function useMessages(workspaceId: string, channelId: string | null, conve
   });
 }
 
-export function useSendMessage(workspaceId: string, channelId: string, conversationId: string, recipientId: string) {
+export function useSendMessage(
+  workspaceId: string,
+  channelId: string,
+  conversationId: string,
+  recipientId: string,
+) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (text: string) =>
-      api.post<void>(`${base(workspaceId, channelId)}/${conversationId}/messages/${recipientId}`, { text }),
+      api.post<void>(`${base(workspaceId, channelId)}/${conversationId}/messages/${recipientId}`, {
+        text,
+      }),
     // Both the thread and the list's excerpt change.
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.conversations(workspaceId, channelId) }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: keys.conversations(workspaceId, channelId) }),
   });
 }

@@ -28,7 +28,11 @@ export function AuthCard({
           {children}
         </Stack>
       </Panel>
-      {footer ? <Text size="sm" variant="secondary">{footer}</Text> : null}
+      {footer ? (
+        <Text size="sm" variant="secondary">
+          {footer}
+        </Text>
+      ) : null}
     </Stack>
   );
 }

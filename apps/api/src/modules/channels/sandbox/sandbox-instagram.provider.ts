@@ -1,6 +1,12 @@
 import { randomBytes } from 'node:crypto';
 import { Injectable, Logger } from '@nestjs/common';
-import { type ChannelType, type ConversationDto, LIMITS, type MediaDto, type MessageDto } from '@conversa/shared';
+import {
+  type ChannelType,
+  type ConversationDto,
+  LIMITS,
+  type MediaDto,
+  type MessageDto,
+} from '@conversa/shared';
 import { parseInstagramWebhook } from '../instagram/instagram-webhook.parser.js';
 import type {
   ChannelProvider,
@@ -20,7 +26,10 @@ const DAY_MS = 24 * 3600 * 1000;
 const POSTS = [
   { caption: 'New guide is out! Comment LINK and I will send it to you.', color: '#e4405f' },
   { caption: 'Behind the scenes of this week. Comment INFO for the details.', color: '#f77737' },
-  { caption: 'Five tips for better mornings. Want the checklist? Comment CHECKLIST.', color: '#fcaf45' },
+  {
+    caption: 'Five tips for better mornings. Want the checklist? Comment CHECKLIST.',
+    color: '#fcaf45',
+  },
   { caption: 'Our spring collection just dropped. Comment PRICE for prices.', color: '#833ab4' },
   { caption: 'Free workshop next Tuesday. Comment JOIN to save a seat.', color: '#405de6' },
   { caption: 'Thank you for 10k followers!', color: '#2e9e6b' },
@@ -93,7 +102,10 @@ export class SandboxInstagramProvider implements ChannelProvider {
   }
 
   async refreshCredentials(): Promise<RefreshedCredentials> {
-    return { accessToken: randomBytes(24).toString('hex'), tokenExpiresAt: new Date(Date.now() + TOKEN_LIFETIME_MS) };
+    return {
+      accessToken: randomBytes(24).toString('hex'),
+      tokenExpiresAt: new Date(Date.now() + TOKEN_LIFETIME_MS),
+    };
   }
 
   async subscribeWebhooks(): Promise<void> {}
@@ -115,18 +127,28 @@ export class SandboxInstagramProvider implements ChannelProvider {
 
   // ---- Messaging ----------------------------------------------------------
 
-  async sendPrivateReply(session: ChannelSession, commentId: string, message: OutboundMessage): Promise<SendResult> {
+  async sendPrivateReply(
+    session: ChannelSession,
+    commentId: string,
+    message: OutboundMessage,
+  ): Promise<SendResult> {
     const recipient = (await this.outbox.commentAuthor(commentId)) ?? commentId;
     return this.record(session, 'private_reply', recipient, commentId, message);
   }
 
-  async sendMessage(session: ChannelSession, recipientId: string, message: OutboundMessage): Promise<SendResult> {
+  async sendMessage(
+    session: ChannelSession,
+    recipientId: string,
+    message: OutboundMessage,
+  ): Promise<SendResult> {
     return this.record(session, 'message', recipientId, null, message);
   }
 
   async replyToComment(session: ChannelSession, commentId: string, text: string): Promise<void> {
     const recipient = (await this.outbox.commentAuthor(commentId)) ?? commentId;
-    await this.record(session, 'public_reply', recipient, commentId, { text: text.slice(0, LIMITS.publicReplyLength) });
+    await this.record(session, 'public_reply', recipient, commentId, {
+      text: text.slice(0, LIMITS.publicReplyLength),
+    });
   }
 
   /** Everyone follows the account, except usernames containing "nofollow". */
@@ -150,7 +172,10 @@ export class SandboxInstagramProvider implements ChannelProvider {
       timestamp: new Date().toISOString(),
     };
     await this.outbox.record(session.channelId, entry);
-    this.logger.log({ channelId: session.channelId, kind, recipient, text: message.text }, 'Sandbox send');
+    this.logger.log(
+      { channelId: session.channelId, kind, recipient, text: message.text },
+      'Sandbox send',
+    );
     return { messageId: entry.id };
   }
 
@@ -198,8 +223,13 @@ export class SandboxInstagramProvider implements ChannelProvider {
   }
 
   /** Both sides of every simulated conversation, oldest first; a message comes before a reply sent the same instant. */
-  private async thread(channelId: string): Promise<Array<MessageDto & { contactId: string; createdAt: string }>> {
-    const [sent, received] = await Promise.all([this.outbox.list(channelId), this.outbox.listReceived(channelId)]);
+  private async thread(
+    channelId: string,
+  ): Promise<Array<MessageDto & { contactId: string; createdAt: string }>> {
+    const [sent, received] = await Promise.all([
+      this.outbox.list(channelId),
+      this.outbox.listReceived(channelId),
+    ]);
     return [
       ...received.reverse().map((entry) => ({
         id: entry.id,

@@ -36,7 +36,10 @@ export class InboundProcessor extends WorkerHost {
   @OnWorkerEvent('failed')
   async onFailed(job: Job<InboundJob> | undefined, error: Error): Promise<void> {
     if (!job) return;
-    this.logger.error({ err: error, eventId: job.data.eventId, attempt: job.attemptsMade }, 'Inbound event failed');
+    this.logger.error(
+      { err: error, eventId: job.data.eventId, attempt: job.attemptsMade },
+      'Inbound event failed',
+    );
     if (job.attemptsMade >= (job.opts.attempts ?? 1)) {
       await this.prisma.inboundEvent.updateMany({
         where: { id: job.data.eventId },

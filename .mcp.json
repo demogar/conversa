@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "mola-ui": {
+      "command": "npx",
+      "args": ["-y", "--package", "@demogar/mola-ui", "mola-ui-mcp"]
+    }
+  }
+}

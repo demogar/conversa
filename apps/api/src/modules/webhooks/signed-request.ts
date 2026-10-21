@@ -6,7 +6,10 @@ import { safeEqual } from '../../common/crypto/crypto.service.js';
  * callbacks): `base64url(signature).base64url(payload)`, HMAC-SHA256 with the
  * app secret.
  */
-export function parseSignedRequest(signedRequest: unknown, appSecret: string): { user_id?: string } | null {
+export function parseSignedRequest(
+  signedRequest: unknown,
+  appSecret: string,
+): { user_id?: string } | null {
   if (typeof signedRequest !== 'string' || signedRequest.length > 4096) return null;
   const [signature, payload] = signedRequest.split('.');
   if (!signature || !payload) return null;

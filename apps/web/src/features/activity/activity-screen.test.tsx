@@ -29,18 +29,32 @@ describe('ActivityScreen', () => {
       'GET /workspaces/w1/activity?limit=50': {
         items: [
           delivery('d1'),
-          delivery('d2', { status: 'FAILED', errorCode: 'WINDOW_CLOSED', publicReplySent: false, attempts: 3 }),
-          delivery('d3', { status: 'SKIPPED', skipReason: 'AUTOMATION_PAUSED', contact: { id: 'p3', username: null } }),
+          delivery('d2', {
+            status: 'FAILED',
+            errorCode: 'WINDOW_CLOSED',
+            publicReplySent: false,
+            attempts: 3,
+          }),
+          delivery('d3', {
+            status: 'SKIPPED',
+            skipReason: 'AUTOMATION_PAUSED',
+            contact: { id: 'p3', username: null },
+          }),
         ],
         nextCursor: 'd3',
       },
-      'GET /workspaces/w1/activity?cursor=d3&limit=50': { items: [delivery('d4', { status: 'AWAITING_FOLLOW' })], nextCursor: null },
+      'GET /workspaces/w1/activity?cursor=d3&limit=50': {
+        items: [delivery('d4', { status: 'AWAITING_FOLLOW' })],
+        nextCursor: null,
+      },
     });
     renderWithProviders(<ActivityScreen workspaceId="w1" />);
 
     const table = await screen.findByRole('table', { name: 'Automation activity' });
     expect(await within(table).findByText('@fan_d1')).toBeInTheDocument();
-    expect(within(table).getByText('Sent', { selector: '[data-slot="badge"]' })).toBeInTheDocument();
+    expect(
+      within(table).getByText('Sent', { selector: '[data-slot="badge"]' }),
+    ).toBeInTheDocument();
     expect(within(table).getByText('Failed')).toBeInTheDocument();
     expect(within(table).getByText(/24 hours in which Instagram allows/)).toBeInTheDocument();
     expect(within(table).getByText('WINDOW_CLOSED')).toBeInTheDocument();
@@ -60,6 +74,9 @@ describe('ActivityScreen', () => {
     });
     renderWithProviders(<ActivityScreen workspaceId="w1" />);
     expect(await screen.findByText('Nothing has happened yet')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Create automation' })).toHaveAttribute('href', '/w/w1/automations/new');
+    expect(screen.getByRole('link', { name: 'Create automation' })).toHaveAttribute(
+      'href',
+      '/w/w1/automations/new',
+    );
   });
 });

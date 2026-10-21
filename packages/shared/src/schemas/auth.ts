@@ -57,7 +57,12 @@ export const updateProfileSchema = z.object({
 });
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
 
-export const totpCodeSchema = z.object({ code: z.string().trim().regex(/^\d{6}$/, 'invalid_code') });
+export const totpCodeSchema = z.object({
+  code: z
+    .string()
+    .trim()
+    .regex(/^\d{6}$/, 'invalid_code'),
+});
 export type TotpCodeInput = z.infer<typeof totpCodeSchema>;
 
 export const disableMfaSchema = z.object({

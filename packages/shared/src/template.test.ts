@@ -2,7 +2,9 @@ import { renderTemplate } from './template.js';
 
 describe('renderTemplate', () => {
   it('replaces {username} with the handle', () => {
-    expect(renderTemplate('Hi {username}, here you go', { username: 'ana' })).toBe('Hi @ana, here you go');
+    expect(renderTemplate('Hi {username}, here you go', { username: 'ana' })).toBe(
+      'Hi @ana, here you go',
+    );
   });
 
   it('drops the placeholder cleanly when the handle is unknown', () => {

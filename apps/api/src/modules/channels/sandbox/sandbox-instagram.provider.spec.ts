@@ -18,7 +18,8 @@ function fakeRedis(): SandboxRedis {
       lists.set(key, (lists.get(key) ?? []).slice(start, stop + 1));
       return 'OK';
     },
-    lrange: async (key: string, start: number, stop: number) => (lists.get(key) ?? []).slice(start, stop + 1),
+    lrange: async (key: string, start: number, stop: number) =>
+      (lists.get(key) ?? []).slice(start, stop + 1),
     set: async (key: string, value: string) => {
       keys.set(key, value);
       return 'OK';
@@ -28,7 +29,11 @@ function fakeRedis(): SandboxRedis {
   return fake as unknown as SandboxRedis;
 }
 
-const session: ChannelSession = { channelId: 'ch1', externalId: 'sandbox-0a1b2c3d', accessToken: 'token' };
+const session: ChannelSession = {
+  channelId: 'ch1',
+  externalId: 'sandbox-0a1b2c3d',
+  accessToken: 'token',
+};
 
 describe('SandboxInstagramProvider', () => {
   let outbox: SandboxOutbox;
@@ -44,7 +49,14 @@ describe('SandboxInstagramProvider', () => {
   it('lists the same six posts for a channel, one a day going back', async () => {
     const now = new Date('2026-05-10T08:00:00Z');
     const media = sandboxMedia('ch1', now);
-    expect(media.map((m) => m.id)).toEqual(['ch1-post-1', 'ch1-post-2', 'ch1-post-3', 'ch1-post-4', 'ch1-post-5', 'ch1-post-6']);
+    expect(media.map((m) => m.id)).toEqual([
+      'ch1-post-1',
+      'ch1-post-2',
+      'ch1-post-3',
+      'ch1-post-4',
+      'ch1-post-5',
+      'ch1-post-6',
+    ]);
     expect(sandboxMedia('ch1', now)).toEqual(media);
     expect(media[0]?.publishedAt).toBe('2026-05-10T12:00:00.000Z');
     expect(media[1]?.publishedAt).toBe('2026-05-09T12:00:00.000Z');
@@ -54,7 +66,9 @@ describe('SandboxInstagramProvider', () => {
   });
 
   it('finds its own posts and still resolves unknown ids', async () => {
-    expect((await provider.getMedia(session, 'ch1-post-2'))?.caption).toBe(sandboxMedia('ch1')[1]?.caption);
+    expect((await provider.getMedia(session, 'ch1-post-2'))?.caption).toBe(
+      sandboxMedia('ch1')[1]?.caption,
+    );
     expect((await provider.getMedia(session, 'elsewhere'))?.id).toBe('elsewhere');
   });
 
@@ -74,12 +88,17 @@ describe('SandboxInstagramProvider', () => {
       ['private_reply', 'sandbox-user-ana', 'c1'],
     ]);
     expect(entries[0]?.id).toBe(sent.messageId);
-    expect(entries[0]?.message.buttons?.[0]).toEqual({ type: 'postback', label: 'Send it', payload: 'cv1.d1.sig' });
+    expect(entries[0]?.message.buttons?.[0]).toEqual({
+      type: 'postback',
+      label: 'Send it',
+      payload: 'cv1.d1.sig',
+    });
     expect(await outbox.list('other')).toEqual([]);
   });
 
   it('keeps only the last hundred sends', async () => {
-    for (let i = 0; i < 105; i++) await provider.sendMessage(session, 'sandbox-user-ana', { text: `m${i}` });
+    for (let i = 0; i < 105; i++)
+      await provider.sendMessage(session, 'sandbox-user-ana', { text: `m${i}` });
     const entries = await outbox.list('ch1');
     expect(entries).toHaveLength(100);
     expect(entries[0]?.message.text).toBe('m104');
@@ -111,7 +130,9 @@ describe('SandboxInstagramProvider', () => {
 
   it('treats everyone as a follower except "nofollow" usernames', async () => {
     expect((await provider.getContactProfile(session, 'sandbox-user-ana')).follows).toBe(true);
-    expect((await provider.getContactProfile(session, 'sandbox-user-ana_nofollow')).follows).toBe(false);
+    expect((await provider.getContactProfile(session, 'sandbox-user-ana_nofollow')).follows).toBe(
+      false,
+    );
   });
 
   it('connects a different fake account each time', async () => {

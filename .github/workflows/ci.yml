@@ -26,6 +26,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @conversa/shared build
+      - run: pnpm format:check
       - run: pnpm -r lint
       - run: pnpm -r typecheck
       - run: pnpm -r --filter '!@conversa/e2e' test
@@ -105,11 +106,13 @@ jobs:
   e2e:
     name: End-to-end tests
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     services:
       postgres:
         image: postgres:17-alpine
         env:
+          # Throwaway credentials for the CI database only. The e2e run
+          # creates and drops its own database (conversa_e2e) next to this one.
           POSTGRES_USER: conversa
           POSTGRES_PASSWORD: conversa
           POSTGRES_DB: conversa
@@ -128,36 +131,22 @@ jobs:
           --health-timeout 3s
           --health-retries 20
     env:
-      APP_URL: http://localhost:3000
+      CI: '1'
       DATABASE_URL: postgresql://conversa:conversa@localhost:5432/conversa
       REDIS_URL: redis://localhost:6379
-      INSTAGRAM_SANDBOX: 'true'
     steps:
       - uses: actions/checkout@v5
-      # Runs only once the e2e package exists.
-      - id: e2e
-        run: echo "present=${{ hashFiles('e2e/package.json') != '' }}" >> "$GITHUB_OUTPUT"
-      - if: steps.e2e.outputs.present == 'true'
-        uses: pnpm/action-setup@v4
-      - if: steps.e2e.outputs.present == 'true'
-        uses: actions/setup-node@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
           cache: pnpm
-      - if: steps.e2e.outputs.present == 'true'
-        run: pnpm install --frozen-lockfile
-      - if: steps.e2e.outputs.present == 'true'
-        name: Generate throwaway secrets
-        run: node scripts/generate-secrets.mjs >> "$GITHUB_ENV"
-      - if: steps.e2e.outputs.present == 'true'
-        run: pnpm build
-      - if: steps.e2e.outputs.present == 'true'
-        run: pnpm --filter @conversa/api db:deploy
-      - if: steps.e2e.outputs.present == 'true'
-        run: pnpm --filter @conversa/e2e exec playwright install --with-deps chromium
-      - if: steps.e2e.outputs.present == 'true'
-        run: pnpm test:e2e
-      - if: failure() && steps.e2e.outputs.present == 'true'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @conversa/e2e exec playwright install --with-deps chromium
+      # Builds shared, api and web, then starts its own stack on ports 4100
+      # and 3100 with a simulated Instagram and fresh secrets.
+      - run: pnpm test:e2e
+      - if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
@@ -165,5 +154,3 @@ jobs:
             e2e/playwright-report
             e2e/test-results
           retention-days: 7
-      - if: steps.e2e.outputs.present != 'true'
-        run: echo "No e2e package yet, nothing to run."

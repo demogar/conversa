@@ -12,7 +12,14 @@ import { SessionService } from './session.service.js';
 @Module({
   imports: [WorkspacesModule],
   controllers: [AuthController, AccountController],
-  providers: [AuthService, AccountService, PasswordService, SessionService, MfaService, TurnstileService],
+  providers: [
+    AuthService,
+    AccountService,
+    PasswordService,
+    SessionService,
+    MfaService,
+    TurnstileService,
+  ],
   exports: [SessionService],
 })
 export class AuthModule {}

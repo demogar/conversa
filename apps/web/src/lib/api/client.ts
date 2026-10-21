@@ -19,7 +19,12 @@ type Method = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
  * session cookie is first-party and the browser sends the Origin header the
  * API checks on every write.
  */
-export async function apiRequest<T>(method: Method, path: string, body?: unknown, signal?: AbortSignal): Promise<T> {
+export async function apiRequest<T>(
+  method: Method,
+  path: string,
+  body?: unknown,
+  signal?: AbortSignal,
+): Promise<T> {
   const response = await fetch(`/api/v1${path}`, {
     method,
     headers: body === undefined ? undefined : { 'Content-Type': 'application/json' },
@@ -45,7 +50,9 @@ export const api = {
 };
 
 /** Builds a query string, dropping empty values. */
-export function query(params: Record<string, string | number | boolean | null | undefined>): string {
+export function query(
+  params: Record<string, string | number | boolean | null | undefined>,
+): string {
   const search = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
     if (value !== undefined && value !== null && value !== '') search.set(key, String(value));

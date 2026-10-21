@@ -8,7 +8,12 @@ import type { Channel } from '../../../generated/prisma/client.js';
 import { PostbackTokens } from '../../engine/postback-token.js';
 import { InboundEventIngestor } from '../../webhooks/inbound-event.ingestor.js';
 import { ChannelsService } from '../channels.service.js';
-import { buildCommentPayload, buildMessagePayload, buildPostbackPayload, sandboxUserId } from './sandbox-events.js';
+import {
+  buildCommentPayload,
+  buildMessagePayload,
+  buildPostbackPayload,
+  sandboxUserId,
+} from './sandbox-events.js';
 import { SandboxOutbox, type SandboxOutboxEntry } from './sandbox-outbox.js';
 
 /**
@@ -26,7 +31,11 @@ export class SandboxService {
     private readonly tokens: PostbackTokens,
   ) {}
 
-  async simulate(workspaceId: string, channelId: string, input: SimulateEventInput): Promise<{ eventId: string }> {
+  async simulate(
+    workspaceId: string,
+    channelId: string,
+    input: SimulateEventInput,
+  ): Promise<{ eventId: string }> {
     const channel = await this.channel(workspaceId, channelId);
     if (input.kind === 'message') {
       const messageId = `sandbox-mid-${randomBytes(8).toString('hex')}`;
@@ -58,7 +67,11 @@ export class SandboxService {
   }
 
   /** The contact who received a delivery's button taps it. */
-  async tap(workspaceId: string, channelId: string, deliveryId: string): Promise<{ eventId: string }> {
+  async tap(
+    workspaceId: string,
+    channelId: string,
+    deliveryId: string,
+  ): Promise<{ eventId: string }> {
     const channel = await this.channel(workspaceId, channelId);
     const delivery = await this.prisma.delivery.findFirst({
       where: { id: deliveryId, channelId: channel.id },

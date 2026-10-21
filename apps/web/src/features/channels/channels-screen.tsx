@@ -63,12 +63,16 @@ export function ChannelsScreen({ workspaceId }: { workspaceId: string }) {
     router.replace(pathname);
   }, [connectedId, pathname, queryClient, router, t, toast, workspaceId]);
 
-  const connectButton =
-    canManage ? (
-      <Button icon={<Plus />} loading={connect.isPending} disabled={!configured} onClick={() => connect.mutate()}>
-        {t('connect')}
-      </Button>
-    ) : undefined;
+  const connectButton = canManage ? (
+    <Button
+      icon={<Plus />}
+      loading={connect.isPending}
+      disabled={!configured}
+      onClick={() => connect.mutate()}
+    >
+      {t('connect')}
+    </Button>
+  ) : undefined;
 
   const list = channels.data ?? [];
 
@@ -76,10 +80,19 @@ export function ChannelsScreen({ workspaceId }: { workspaceId: string }) {
     <div className="flex flex-col">
       <PageHeader title={t('title')} description={t('description')} actions={connectButton} />
       <div className="flex flex-col gap-4 p-4 sm:p-6">
-        {sandbox ? <Banner tone="info" title={t('sandbox.title')}>{t('sandbox.body')}</Banner> : null}
+        {sandbox ? (
+          <Banner tone="info" title={t('sandbox.title')}>
+            {t('sandbox.body')}
+          </Banner>
+        ) : null}
 
         {callbackError ? (
-          <Callout tone="danger" headingLevel={2} title={t('connectFailed')} onDismiss={() => router.replace(pathname)}>
+          <Callout
+            tone="danger"
+            headingLevel={2}
+            title={t('connectFailed')}
+            onDismiss={() => router.replace(pathname)}
+          >
             {callbackError}
           </Callout>
         ) : null}
@@ -92,7 +105,9 @@ export function ChannelsScreen({ workspaceId }: { workspaceId: string }) {
 
         {canManage && !configured ? (
           <Callout tone="warn" headingLevel={2} title={t('notConfigured.title')}>
-            {t.rich('notConfigured.body', { doc: () => <code className="literal">docs/instagram.md</code> })}
+            {t.rich('notConfigured.body', {
+              doc: () => <code className="literal">docs/instagram.md</code>,
+            })}
           </Callout>
         ) : null}
 
@@ -147,7 +162,10 @@ export function ChannelsScreen({ workspaceId }: { workspaceId: string }) {
         )}
 
         {channels.isSuccess && list.length === 0 && canManage && !sandbox ? (
-          <section aria-labelledby="channel-requirements" className="flex max-w-reading flex-col gap-2">
+          <section
+            aria-labelledby="channel-requirements"
+            className="flex max-w-reading flex-col gap-2"
+          >
             <Heading level={2} visualLevel={4} id="channel-requirements">
               {t('empty.requirementsTitle')}
             </Heading>

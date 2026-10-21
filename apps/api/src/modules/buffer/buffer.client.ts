@@ -88,7 +88,9 @@ export class BufferClient {
         input: {
           organizationId,
           filter: { status: filter.status, channelIds: filter.channelIds },
-          sort: [{ field: scheduled ? 'dueAt' : 'createdAt', direction: scheduled ? 'asc' : 'desc' }],
+          sort: [
+            { field: scheduled ? 'dueAt' : 'createdAt', direction: scheduled ? 'asc' : 'desc' },
+          ],
         },
       },
     );
@@ -109,7 +111,11 @@ export class BufferClient {
     }
   }
 
-  private async query<T>(apiKey: string, query: string, variables?: Record<string, unknown>): Promise<T> {
+  private async query<T>(
+    apiKey: string,
+    query: string,
+    variables?: Record<string, unknown>,
+  ): Promise<T> {
     let response: Response;
     try {
       response = await fetch(ENDPOINT, {
@@ -121,9 +127,11 @@ export class BufferClient {
     } catch (error) {
       throw new BufferError('unavailable', `Buffer request failed: ${(error as Error).message}`);
     }
-    if (response.status === 401) throw new BufferError('unauthorized', 'Buffer rejected the API key');
+    if (response.status === 401)
+      throw new BufferError('unauthorized', 'Buffer rejected the API key');
     if (response.status === 429) throw new BufferError('rate_limited', 'Buffer rate limit reached');
-    if (!response.ok) throw new BufferError('unavailable', `Buffer answered HTTP ${response.status}`);
+    if (!response.ok)
+      throw new BufferError('unavailable', `Buffer answered HTTP ${response.status}`);
 
     const body = (await response.json().catch(() => ({}))) as {
       data?: T;
@@ -140,7 +148,8 @@ export class BufferClient {
             : code === 'NOT_FOUND'
               ? 'not_found'
               : 'unavailable';
-      if (kind === 'unavailable') this.logger.warn({ code, message: error.message }, 'Buffer query failed');
+      if (kind === 'unavailable')
+        this.logger.warn({ code, message: error.message }, 'Buffer query failed');
       throw new BufferError(kind, error.message ?? 'Buffer query failed');
     }
     if (!body.data) throw new BufferError('unavailable', 'Buffer returned no data');

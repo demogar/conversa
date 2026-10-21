@@ -11,7 +11,8 @@ export type DashboardRange = 7 | 30 | 90;
 export function useDashboard(workspaceId: string, days: DashboardRange) {
   return useQuery({
     queryKey: keys.dashboard(workspaceId, days),
-    queryFn: ({ signal }) => api.get<DashboardDto>(`/workspaces/${workspaceId}/dashboard${query({ days })}`, signal),
+    queryFn: ({ signal }) =>
+      api.get<DashboardDto>(`/workspaces/${workspaceId}/dashboard${query({ days })}`, signal),
     placeholderData: keepPreviousData,
   });
 }

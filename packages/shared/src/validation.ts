@@ -10,7 +10,8 @@ export function issuesToFields(error: z.ZodError): Record<string, string[]> {
   const fields: Record<string, string[]> = {};
   for (const issue of error.issues) {
     const path = issue.path.join('.') || '_';
-    const code = issue.code === 'custom' || /^[a-z_]+$/.test(issue.message) ? issue.message : issue.code;
+    const code =
+      issue.code === 'custom' || /^[a-z_]+$/.test(issue.message) ? issue.message : issue.code;
     (fields[path] ??= []).push(code);
   }
   return fields;

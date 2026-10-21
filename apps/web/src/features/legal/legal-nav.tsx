@@ -18,7 +18,12 @@ export function LegalNav() {
     <nav aria-label={t('label')}>
       <ul className="-m-2 flex list-none flex-wrap gap-px p-2">
         {PAGES.map((page) => (
-          <NavItem key={page.key} active={pathname === page.href} className="shrink-0" render={<NextLink href={page.href} />}>
+          <NavItem
+            key={page.key}
+            active={pathname === page.href}
+            className="shrink-0"
+            render={<NextLink href={page.href} />}
+          >
             {t(page.key)}
           </NavItem>
         ))}

@@ -48,7 +48,9 @@ const REDACT = [
             res: (res: { statusCode: number }) => ({ statusCode: res.statusCode }),
           },
           autoLogging: { ignore: (req) => req.url?.startsWith('/api/v1/health') ?? false },
-          transport: config.isProduction ? undefined : { target: 'pino-pretty', options: { singleLine: true } },
+          transport: config.isProduction
+            ? undefined
+            : { target: 'pino-pretty', options: { singleLine: true } },
         },
       }),
     }),

@@ -20,7 +20,9 @@ export class InstanceController {
       needsSetup: !hasUsers,
       signupOpen: !hasUsers || this.config.env.SIGNUP_MODE === 'open',
       mailEnabled: this.config.mailEnabled,
-      captchaSiteKey: this.config.captchaEnabled ? (this.config.env.TURNSTILE_SITE_KEY ?? null) : null,
+      captchaSiteKey: this.config.captchaEnabled
+        ? (this.config.env.TURNSTILE_SITE_KEY ?? null)
+        : null,
       providers: { instagram: this.config.sandbox || this.config.instagram !== null },
       sandbox: this.config.sandbox,
     };

@@ -4,5 +4,8 @@ import { ChannelsModule } from '../channels/channels.module.js';
 import { EngineModule } from '../engine/engine.module.js';
 import { MaintenanceProcessor } from './maintenance.processor.js';
 
-@Module({ imports: [ChannelsModule, EngineModule, BufferSyncModule], providers: [MaintenanceProcessor] })
+@Module({
+  imports: [ChannelsModule, EngineModule, BufferSyncModule],
+  providers: [MaintenanceProcessor],
+})
 export class MaintenanceModule {}

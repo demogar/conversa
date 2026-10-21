@@ -34,7 +34,10 @@ export class SandboxController {
   }
 
   @Get('outbox')
-  outbox(@CurrentMembership() membership: MembershipContext, @Param('channelId') channelId: string) {
+  outbox(
+    @CurrentMembership() membership: MembershipContext,
+    @Param('channelId') channelId: string,
+  ) {
     return this.sandbox.outboxFor(membership.workspaceId, channelId);
   }
 }

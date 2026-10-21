@@ -63,7 +63,12 @@ export function ConversationThread({
           title={t('states.messagesFailed')}
           description={t('states.loadFailedDescription')}
           actions={
-            <Button variant="secondary" size="sm" icon={<RotateCcw />} onClick={() => messages.refetch()}>
+            <Button
+              variant="secondary"
+              size="sm"
+              icon={<RotateCcw />}
+              onClick={() => messages.refetch()}
+            >
               {tCommon('retry')}
             </Button>
           }
@@ -137,10 +142,15 @@ function Composer({
     });
   }
 
-  const windowClosed = send.error instanceof ApiError && send.error.code === 'MESSAGING_WINDOW_CLOSED';
+  const windowClosed =
+    send.error instanceof ApiError && send.error.code === 'MESSAGING_WINDOW_CLOSED';
 
   return (
-    <Form onSubmit={submit} aria-label={t('label', { name })} className="border-t border-keyline pt-4">
+    <Form
+      onSubmit={submit}
+      aria-label={t('label', { name })}
+      className="border-t border-keyline pt-4"
+    >
       <div className="flex flex-col gap-3">
         {windowClosed ? (
           <Callout tone="warn" title={t('windowClosedTitle')}>

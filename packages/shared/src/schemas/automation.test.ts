@@ -39,7 +39,9 @@ describe('createAutomationSchema', () => {
   it('rejects non-http button links', () => {
     const result = createAutomationSchema.safeParse({
       ...base,
-      response: { message: { text: 'x', buttons: [{ label: 'Open', url: 'javascript:alert(1)' }] } },
+      response: {
+        message: { text: 'x', buttons: [{ label: 'Open', url: 'javascript:alert(1)' }] },
+      },
     });
     expect(result.success).toBe(false);
   });

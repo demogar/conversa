@@ -66,7 +66,7 @@ export type DeliveryStatus = (typeof DeliveryStatus)[keyof typeof DeliveryStatus
 
 export const SkipReason = {
   RATE_LIMITED: 'RATE_LIMITED',
-  ALREADY_REPLIED: 'ALREADY_REPLIED',
+  AUTOMATION_PAUSED: 'AUTOMATION_PAUSED',
   CHANNEL_INACTIVE: 'CHANNEL_INACTIVE',
 } as const;
 export type SkipReason = (typeof SkipReason)[keyof typeof SkipReason];

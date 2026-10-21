@@ -38,7 +38,14 @@ export const envSchema = z.object({
   ENCRYPTION_KEYS_PREVIOUS: z
     .string()
     .optional()
-    .transform((value) => (value ? value.split(',').map((key) => key.trim()).filter(Boolean) : []))
+    .transform((value) =>
+      value
+        ? value
+            .split(',')
+            .map((key) => key.trim())
+            .filter(Boolean)
+        : [],
+    )
     .pipe(z.array(base64Key)),
   SIGNUP_MODE: z.enum(['invite_only', 'open']).default('invite_only'),
   TRUST_PROXY: trustProxy,
@@ -49,7 +56,10 @@ export const envSchema = z.object({
   INSTAGRAM_APP_ID: optionalString,
   INSTAGRAM_APP_SECRET: optionalString,
   INSTAGRAM_WEBHOOK_VERIFY_TOKEN: optionalString,
-  META_GRAPH_VERSION: z.string().regex(/^v\d+\.\d+$/).default('v24.0'),
+  META_GRAPH_VERSION: z
+    .string()
+    .regex(/^v\d+\.\d+$/)
+    .default('v24.0'),
   /** Run the worker's processors inside the API process (small installs). */
   WORKER_IN_API: booleanish,
   /** A simulated Instagram for trying Conversa and for end-to-end tests. Never in production. */

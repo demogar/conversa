@@ -67,9 +67,10 @@ export class CryptoService {
     const data = Buffer.from(packed, 'base64url');
     const decipher = createDecipheriv(CIPHER, key.material, data.subarray(0, IV_BYTES));
     decipher.setAuthTag(data.subarray(IV_BYTES, IV_BYTES + TAG_BYTES));
-    return Buffer.concat([decipher.update(data.subarray(IV_BYTES + TAG_BYTES)), decipher.final()]).toString(
-      'utf8',
-    );
+    return Buffer.concat([
+      decipher.update(data.subarray(IV_BYTES + TAG_BYTES)),
+      decipher.final(),
+    ]).toString('utf8');
   }
 
   /** True when the value was encrypted with a key that is no longer current. */
@@ -107,13 +108,18 @@ export class CryptoService {
   }
 
   /** Returns the payload of a valid, unexpired token, or null. */
-  verify<T extends Record<string, unknown>>(purpose: SigningPurpose, token: string | undefined | null): T | null {
+  verify<T extends Record<string, unknown>>(
+    purpose: SigningPurpose,
+    token: string | undefined | null,
+  ): T | null {
     if (!token || token.length > 2048) return null;
     const [body, signature, extra] = token.split('.');
     if (!body || !signature || extra !== undefined) return null;
     if (!safeEqual(signature, this.hmac(purpose, body))) return null;
     try {
-      const payload = JSON.parse(Buffer.from(body, 'base64url').toString('utf8')) as T & { exp?: unknown };
+      const payload = JSON.parse(Buffer.from(body, 'base64url').toString('utf8')) as T & {
+        exp?: unknown;
+      };
       if (typeof payload.exp !== 'number' || payload.exp < Date.now() / 1000) return null;
       return payload;
     } catch {

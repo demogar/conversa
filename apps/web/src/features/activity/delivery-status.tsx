@@ -22,10 +22,23 @@ export function DeliveryStatusBadge({ status }: { status: DeliveryStatus }) {
   );
 }
 
-const SKIP_REASONS = ['RATE_LIMITED', 'CHANNEL_INACTIVE', 'AUTOMATION_PAUSED', 'ALREADY_REPLIED'] as const;
-const ERROR_CODES = ['AUTH', 'RATE_LIMIT', 'WINDOW_CLOSED', 'REJECTED', 'TRANSIENT', 'INTERNAL'] as const;
+const SKIP_REASONS = [
+  'RATE_LIMITED',
+  'CHANNEL_INACTIVE',
+  'AUTOMATION_PAUSED',
+  'ALREADY_REPLIED',
+] as const;
+const ERROR_CODES = [
+  'AUTH',
+  'RATE_LIMIT',
+  'WINDOW_CLOSED',
+  'REJECTED',
+  'TRANSIENT',
+  'INTERNAL',
+] as const;
 
-const isOneOf = <T extends string>(list: readonly T[], value: string): value is T => (list as readonly string[]).includes(value);
+const isOneOf = <T extends string>(list: readonly T[], value: string): value is T =>
+  (list as readonly string[]).includes(value);
 
 /** Why a delivery was skipped or failed, as a sentence; null when it went fine. */
 export function useDeliveryExplanation(): (delivery: DeliveryDto) => string | null {

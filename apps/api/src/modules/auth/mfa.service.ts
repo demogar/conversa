@@ -36,7 +36,10 @@ export class MfaService {
 
   generateRecoveryCodes(): { codes: string[]; hashes: string[] } {
     const codes = Array.from({ length: RECOVERY_CODES }, () => {
-      const chars = Array.from({ length: 10 }, () => RECOVERY_ALPHABET[randomInt(RECOVERY_ALPHABET.length)]);
+      const chars = Array.from(
+        { length: 10 },
+        () => RECOVERY_ALPHABET[randomInt(RECOVERY_ALPHABET.length)],
+      );
       return `${chars.slice(0, 5).join('')}-${chars.slice(5).join('')}`;
     });
     return { codes, hashes: codes.map((code) => this.hashRecoveryCode(code)) };

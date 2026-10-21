@@ -59,7 +59,10 @@ export class ActivityController {
   constructor(private readonly activity: ActivityService) {}
 
   @Get()
-  list(@CurrentMembership() membership: MembershipContext, @ZodQuery(activityQuery) query: ActivityQuery) {
+  list(
+    @CurrentMembership() membership: MembershipContext,
+    @ZodQuery(activityQuery) query: ActivityQuery,
+  ) {
     return this.activity.list(membership.workspaceId, query);
   }
 }

@@ -66,7 +66,9 @@ export function ChannelCard({
           <Heading level={2} visualLevel={4} id={headingId} className="truncate">
             @{channel.username}
           </Heading>
-          {channel.displayName ? <p className="m-0 truncate text-sm text-ink-2">{channel.displayName}</p> : null}
+          {channel.displayName ? (
+            <p className="m-0 truncate text-sm text-ink-2">{channel.displayName}</p>
+          ) : null}
         </div>
         <ChannelStatusBadge status={channel.status} />
       </header>
@@ -84,7 +86,10 @@ export function ChannelCard({
       <DescriptionList
         layout="grid"
         items={[
-          { term: t('card.webhook'), detail: channel.webhookSubscribed ? t('card.webhookOn') : t('card.webhookOff') },
+          {
+            term: t('card.webhook'),
+            detail: channel.webhookSubscribed ? t('card.webhookOn') : t('card.webhookOff'),
+          },
           {
             term: t('card.tokenExpires'),
             detail: channel.tokenExpiresAt ? date(channel.tokenExpiresAt) : t('card.tokenNever'),
@@ -98,7 +103,11 @@ export function ChannelCard({
       {canManage ? (
         <div className="mt-auto flex flex-wrap gap-2">
           {channel.status !== 'ACTIVE' ? (
-            <Button icon={<RefreshCw />} loading={connect.isPending} onClick={() => connect.mutate()}>
+            <Button
+              icon={<RefreshCw />}
+              loading={connect.isPending}
+              onClick={() => connect.mutate()}
+            >
               {t('reconnect')}
             </Button>
           ) : null}

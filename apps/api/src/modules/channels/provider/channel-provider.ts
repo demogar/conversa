@@ -130,8 +130,16 @@ export interface ContactProfile {
 /** Sending on behalf of a connected account. */
 export interface Messenger {
   /** Replies privately to the author of a comment. Platforms allow one per comment. */
-  sendPrivateReply(session: ChannelSession, commentId: string, message: OutboundMessage): Promise<SendResult>;
-  sendMessage(session: ChannelSession, recipientId: string, message: OutboundMessage): Promise<SendResult>;
+  sendPrivateReply(
+    session: ChannelSession,
+    commentId: string,
+    message: OutboundMessage,
+  ): Promise<SendResult>;
+  sendMessage(
+    session: ChannelSession,
+    recipientId: string,
+    message: OutboundMessage,
+  ): Promise<SendResult>;
   replyToComment(session: ChannelSession, commentId: string, text: string): Promise<void>;
   /** What the platform will say about a person; null fields are unknown. */
   getContactProfile(session: ChannelSession, userId: string): Promise<ContactProfile>;
@@ -145,7 +153,8 @@ export interface ContentSource {
   listMessages(session: ChannelSession, conversationId: string): Promise<MessageDto[]>;
 }
 
-export interface ChannelProvider extends ChannelConnector, WebhookAdapter, Messenger, ContentSource {
+export interface ChannelProvider
+  extends ChannelConnector, WebhookAdapter, Messenger, ContentSource {
   readonly type: ChannelType;
   /** False when the instance has no app credentials for this platform. */
   isConfigured(): boolean;

@@ -9,12 +9,20 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /** Meta's data deletion callback sends people here with `?code=` once a request is recorded. */
-export default async function DataDeletionPage({ searchParams }: { searchParams: Promise<{ code?: string | string[] }> }) {
+export default async function DataDeletionPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ code?: string | string[] }>;
+}) {
   const t = await getTranslations('legal.dataDeletion');
   const { code: raw } = await searchParams;
   const code = (Array.isArray(raw) ? raw[0] : raw)?.trim().slice(0, 64);
   return (
-    <LegalDocument title={t('title')} lead={t('lead')} sections={t.raw('sections') as LegalSection[]}>
+    <LegalDocument
+      title={t('title')}
+      lead={t('lead')}
+      sections={t.raw('sections') as LegalSection[]}
+    >
       {code ? (
         <Callout tone="success" headingLevel={2} title={t('confirmationTitle')}>
           <p className="m-0">{t('confirmationDescription')}</p>

@@ -28,7 +28,9 @@ import { WorkspaceGuard } from './modules/workspaces/workspace.guard.js';
 import { WorkspacesModule } from './modules/workspaces/workspaces.module.js';
 
 /** Small installs can run the worker inside the API process (WORKER_IN_API=true). */
-const embeddedWorker = ['true', '1'].includes(process.env.WORKER_IN_API ?? '') ? [WorkerModule] : [];
+const embeddedWorker = ['true', '1'].includes(process.env.WORKER_IN_API ?? '')
+  ? [WorkerModule]
+  : [];
 
 @Module({
   imports: [

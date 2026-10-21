@@ -12,7 +12,10 @@ export default async function LegalLayout({ children }: { children: ReactNode })
   return (
     <div className="min-h-dvh bg-cloth">
       <header className="rule-b bg-cloth-pale">
-        <Container width="prose" className="flex flex-wrap items-center justify-between gap-4 px-4 py-4">
+        <Container
+          width="prose"
+          className="flex flex-wrap items-center justify-between gap-4 px-4 py-4"
+        >
           <NextLink href="/" aria-label={t('home')} className="no-underline">
             <BrandMark />
           </NextLink>

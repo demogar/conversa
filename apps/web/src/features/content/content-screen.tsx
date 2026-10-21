@@ -24,7 +24,12 @@ import { Zap } from 'lucide-react';
 import NextLink from 'next/link';
 import { useFormatter, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { type BufferPostView, useBufferChannels, useBufferPosts, useBufferStatus } from '@/lib/api/hooks/buffer';
+import {
+  type BufferPostView,
+  useBufferChannels,
+  useBufferPosts,
+  useBufferStatus,
+} from '@/lib/api/hooks/buffer';
 import { useCurrentWorkspace } from '@/lib/api/hooks/session';
 import { useErrorMessage } from '@/lib/errors';
 import { workspacePath } from '@/lib/navigation';
@@ -78,7 +83,13 @@ export function ContentScreen({ workspaceId }: { workspaceId: string }) {
 }
 
 /** What the page shows until Buffer is connected with an organization chosen. */
-function ContentGate({ workspaceId, status }: { workspaceId: string; status: ReturnType<typeof useBufferStatus> }) {
+function ContentGate({
+  workspaceId,
+  status,
+}: {
+  workspaceId: string;
+  status: ReturnType<typeof useBufferStatus>;
+}) {
   const t = useTranslations('content');
   const tCommon = useTranslations('common');
   const workspace = useCurrentWorkspace(workspaceId);
@@ -162,7 +173,9 @@ function PostList({ workspaceId, view }: { workspaceId: string; view: BufferPost
         kind="empty"
         headingLevel={2}
         title={t(`empty.${view}`)}
-        description={t(view === 'scheduled' ? 'empty.scheduledDescription' : 'empty.sentDescription')}
+        description={t(
+          view === 'scheduled' ? 'empty.scheduledDescription' : 'empty.sentDescription',
+        )}
       />
     );
   }
@@ -233,7 +246,12 @@ function PostCard({
             t('noDate')
           )}
         </Text>
-        <PostActions workspaceId={workspaceId} post={post} channel={channel} channelName={channelName} />
+        <PostActions
+          workspaceId={workspaceId}
+          post={post}
+          channel={channel}
+          channelName={channelName}
+        />
       </div>
     </Panel>
   );
@@ -287,7 +305,9 @@ function PostActions({
       ) : !published ? (
         <Text size="sm" variant="secondary">
           {t('channelNotLinked', { channel: channelName })}{' '}
-          <Link render={<NextLink href={workspacePath(workspaceId, '/channels')} />}>{t('connectChannel')}</Link>
+          <Link render={<NextLink href={workspacePath(workspaceId, '/channels')} />}>
+            {t('connectChannel')}
+          </Link>
         </Text>
       ) : null}
       {published && post.externalLink ? (

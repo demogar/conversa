@@ -4,7 +4,9 @@ import userEvent from '@testing-library/user-event';
 import { MockError, mockApi, renderWithProviders } from '@/test/render';
 import { InboxScreen } from './inbox-screen';
 
-jest.mock('next/navigation', () => ({ useRouter: () => ({ replace: jest.fn(), push: jest.fn() }) }));
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({ replace: jest.fn(), push: jest.fn() }),
+}));
 
 const channel: ChannelDto = {
   id: 'c1',
@@ -39,11 +41,17 @@ describe('InboxScreen', () => {
       [`POST ${base}/cv1/messages/p1`]: undefined,
     });
     renderWithProviders(<InboxScreen workspaceId="w1" />);
-    expect(await screen.findByRole('article', { name: /@marta/ })).toHaveTextContent('Do you ship to Panama?');
+    expect(await screen.findByRole('article', { name: /@marta/ })).toHaveTextContent(
+      'Do you ship to Panama?',
+    );
     await user.type(screen.getByRole('textbox', { name: /Reply to @marta/ }), 'Yes, in 3 days.');
     await user.click(screen.getByRole('button', { name: 'Send message' }));
     expect(await screen.findByText('Message sent')).toBeInTheDocument();
-    expect(calls).toContainEqual({ method: 'POST', path: `${base}/cv1/messages/p1`, body: { text: 'Yes, in 3 days.' } });
+    expect(calls).toContainEqual({
+      method: 'POST',
+      path: `${base}/cv1/messages/p1`,
+      body: { text: 'Yes, in 3 days.' },
+    });
   });
 
   it('explains the 24-hour window when Instagram refuses the reply', async () => {
@@ -64,6 +72,9 @@ describe('InboxScreen', () => {
   it('points to the channels page when no account is connected', async () => {
     mockApi({ 'GET /workspaces/w1/channels': [] });
     renderWithProviders(<InboxScreen workspaceId="w1" />);
-    expect(await screen.findByRole('link', { name: 'Go to channels' })).toHaveAttribute('href', '/w/w1/channels');
+    expect(await screen.findByRole('link', { name: 'Go to channels' })).toHaveAttribute(
+      'href',
+      '/w/w1/channels',
+    );
   });
 });

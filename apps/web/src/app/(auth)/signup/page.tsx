@@ -1,6 +1,16 @@
 'use client';
 
-import { Button, Callout, EmptyState, Field, Form, Input, Link, LinkButton, Stack } from '@demogar/mola-ui';
+import {
+  Button,
+  Callout,
+  EmptyState,
+  Field,
+  Form,
+  Input,
+  Link,
+  LinkButton,
+  Stack,
+} from '@demogar/mola-ui';
 import { type Locale, signupSchema } from '@conversa/shared';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import NextLink from 'next/link';
@@ -69,7 +79,9 @@ function SignupForm() {
           headingLevel={2}
           title={t('signup.closedTitle')}
           description={t('signup.closedDescription')}
-          actions={<LinkButton render={<NextLink href="/login" />}>{t('signup.signIn')}</LinkButton>}
+          actions={
+            <LinkButton render={<NextLink href="/login" />}>{t('signup.signIn')}</LinkButton>
+          }
         />
       </AuthCard>
     );
@@ -78,7 +90,10 @@ function SignupForm() {
   const description = instance.data?.needsSetup
     ? t('signup.setupDescription')
     : invitation.data
-      ? t('signup.invitedDescription', { workspace: invitation.data.workspaceName, email: invitation.data.email })
+      ? t('signup.invitedDescription', {
+          workspace: invitation.data.workspaceName,
+          email: invitation.data.email,
+        })
       : t('signup.description');
 
   return (
@@ -88,7 +103,9 @@ function SignupForm() {
       footer={
         <>
           {t('signup.haveAccount')}{' '}
-          <Link render={<NextLink href={invitationToken ? `/invite/${invitationToken}` : '/login'} />}>
+          <Link
+            render={<NextLink href={invitationToken ? `/invite/${invitationToken}` : '/login'} />}
+          >
             {t('signup.signIn')}
           </Link>
         </>
@@ -101,7 +118,13 @@ function SignupForm() {
           ) : null}
           <Field label={t('signup.name')} required error={errors.name}>
             {(control) => (
-              <Input {...control} value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" autoFocus />
+              <Input
+                {...control}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                autoComplete="name"
+                autoFocus
+              />
             )}
           </Field>
           <Field label={t('signup.email')} required error={errors.email}>
@@ -116,7 +139,12 @@ function SignupForm() {
               />
             )}
           </Field>
-          <Field label={t('signup.password')} required error={errors.password} hint={t('signup.passwordHint')}>
+          <Field
+            label={t('signup.password')}
+            required
+            error={errors.password}
+            hint={t('signup.passwordHint')}
+          >
             {(control) => (
               <Input
                 {...control}
@@ -127,7 +155,11 @@ function SignupForm() {
               />
             )}
           </Field>
-          <Turnstile siteKey={instance.data?.captchaSiteKey} onToken={setCaptchaToken} label={t('captcha')} />
+          <Turnstile
+            siteKey={instance.data?.captchaSiteKey}
+            onToken={setCaptchaToken}
+            label={t('captcha')}
+          />
           <Button type="submit" loading={signup.isPending}>
             {t('signup.submit')}
           </Button>

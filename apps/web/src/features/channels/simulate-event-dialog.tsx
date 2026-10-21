@@ -55,7 +55,10 @@ export function SimulateEventDialog({
 
   const mediaLabel = (item: MediaDto) => {
     const caption = item.caption?.trim();
-    if (!caption) return t('mediaUntitled', { date: format.dateTime(new Date(item.publishedAt), { dateStyle: 'medium' }) });
+    if (!caption)
+      return t('mediaUntitled', {
+        date: format.dateTime(new Date(item.publishedAt), { dateStyle: 'medium' }),
+      });
     return caption.length > CAPTION_LENGTH ? `${caption.slice(0, CAPTION_LENGTH)}…` : caption;
   };
 
@@ -107,7 +110,9 @@ export function SimulateEventDialog({
       >
         <Form id={formId} onSubmit={submit} aria-label={t('title', { username: channel.username })}>
           <Stack gap="md">
-            {simulate.error ? <Callout tone="danger">{errorMessage(simulate.error)}</Callout> : null}
+            {simulate.error ? (
+              <Callout tone="danger">{errorMessage(simulate.error)}</Callout>
+            ) : null}
             <div className="flex flex-col gap-2">
               <span id={kindLabelId} className="block rotulo text-ink-2">
                 {t('kind')}
@@ -143,7 +148,10 @@ export function SimulateEventDialog({
                   {(control) => (
                     <Select
                       {...control}
-                      items={(media.data ?? []).map((item) => ({ value: item.id, label: mediaLabel(item) }))}
+                      items={(media.data ?? []).map((item) => ({
+                        value: item.id,
+                        label: mediaLabel(item),
+                      }))}
                       value={mediaId}
                       onValueChange={setMediaId}
                       placeholder={media.isPending ? t('mediaLoading') : t('mediaPlaceholder')}
@@ -153,10 +161,22 @@ export function SimulateEventDialog({
                 </Field>
               )
             ) : null}
-            {media.error && kind === 'comment' ? <Callout tone="danger">{errorMessage(media.error)}</Callout> : null}
-            <Field label={kind === 'comment' ? t('commentText') : t('messageText')} required error={errors.text}>
+            {media.error && kind === 'comment' ? (
+              <Callout tone="danger">{errorMessage(media.error)}</Callout>
+            ) : null}
+            <Field
+              label={kind === 'comment' ? t('commentText') : t('messageText')}
+              required
+              error={errors.text}
+            >
               {(control) => (
-                <Textarea {...control} value={text} onChange={(event) => setText(event.target.value)} rows={3} autosize />
+                <Textarea
+                  {...control}
+                  value={text}
+                  onChange={(event) => setText(event.target.value)}
+                  rows={3}
+                  autosize
+                />
               )}
             </Field>
           </Stack>

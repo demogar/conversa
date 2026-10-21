@@ -1,5 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { type ChannelDto, type ChannelType, ErrorCode, hasRole, type MediaDto } from '@conversa/shared';
+import {
+  type ChannelDto,
+  type ChannelType,
+  ErrorCode,
+  hasRole,
+  type MediaDto,
+} from '@conversa/shared';
 import { AppConfig } from '../../config/app-config.js';
 import { CryptoService } from '../../common/crypto/crypto.service.js';
 import { AppException } from '../../common/errors/app.exception.js';
@@ -68,7 +74,10 @@ export class ChannelsService {
     return { channelId: channel.id, externalId: channel.externalId, accessToken };
   }
 
-  async activeSession(workspaceId: string, channelId: string): Promise<{ channel: Channel; session: ChannelSession }> {
+  async activeSession(
+    workspaceId: string,
+    channelId: string,
+  ): Promise<{ channel: Channel; session: ChannelSession }> {
     const channel = await this.findInWorkspace(workspaceId, channelId);
     if (channel.status !== 'ACTIVE') throw new AppException(ErrorCode.CHANNEL_NEEDS_REAUTH);
     return { channel, session: this.session(channel) };
@@ -80,7 +89,11 @@ export class ChannelsService {
 
   startConnect(workspaceId: string, userId: string, type: ChannelType): { url: string } {
     const provider = this.providers.getConfigured(type);
-    const state = this.crypto.sign('oauth-state', { w: workspaceId, u: userId, t: type }, STATE_TTL_SECONDS);
+    const state = this.crypto.sign(
+      'oauth-state',
+      { w: workspaceId, u: userId, t: type },
+      STATE_TTL_SECONDS,
+    );
     return { url: provider.authorizationUrl(state, this.redirectUri(type)) };
   }
 
@@ -89,9 +102,15 @@ export class ChannelsService {
    * and workspace that started it, so a forged or replayed callback cannot
    * attach an account to someone else's workspace.
    */
-  async completeConnect(type: ChannelType, code: string, rawState: string, userId: string): Promise<Channel> {
+  async completeConnect(
+    type: ChannelType,
+    code: string,
+    rawState: string,
+    userId: string,
+  ): Promise<Channel> {
     const state = this.crypto.verify<OAuthState & Record<string, unknown>>('oauth-state', rawState);
-    if (!state || state.t !== type || state.u !== userId) throw new AppException(ErrorCode.TOKEN_INVALID);
+    if (!state || state.t !== type || state.u !== userId)
+      throw new AppException(ErrorCode.TOKEN_INVALID);
     const membership = await this.prisma.membership.findUnique({
       where: { workspaceId_userId: { workspaceId: state.w, userId } },
     });
@@ -110,7 +129,8 @@ export class ChannelsService {
       where: { type_externalId: { type, externalId: account.externalId } },
     });
     if (existing && existing.workspaceId !== state.w) {
-      if (existing.status !== 'DISCONNECTED') throw new AppException(ErrorCode.CHANNEL_IN_OTHER_WORKSPACE);
+      if (existing.status !== 'DISCONNECTED')
+        throw new AppException(ErrorCode.CHANNEL_IN_OTHER_WORKSPACE);
       await this.prisma.channel.delete({ where: { id: existing.id } });
     }
 
@@ -118,20 +138,31 @@ export class ChannelsService {
       username: account.username,
       displayName: account.displayName,
       avatarUrl: account.avatarUrl,
-      credentials: this.crypto.encryptJson({ accessToken: account.accessToken } satisfies StoredCredentials),
+      credentials: this.crypto.encryptJson({
+        accessToken: account.accessToken,
+      } satisfies StoredCredentials),
       tokenExpiresAt: account.tokenExpiresAt,
       status: 'ACTIVE' as const,
       lastError: null,
     };
     let channel = await this.prisma.channel.upsert({
       where: { type_externalId: { type, externalId: account.externalId } },
-      create: { ...data, type, externalId: account.externalId, workspaceId: state.w, connectedById: userId },
+      create: {
+        ...data,
+        type,
+        externalId: account.externalId,
+        workspaceId: state.w,
+        connectedById: userId,
+      },
       update: data,
     });
 
     try {
       await provider.subscribeWebhooks(this.session(channel));
-      channel = await this.prisma.channel.update({ where: { id: channel.id }, data: { webhookSubscribed: true } });
+      channel = await this.prisma.channel.update({
+        where: { id: channel.id },
+        data: { webhookSubscribed: true },
+      });
     } catch (error) {
       this.logger.warn({ err: error, channelId: channel.id }, 'Webhook subscription failed');
       channel = await this.prisma.channel.update({
@@ -160,7 +191,11 @@ export class ChannelsService {
     await this.prisma.$transaction([
       this.prisma.channel.update({
         where: { id: channel.id },
-        data: { status: 'DISCONNECTED', credentials: this.crypto.encryptJson({ accessToken: '' }), webhookSubscribed: false },
+        data: {
+          status: 'DISCONNECTED',
+          credentials: this.crypto.encryptJson({ accessToken: '' }),
+          webhookSubscribed: false,
+        },
       }),
       this.prisma.automation.updateMany({
         where: { channelId: channel.id, status: 'ACTIVE' },
@@ -180,13 +215,18 @@ export class ChannelsService {
   async markNeedsReauth(channelId: string, error: unknown): Promise<void> {
     await this.prisma.channel.updateMany({
       where: { id: channelId, status: 'ACTIVE' },
-      data: { status: 'NEEDS_REAUTH', lastError: String((error as Error)?.message ?? error).slice(0, 500) },
+      data: {
+        status: 'NEEDS_REAUTH',
+        lastError: String((error as Error)?.message ?? error).slice(0, 500),
+      },
     });
   }
 
   async listMedia(workspaceId: string, channelId: string, limit: number): Promise<MediaDto[]> {
     const { channel, session } = await this.activeSession(workspaceId, channelId);
-    return this.callProvider(channel, () => this.providers.get(channel.type).listMedia(session, limit));
+    return this.callProvider(channel, () =>
+      this.providers.get(channel.type).listMedia(session, limit),
+    );
   }
 
   /** Runs a provider call for a request, translating provider failures into API errors. */

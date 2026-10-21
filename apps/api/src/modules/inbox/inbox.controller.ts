@@ -22,9 +22,17 @@ export class InboxController {
   ) {}
 
   @Get()
-  async list(@CurrentMembership() membership: MembershipContext, @Param('channelId') channelId: string) {
-    const { channel, session } = await this.channels.activeSession(membership.workspaceId, channelId);
-    return this.channels.callProvider(channel, () => this.providers.get(channel.type).listConversations(session));
+  async list(
+    @CurrentMembership() membership: MembershipContext,
+    @Param('channelId') channelId: string,
+  ) {
+    const { channel, session } = await this.channels.activeSession(
+      membership.workspaceId,
+      channelId,
+    );
+    return this.channels.callProvider(channel, () =>
+      this.providers.get(channel.type).listConversations(session),
+    );
   }
 
   @Get(':conversationId/messages')
@@ -33,7 +41,10 @@ export class InboxController {
     @Param('channelId') channelId: string,
     @Param('conversationId') conversationId: string,
   ) {
-    const { channel, session } = await this.channels.activeSession(membership.workspaceId, channelId);
+    const { channel, session } = await this.channels.activeSession(
+      membership.workspaceId,
+      channelId,
+    );
     return this.channels.callProvider(channel, () =>
       this.providers.get(channel.type).listMessages(session, conversationId),
     );
@@ -49,7 +60,10 @@ export class InboxController {
     @Param('recipientId') recipientId: string,
     @ZodBody(sendInboxMessageSchema) body: SendInboxMessageInput,
   ): Promise<void> {
-    const { channel, session } = await this.channels.activeSession(membership.workspaceId, channelId);
+    const { channel, session } = await this.channels.activeSession(
+      membership.workspaceId,
+      channelId,
+    );
     await this.channels.callProvider(channel, () =>
       this.providers.get(channel.type).sendMessage(session, recipientId, { text: body.text }),
     );

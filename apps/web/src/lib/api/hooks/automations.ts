@@ -45,7 +45,8 @@ function useStoreAutomation(workspaceId: string) {
 export function useCreateAutomation(workspaceId: string) {
   const store = useStoreAutomation(workspaceId);
   return useMutation({
-    mutationFn: (input: CreateAutomationInput) => api.post<AutomationDto>(`${base(workspaceId)}/automations`, input),
+    mutationFn: (input: CreateAutomationInput) =>
+      api.post<AutomationDto>(`${base(workspaceId)}/automations`, input),
     onSuccess: store,
   });
 }
@@ -53,7 +54,8 @@ export function useCreateAutomation(workspaceId: string) {
 export function useUpdateAutomation(workspaceId: string, automationId: string) {
   const store = useStoreAutomation(workspaceId);
   return useMutation({
-    mutationFn: (input: UpdateAutomationInput) => api.put<AutomationDto>(one(workspaceId, automationId), input),
+    mutationFn: (input: UpdateAutomationInput) =>
+      api.put<AutomationDto>(one(workspaceId, automationId), input),
     onSuccess: store,
   });
 }
@@ -81,7 +83,10 @@ export function useDeleteAutomation(workspaceId: string) {
     mutationFn: (id: string) => api.delete(one(workspaceId, id)),
     onSuccess: (_result, id) => {
       queryClient.removeQueries({ queryKey: keys.automation(workspaceId, id) });
-      return queryClient.invalidateQueries({ queryKey: keys.automations(workspaceId), exact: true });
+      return queryClient.invalidateQueries({
+        queryKey: keys.automations(workspaceId),
+        exact: true,
+      });
     },
   });
 }
@@ -113,7 +118,10 @@ export function useScheduledBufferPosts(workspaceId: string, enabled = true) {
   return useQuery({
     queryKey: keys.bufferPosts(workspaceId, 'scheduled'),
     queryFn: ({ signal }) =>
-      api.get<BufferPostDto[]>(`${base(workspaceId)}/integrations/buffer/posts${query({ view: 'scheduled' })}`, signal),
+      api.get<BufferPostDto[]>(
+        `${base(workspaceId)}/integrations/buffer/posts${query({ view: 'scheduled' })}`,
+        signal,
+      ),
     enabled,
     retry: false,
     staleTime: 60_000,
@@ -124,7 +132,8 @@ export function useScheduledBufferPosts(workspaceId: string, enabled = true) {
 export function useBufferChannelsForPicker(workspaceId: string, enabled = true) {
   return useQuery({
     queryKey: keys.bufferChannels(workspaceId),
-    queryFn: ({ signal }) => api.get<BufferChannelDto[]>(`${base(workspaceId)}/integrations/buffer/channels`, signal),
+    queryFn: ({ signal }) =>
+      api.get<BufferChannelDto[]>(`${base(workspaceId)}/integrations/buffer/channels`, signal),
     enabled,
     retry: false,
     staleTime: 60_000,

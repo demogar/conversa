@@ -21,11 +21,16 @@ export default function ForgotPasswordPage() {
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [errors, setErrors] = useState<FieldErrors>({});
 
-  const request = useMutation({ mutationFn: (body: unknown) => api.post('/auth/password/forgot', body) });
+  const request = useMutation({
+    mutationFn: (body: unknown) => api.post('/auth/password/forgot', body),
+  });
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const parsed = forgotPasswordSchema.safeParse({ email, captchaToken: captchaToken ?? undefined });
+    const parsed = forgotPasswordSchema.safeParse({
+      email,
+      captchaToken: captchaToken ?? undefined,
+    });
     setErrors(parsed.success ? {} : toFieldErrors(parsed.error));
     if (parsed.success) request.mutate(parsed.data);
   }
@@ -51,10 +56,21 @@ export default function ForgotPasswordPage() {
           {request.error ? <Callout tone="danger">{errorMessage(request.error)}</Callout> : null}
           <Field label={t('forgot.email')} required error={errors.email}>
             {(control) => (
-              <Input {...control} type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" autoFocus />
+              <Input
+                {...control}
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
+                autoFocus
+              />
             )}
           </Field>
-          <Turnstile siteKey={instance?.captchaSiteKey} onToken={setCaptchaToken} label={t('captcha')} />
+          <Turnstile
+            siteKey={instance?.captchaSiteKey}
+            onToken={setCaptchaToken}
+            label={t('captcha')}
+          />
           <Button type="submit" loading={request.isPending}>
             {t('forgot.submit')}
           </Button>

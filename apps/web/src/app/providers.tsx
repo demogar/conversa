@@ -1,6 +1,11 @@
 'use client';
 
-import { DirectionProvider, MessagesProvider, ToastProvider, TooltipProvider } from '@demogar/mola-ui';
+import {
+  DirectionProvider,
+  MessagesProvider,
+  ToastProvider,
+  TooltipProvider,
+} from '@demogar/mola-ui';
 import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { type ReactNode, useState } from 'react';
 import { FORMAT_LOCALE } from '@/i18n/config';
@@ -10,7 +15,11 @@ import type { Locale } from '@conversa/shared';
 
 /** A lost session anywhere sends the person back to sign in, then here again. */
 function handleError(error: unknown): void {
-  if (error instanceof ApiError && error.code === 'UNAUTHENTICATED' && typeof window !== 'undefined') {
+  if (
+    error instanceof ApiError &&
+    error.code === 'UNAUTHENTICATED' &&
+    typeof window !== 'undefined'
+  ) {
     const next = encodeURIComponent(window.location.pathname + window.location.search);
     // A full load, not a client navigation: nothing cached for the old session survives.
     // eslint-disable-next-line @next/next/no-location-assign-relative-destination

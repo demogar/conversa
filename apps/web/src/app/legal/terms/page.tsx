@@ -9,5 +9,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function TermsPage() {
   const t = await getTranslations('legal.terms');
-  return <LegalDocument title={t('title')} lead={t('lead')} sections={t.raw('sections') as LegalSection[]} />;
+  return (
+    <LegalDocument
+      title={t('title')}
+      lead={t('lead')}
+      sections={t.raw('sections') as LegalSection[]}
+    />
+  );
 }

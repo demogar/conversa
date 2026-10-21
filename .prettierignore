@@ -6,3 +6,8 @@ playwright-report
 test-results
 apps/api/src/generated
 apps/api/prisma/migrations
+e2e/.auth
+e2e/playwright-report
+e2e/test-results
+apps/web/next-env.d.ts
+apps/web/AGENTS.md

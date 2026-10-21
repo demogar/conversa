@@ -29,7 +29,13 @@ interface NavEntry {
   exact?: boolean;
 }
 
-export function WorkspaceShell({ workspaceId, children }: { workspaceId: string; children: ReactNode }) {
+export function WorkspaceShell({
+  workspaceId,
+  children,
+}: {
+  workspaceId: string;
+  children: ReactNode;
+}) {
   const t = useTranslations('nav');
   const pathname = usePathname();
   const me = useMe();
@@ -74,9 +80,14 @@ export function WorkspaceShell({ workspaceId, children }: { workspaceId: string;
           <Topbar
             start={
               <>
-                <NextLink href={workspacePath(workspaceId)} className="flex min-h-[24px] items-center gap-2 px-1 text-ink no-underline">
+                <NextLink
+                  href={workspacePath(workspaceId)}
+                  className="flex min-h-[24px] items-center gap-2 px-1 text-ink no-underline"
+                >
                   <BrandLogo />
-                  <span className="font-display text-base font-bold tracking-display wdth-display max-sm:sr-only">Conversa</span>
+                  <span className="font-display text-base font-bold tracking-display wdth-display max-sm:sr-only">
+                    Conversa
+                  </span>
                 </NextLink>
                 <WorkspaceSwitcher
                   current={workspace}

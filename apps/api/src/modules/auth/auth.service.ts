@@ -35,6 +35,11 @@ const MAX_LOCK_MS = 24 * 3600 * 1000;
 // Serialises sign-ups so only one request can become the first account.
 const SIGNUP_LOCK_KEY = 4_242_001;
 
+/** The first workspace's name, in the person's language. */
+function defaultWorkspaceName(name: string, locale: string): string {
+  return (locale === 'es' ? `Espacio de ${name}` : `${name}'s workspace`).slice(0, 60);
+}
+
 export interface SignedIn {
   user: UserDto;
   token: string;
@@ -87,7 +92,7 @@ export class AuthService {
         } else {
           await tx.workspace.create({
             data: {
-              name: input.name,
+              name: defaultWorkspaceName(input.name, created.locale),
               memberships: { create: { userId: created.id, role: WorkspaceRole.OWNER } },
             },
           });
@@ -130,7 +135,10 @@ export class AuthService {
   }
 
   async verifyMfa(input: MfaVerifyInput, client: ClientInfo): Promise<SignedIn> {
-    const payload = this.crypto.verify<{ uid: string; ph: string }>('mfa-challenge', input.challenge);
+    const payload = this.crypto.verify<{ uid: string; ph: string }>(
+      'mfa-challenge',
+      input.challenge,
+    );
     if (!payload) throw new AppException(ErrorCode.TOKEN_INVALID);
     const user = await this.prisma.user.findUnique({ where: { id: payload.uid } });
     if (!user?.mfaSecret || !user.mfaEnabledAt) throw new AppException(ErrorCode.TOKEN_INVALID);
@@ -140,7 +148,8 @@ export class AuthService {
     this.assertNotLocked(user);
 
     const code = input.code.replace(/\s+/g, '');
-    if (await this.mfa.verifyCode(user.id, user.mfaSecret, code)) return this.completeLogin(user, client);
+    if (await this.mfa.verifyCode(user.id, user.mfaSecret, code))
+      return this.completeLogin(user, client);
 
     const recoveryHash = this.mfa.hashRecoveryCode(code);
     if (user.mfaRecoveryHashes.includes(recoveryHash)) {
@@ -231,6 +240,9 @@ export class AuthService {
               Math.min(BASE_LOCK_MS * 2 ** (failures / LOCK_AFTER_FAILURES - 1), MAX_LOCK_MS),
           )
         : user.lockedUntil;
-    await this.prisma.user.update({ where: { id: user.id }, data: { failedLogins: failures, lockedUntil } });
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { failedLogins: failures, lockedUntil },
+    });
   }
 }

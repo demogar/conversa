@@ -40,9 +40,14 @@ export function InboxScreen({ workspaceId }: { workspaceId: string }) {
   const [chosenChannel, setChosenChannel] = useState<string | null>(null);
 
   const list = channels.data ?? [];
-  const channelId = list.some((channel) => channel.id === chosenChannel) ? chosenChannel : pickDefault(list);
+  const channelId = list.some((channel) => channel.id === chosenChannel)
+    ? chosenChannel
+    : pickDefault(list);
   const channel = list.find((item) => item.id === channelId) ?? null;
-  const conversations = useConversations(workspaceId, channel?.status === 'ACTIVE' ? channel.id : null);
+  const conversations = useConversations(
+    workspaceId,
+    channel?.status === 'ACTIVE' ? channel.id : null,
+  );
 
   const refreshing = conversations.isFetching && !conversations.isPending;
   const header = (
@@ -56,7 +61,11 @@ export function InboxScreen({ workspaceId }: { workspaceId: string }) {
             icon={<RefreshCw />}
             loading={refreshing}
             // The open thread's key sits under the list's, so both reload.
-            onClick={() => queryClient.invalidateQueries({ queryKey: keys.conversations(workspaceId, channel.id) })}
+            onClick={() =>
+              queryClient.invalidateQueries({
+                queryKey: keys.conversations(workspaceId, channel.id),
+              })
+            }
           >
             {t('refresh')}
           </Button>
@@ -66,7 +75,10 @@ export function InboxScreen({ workspaceId }: { workspaceId: string }) {
   );
 
   const channelsLink = (label: string) => (
-    <LinkButton variant="secondary" render={<NextLink href={workspacePath(workspaceId, '/channels')} />}>
+    <LinkButton
+      variant="secondary"
+      render={<NextLink href={workspacePath(workspaceId, '/channels')} />}
+    >
       {label}
     </LinkButton>
   );
@@ -74,7 +86,12 @@ export function InboxScreen({ workspaceId }: { workspaceId: string }) {
   let body: ReactNode;
   if (channels.isPending) {
     body = (
-      <SkeletonGroup loading label={t('states.loading')} fallback={<Skeleton className="h-64" />} className="p-4 sm:p-6" />
+      <SkeletonGroup
+        loading
+        label={t('states.loading')}
+        fallback={<Skeleton className="h-64" />}
+        className="p-4 sm:p-6"
+      />
     );
   } else if (channels.isError) {
     body = (
@@ -103,7 +120,10 @@ export function InboxScreen({ workspaceId }: { workspaceId: string }) {
         />
       </div>
     );
-  } else if (channel.status !== 'ACTIVE' || (conversations.error instanceof ApiError && conversations.error.code === 'CHANNEL_NEEDS_REAUTH')) {
+  } else if (
+    channel.status !== 'ACTIVE' ||
+    (conversations.error instanceof ApiError && conversations.error.code === 'CHANNEL_NEEDS_REAUTH')
+  ) {
     body = (
       <div className="p-4 sm:p-6">
         <EmptyState
@@ -116,7 +136,14 @@ export function InboxScreen({ workspaceId }: { workspaceId: string }) {
       </div>
     );
   } else {
-    body = <Conversations key={channel.id} workspaceId={workspaceId} channel={channel} query={conversations} />;
+    body = (
+      <Conversations
+        key={channel.id}
+        workspaceId={workspaceId}
+        channel={channel}
+        query={conversations}
+      />
+    );
   }
 
   return (
@@ -210,7 +237,8 @@ function Conversations({
   const selected = conversations.find((item) => item.id === selectedId) ?? conversations[0]!;
 
   // The Back button is displayed only in the one-column layout, so it tells whether the list is about to be hidden.
-  const isSingleColumn = () => !!backRef.current && getComputedStyle(backRef.current).display !== 'none';
+  const isSingleColumn = () =>
+    !!backRef.current && getComputedStyle(backRef.current).display !== 'none';
 
   const open = (id: string) => {
     const single = isSingleColumn();
@@ -270,7 +298,11 @@ function Conversations({
                       'aria-[current=true]:bg-ink-soft aria-[current=true]:forced-selected aria-[current=true]:bar-start-ink',
                     )}
                   >
-                    <Avatar name={conversation.participant.username ?? name} size="sm" aria-hidden />
+                    <Avatar
+                      name={conversation.participant.username ?? name}
+                      size="sm"
+                      aria-hidden
+                    />
                     <span className="flex min-w-0 flex-1 flex-col gap-1">
                       <span className="flex w-full items-baseline justify-between gap-3">
                         <span className="min-w-0 truncate text-sm font-medium group-aria-[current=true]/conversation:font-semibold">
@@ -283,7 +315,9 @@ function Conversations({
                         ) : null}
                       </span>{' '}
                       {conversation.lastMessage ? (
-                        <span className="line-clamp-2 text-xs text-ink-2">{conversation.lastMessage}</span>
+                        <span className="line-clamp-2 text-xs text-ink-2">
+                          {conversation.lastMessage}
+                        </span>
                       ) : null}
                     </span>
                   </button>
@@ -295,7 +329,10 @@ function Conversations({
 
         <div
           id={detailId}
-          className={cn('flex min-h-0 min-w-0 flex-col', view === 'list' && '@max-3xl/inbox:hidden')}
+          className={cn(
+            'flex min-h-0 min-w-0 flex-col',
+            view === 'list' && '@max-3xl/inbox:hidden',
+          )}
         >
           <div className="flex min-h-0 flex-1 flex-col gap-4 p-4 sm:p-6">
             <Button
@@ -308,10 +345,20 @@ function Conversations({
             >
               {t('backToConversations')}
             </Button>
-            <Heading level={2} visualLevel={3} ref={headingRef} tabIndex={-1} className="outline-none">
+            <Heading
+              level={2}
+              visualLevel={3}
+              ref={headingRef}
+              tabIndex={-1}
+              className="outline-none"
+            >
               {selectedName}
             </Heading>
-            <ConversationThread workspaceId={workspaceId} channelId={channel.id} conversation={selected} />
+            <ConversationThread
+              workspaceId={workspaceId}
+              channelId={channel.id}
+              conversation={selected}
+            />
           </div>
         </div>
       </div>

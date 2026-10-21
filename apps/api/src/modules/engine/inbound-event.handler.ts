@@ -50,7 +50,11 @@ export class InboundEventHandler {
   }
 
   private async onComment(channel: Channel, event: InboundCommentEvent): Promise<boolean> {
-    const contact = await this.touchContact(channel, event.author.externalId, event.author.username);
+    const contact = await this.touchContact(
+      channel,
+      event.author.externalId,
+      event.author.username,
+    );
     const candidates = await this.activeAutomations(channel.id, 'COMMENT');
     if (candidates.length === 0) return false;
     const [mediaId] = event.mediaIds;
@@ -58,7 +62,14 @@ export class InboundEventHandler {
 
     const selection = selectAutomation(candidates, { text: event.text, mediaIds: event.mediaIds });
     if (!selection) return false;
-    return this.createDelivery(channel, contact, selection.automation, event.commentId, event.text, selection.matchedKeyword);
+    return this.createDelivery(
+      channel,
+      contact,
+      selection.automation,
+      event.commentId,
+      event.text,
+      selection.matchedKeyword,
+    );
   }
 
   private async onMessage(channel: Channel, event: InboundMessageEvent): Promise<boolean> {
@@ -66,17 +77,29 @@ export class InboundEventHandler {
     const candidates = await this.activeAutomations(channel.id, 'MESSAGE');
     const selection = selectAutomation(candidates, { text: event.text });
     if (!selection) return false;
-    return this.createDelivery(channel, contact, selection.automation, event.messageId, event.text, selection.matchedKeyword);
+    return this.createDelivery(
+      channel,
+      contact,
+      selection.automation,
+      event.messageId,
+      event.text,
+      selection.matchedKeyword,
+    );
   }
 
   private async onPostback(channel: Channel, event: InboundPostbackEvent): Promise<boolean> {
     const deliveryId = this.tokens.read(event.payload);
     if (!deliveryId) return false;
     const delivery = await this.prisma.delivery.findFirst({
-      where: { id: deliveryId, channelId: channel.id, contact: { externalId: event.sender.externalId } },
+      where: {
+        id: deliveryId,
+        channelId: channel.id,
+        contact: { externalId: event.sender.externalId },
+      },
       select: { id: true, status: true, followPrompts: true },
     });
-    if (!delivery || (delivery.status !== 'AWAITING_TAP' && delivery.status !== 'AWAITING_FOLLOW')) return false;
+    if (!delivery || (delivery.status !== 'AWAITING_TAP' && delivery.status !== 'AWAITING_FOLLOW'))
+      return false;
     await this.touchContact(channel, event.sender.externalId, null);
     // One job per delivery state: repeated taps on the same message collapse into one.
     await this.outbound.add(
@@ -101,7 +124,11 @@ export class InboundEventHandler {
   ): Promise<boolean> {
     if (automation.oncePerContact) {
       const answered = await this.prisma.delivery.findFirst({
-        where: { automationId: automation.id, contactId: contact.id, status: { in: [...ANSWERED] } },
+        where: {
+          automationId: automation.id,
+          contactId: contact.id,
+          status: { in: [...ANSWERED] },
+        },
         select: { id: true },
       });
       if (answered) return false;
@@ -126,16 +153,34 @@ export class InboundEventHandler {
       if (isUniqueViolation(error)) return false;
       throw error;
     }
-    await this.outbound.add('start', { kind: 'start', deliveryId }, { jobId: `start-${deliveryId}` });
+    await this.outbound.add(
+      'start',
+      { kind: 'start', deliveryId },
+      { jobId: `start-${deliveryId}` },
+    );
     return true;
   }
 
-  private touchContact(channel: Channel, externalId: string, username: string | null): Promise<Contact> {
+  private touchContact(
+    channel: Channel,
+    externalId: string,
+    username: string | null,
+  ): Promise<Contact> {
     const now = new Date();
     return this.prisma.contact.upsert({
       where: { channelId_externalId: { channelId: channel.id, externalId } },
-      create: { workspaceId: channel.workspaceId, channelId: channel.id, externalId, username, interactions: 1 },
-      update: { lastInteractionAt: now, interactions: { increment: 1 }, ...(username ? { username } : {}) },
+      create: {
+        workspaceId: channel.workspaceId,
+        channelId: channel.id,
+        externalId,
+        username,
+        interactions: 1,
+      },
+      update: {
+        lastInteractionAt: now,
+        interactions: { increment: 1 },
+        ...(username ? { username } : {}),
+      },
     });
   }
 }

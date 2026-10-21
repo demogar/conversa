@@ -21,7 +21,9 @@ export function KeywordsEditor({ keywords, onChange, error }: KeywordsEditorProp
   function add() {
     const keyword = text.trim().slice(0, LIMITS.keywordLength);
     if (!keyword || full) return;
-    const exists = keywords.some((current) => current.toLocaleLowerCase() === keyword.toLocaleLowerCase());
+    const exists = keywords.some(
+      (current) => current.toLocaleLowerCase() === keyword.toLocaleLowerCase(),
+    );
     if (!exists) onChange([...keywords, keyword]);
     setText('');
   }
@@ -39,7 +41,11 @@ export function KeywordsEditor({ keywords, onChange, error }: KeywordsEditorProp
         label={t('keywordInput')}
         required
         error={error}
-        hint={full ? t('keywordsFull', { max: LIMITS.keywordsPerAutomation }) : t('keywordHint', { max: LIMITS.keywordsPerAutomation })}
+        hint={
+          full
+            ? t('keywordsFull', { max: LIMITS.keywordsPerAutomation })
+            : t('keywordHint', { max: LIMITS.keywordsPerAutomation })
+        }
       >
         {(control) => (
           <Inline gap="sm" wrap={false}>
@@ -55,7 +61,13 @@ export function KeywordsEditor({ keywords, onChange, error }: KeywordsEditorProp
               autoComplete="off"
               className="min-w-0 flex-1"
             />
-            <Button type="button" variant="secondary" icon={<Plus />} onClick={add} disabled={full || !text.trim()}>
+            <Button
+              type="button"
+              variant="secondary"
+              icon={<Plus />}
+              onClick={add}
+              disabled={full || !text.trim()}
+            >
               {t('keywordAdd')}
             </Button>
           </Inline>

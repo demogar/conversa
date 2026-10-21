@@ -12,7 +12,10 @@ export interface DraftDefaults {
   bufferPostId?: string | null;
 }
 
-export function emptyDraft({ channelId = null, bufferPostId = null }: DraftDefaults = {}): AutomationDraft {
+export function emptyDraft({
+  channelId = null,
+  bufferPostId = null,
+}: DraftDefaults = {}): AutomationDraft {
   return {
     name: '',
     channelId: channelId ?? '',
@@ -46,8 +49,14 @@ export function draftFromAutomation(automation: AutomationDto): AutomationDraft 
     wholeWord: automation.wholeWord,
     oncePerContact: automation.oncePerContact,
     response: {
-      publicReply: { ...automation.response.publicReply, variants: [...automation.response.publicReply.variants] },
-      message: { text: automation.response.message.text, buttons: automation.response.message.buttons.map((b) => ({ ...b })) },
+      publicReply: {
+        ...automation.response.publicReply,
+        variants: [...automation.response.publicReply.variants],
+      },
+      message: {
+        text: automation.response.message.text,
+        buttons: automation.response.message.buttons.map((b) => ({ ...b })),
+      },
       opening: { ...automation.response.opening },
       followGate: { ...automation.response.followGate },
     },

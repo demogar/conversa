@@ -37,7 +37,12 @@ describe('sandbox events', () => {
   });
 
   it('builds a direct message the Instagram parser understands', () => {
-    const payload = buildMessagePayload({ accountId: ACCOUNT, messageId: 'm1', username: 'ana', text: 'hi' });
+    const payload = buildMessagePayload({
+      accountId: ACCOUNT,
+      messageId: 'm1',
+      username: 'ana',
+      text: 'hi',
+    });
     expect(parseInstagramWebhook(payload)).toEqual([
       {
         kind: 'message',
@@ -51,9 +56,18 @@ describe('sandbox events', () => {
   });
 
   it('builds a button tap the Instagram parser understands', () => {
-    const payload = buildPostbackPayload({ accountId: ACCOUNT, senderId: 'sandbox-user-ana', payload: 'cv1.d1.sig' });
+    const payload = buildPostbackPayload({
+      accountId: ACCOUNT,
+      senderId: 'sandbox-user-ana',
+      payload: 'cv1.d1.sig',
+    });
     expect(parseInstagramWebhook(payload)).toEqual([
-      { kind: 'postback', accountExternalId: ACCOUNT, sender: { externalId: 'sandbox-user-ana' }, payload: 'cv1.d1.sig' },
+      {
+        kind: 'postback',
+        accountExternalId: ACCOUNT,
+        sender: { externalId: 'sandbox-user-ana' },
+        payload: 'cv1.d1.sig',
+      },
     ]);
   });
 });

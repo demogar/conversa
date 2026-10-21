@@ -22,7 +22,14 @@ const instance: InstanceDto = {
 
 const me = (role: 'OWNER' | 'MEMBER') =>
   ({
-    user: { id: 'u1', email: 'ana@example.com', name: 'Ana', locale: 'en', mfaEnabled: false, createdAt: '2026-01-01T00:00:00Z' },
+    user: {
+      id: 'u1',
+      email: 'ana@example.com',
+      name: 'Ana',
+      locale: 'en',
+      mfaEnabled: false,
+      createdAt: '2026-01-01T00:00:00Z',
+    },
     workspaces: [{ id: 'w1', name: 'Shop', role, createdAt: '2026-01-01T00:00:00Z' }],
   }) as unknown as MeDto;
 
@@ -46,29 +53,47 @@ beforeEach(() => {
 
 describe('ChannelsScreen', () => {
   it('shows the first-run empty state with its requirements to an owner', async () => {
-    mockApi({ 'GET /me': me('OWNER'), 'GET /instance': instance, 'GET /workspaces/w1/channels': [] });
+    mockApi({
+      'GET /me': me('OWNER'),
+      'GET /instance': instance,
+      'GET /workspaces/w1/channels': [],
+    });
     renderWithProviders(<ChannelsScreen workspaceId="w1" />);
-    expect(await screen.findByRole('heading', { name: 'No Instagram accounts yet' })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: 'No Instagram accounts yet' }),
+    ).toBeInTheDocument();
     expect(screen.getByText(/professional account \(Business or Creator\)/)).toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: 'Connect Instagram account' })).toHaveLength(2);
   });
 
   it('lists accounts for a member with no controls and says who can change them', async () => {
-    mockApi({ 'GET /me': me('MEMBER'), 'GET /instance': instance, 'GET /workspaces/w1/channels': [channel] });
+    mockApi({
+      'GET /me': me('MEMBER'),
+      'GET /instance': instance,
+      'GET /workspaces/w1/channels': [channel],
+    });
     renderWithProviders(<ChannelsScreen workspaceId="w1" />);
     expect(await screen.findByRole('heading', { name: '@tienda.sol' })).toBeInTheDocument();
     expect(screen.getByText('Needs reconnecting')).toBeInTheDocument();
     expect(await screen.findByText(/Only workspace owners and admins/)).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Connect Instagram account' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Connect Instagram account' }),
+    ).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Reconnect account' })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Disconnect account' })).not.toBeInTheDocument();
   });
 
   it('translates the error the connection callback sent back', async () => {
     search = new URLSearchParams('error=CHANNEL_IN_OTHER_WORKSPACE');
-    mockApi({ 'GET /me': me('OWNER'), 'GET /instance': instance, 'GET /workspaces/w1/channels': [channel] });
+    mockApi({
+      'GET /me': me('OWNER'),
+      'GET /instance': instance,
+      'GET /workspaces/w1/channels': [channel],
+    });
     renderWithProviders(<ChannelsScreen workspaceId="w1" />);
-    expect(await screen.findByText('That Instagram account is already connected to another workspace.')).toBeInTheDocument();
+    expect(
+      await screen.findByText('That Instagram account is already connected to another workspace.'),
+    ).toBeInTheDocument();
     expect(await screen.findByRole('button', { name: 'Reconnect account' })).toBeInTheDocument();
   });
 });

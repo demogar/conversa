@@ -28,10 +28,7 @@ function foldLatinAccents(text: string): string {
 
 /** Lower-cases, folds Latin accents and reduces everything else to single spaces. */
 export function normalizeText(text: string): string {
-  return foldLatinAccents(text.normalize('NFKC'))
-    .toLowerCase()
-    .replace(NOT_WORD, ' ')
-    .trim();
+  return foldLatinAccents(text.normalize('NFKC')).toLowerCase().replace(NOT_WORD, ' ').trim();
 }
 
 function escapeRegExp(value: string): string {
@@ -50,7 +47,11 @@ const NO_MATCH: KeywordMatch = { matched: false, keyword: null };
  * Returns the first keyword found in `text`. With `wholeWord`, a keyword must
  * not touch another letter or digit, so "info" does not match "information".
  */
-export function matchKeywords(text: string, keywords: readonly string[], wholeWord = true): KeywordMatch {
+export function matchKeywords(
+  text: string,
+  keywords: readonly string[],
+  wholeWord = true,
+): KeywordMatch {
   const haystack = normalizeText(text);
   if (!haystack) return NO_MATCH;
 
@@ -58,7 +59,10 @@ export function matchKeywords(text: string, keywords: readonly string[], wholeWo
     const needle = normalizeText(keyword);
     if (!needle) continue;
     if (wholeWord) {
-      const pattern = new RegExp(`(?<![\\p{L}\\p{N}])${escapeRegExp(needle)}(?![\\p{L}\\p{N}])`, 'u');
+      const pattern = new RegExp(
+        `(?<![\\p{L}\\p{N}])${escapeRegExp(needle)}(?![\\p{L}\\p{N}])`,
+        'u',
+      );
       if (pattern.test(haystack)) return { matched: true, keyword };
     } else if (haystack.includes(needle)) {
       return { matched: true, keyword };

@@ -5,4 +5,3 @@ import { MaintenanceModule } from './modules/maintenance/maintenance.module.js';
 /** The queue processors: the automation engine and housekeeping. */
 @Module({ imports: [EngineModule, MaintenanceModule] })
 export class WorkerModule {}
-

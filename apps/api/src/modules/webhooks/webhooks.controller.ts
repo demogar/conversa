@@ -84,7 +84,9 @@ export class WebhooksController {
   /** Meta's data deletion callback: removes the account and everything learned through it. */
   @Post('instagram/data-deletion')
   @HttpCode(200)
-  async dataDeletion(@Body() body: Record<string, unknown>): Promise<{ url: string; confirmation_code: string }> {
+  async dataDeletion(
+    @Body() body: Record<string, unknown>,
+  ): Promise<{ url: string; confirmation_code: string }> {
     const channel = await this.channelForSignedRequest(body.signed_request);
     if (channel) await this.prisma.channel.delete({ where: { id: channel.id } });
     const code = this.crypto.randomToken(12);

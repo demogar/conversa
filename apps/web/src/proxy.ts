@@ -1,7 +1,14 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
 /** Pages anyone may open without a session. */
-const PUBLIC_PATHS = ['/login', '/signup', '/forgot-password', '/reset-password', '/invite', '/legal'];
+const PUBLIC_PATHS = [
+  '/login',
+  '/signup',
+  '/forgot-password',
+  '/reset-password',
+  '/invite',
+  '/legal',
+];
 const SESSION_COOKIES = ['__Host-conversa_session', 'conversa_session'];
 
 function isPublic(pathname: string): boolean {

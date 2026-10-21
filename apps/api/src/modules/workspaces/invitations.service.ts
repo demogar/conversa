@@ -5,7 +5,6 @@ import {
   type InvitationDto,
   type InvitationPreviewDto,
   isLocale,
-
 } from '@conversa/shared';
 import { AppConfig } from '../../config/app-config.js';
 import { CryptoService } from '../../common/crypto/crypto.service.js';
@@ -81,8 +80,14 @@ export class InvitationsService {
         },
         include: { invitedBy: { select: { name: true } } },
       });
-      const invitedBy = await tx.user.findUniqueOrThrow({ where: { id: inviterId }, select: { name: true, locale: true } });
-      const target = await tx.workspace.findUniqueOrThrow({ where: { id: workspaceId }, select: { name: true } });
+      const invitedBy = await tx.user.findUniqueOrThrow({
+        where: { id: inviterId },
+        select: { name: true, locale: true },
+      });
+      const target = await tx.workspace.findUniqueOrThrow({
+        where: { id: workspaceId },
+        select: { name: true },
+      });
       return [created, invitedBy, target] as const;
     });
 
@@ -134,7 +139,8 @@ export class InvitationsService {
   /** Accepts an invitation for an existing account inside a transaction. */
   async accept(tx: Tx, token: string, user: { id: string; email: string }): Promise<string> {
     const invitation = await this.findUsable(tx, token);
-    if (invitation.email !== user.email) throw new AppException(ErrorCode.INVITATION_EMAIL_MISMATCH);
+    if (invitation.email !== user.email)
+      throw new AppException(ErrorCode.INVITATION_EMAIL_MISMATCH);
 
     const claimed = await tx.invitation.updateMany({
       where: { id: invitation.id, acceptedAt: null, revokedAt: null },
@@ -161,10 +167,14 @@ export class InvitationsService {
       where: { tokenHash: this.crypto.hashToken(token) },
       include: { workspace: { select: { name: true } } },
     });
-    if (!invitation || invitation.acceptedAt || invitation.revokedAt || invitation.expiresAt <= new Date()) {
+    if (
+      !invitation ||
+      invitation.acceptedAt ||
+      invitation.revokedAt ||
+      invitation.expiresAt <= new Date()
+    ) {
       throw new AppException(ErrorCode.TOKEN_INVALID);
     }
     return invitation;
   }
 }
-

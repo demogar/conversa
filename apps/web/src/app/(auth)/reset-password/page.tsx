@@ -21,7 +21,9 @@ function ResetForm() {
   const [confirm, setConfirm] = useState('');
   const [errors, setErrors] = useState<FieldErrors>({});
 
-  const reset = useMutation({ mutationFn: (body: unknown) => api.post('/auth/password/reset', body) });
+  const reset = useMutation({
+    mutationFn: (body: unknown) => api.post('/auth/password/reset', body),
+  });
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -54,14 +56,32 @@ function ResetForm() {
       <Form onSubmit={submit} aria-label={t('reset.title')}>
         <Stack gap="md">
           {reset.error ? <Callout tone="danger">{errorMessage(reset.error)}</Callout> : null}
-          <Field label={t('reset.password')} required error={errors.password} hint={t('signup.passwordHint')}>
+          <Field
+            label={t('reset.password')}
+            required
+            error={errors.password}
+            hint={t('signup.passwordHint')}
+          >
             {(control) => (
-              <Input {...control} type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" autoFocus />
+              <Input
+                {...control}
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="new-password"
+                autoFocus
+              />
             )}
           </Field>
           <Field label={t('reset.confirm')} required error={errors.confirm}>
             {(control) => (
-              <Input {...control} type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} autoComplete="new-password" />
+              <Input
+                {...control}
+                type="password"
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
+                autoComplete="new-password"
+              />
             )}
           </Field>
           <Button type="submit" loading={reset.isPending}>

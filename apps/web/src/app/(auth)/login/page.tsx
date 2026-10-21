@@ -53,7 +53,11 @@ function LoginForm() {
 
   function submitPassword(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const parsed = loginSchema.safeParse({ email, password, captchaToken: captchaToken ?? undefined });
+    const parsed = loginSchema.safeParse({
+      email,
+      password,
+      captchaToken: captchaToken ?? undefined,
+    });
     setErrors(parsed.success ? {} : toFieldErrors(parsed.error));
     if (parsed.success) login.mutate(parsed.data);
   }
@@ -152,7 +156,11 @@ function LoginForm() {
               />
             )}
           </Field>
-          <Turnstile siteKey={instance?.captchaSiteKey} onToken={setCaptchaToken} label={t('captcha')} />
+          <Turnstile
+            siteKey={instance?.captchaSiteKey}
+            onToken={setCaptchaToken}
+            label={t('captcha')}
+          />
           <Button type="submit" loading={login.isPending}>
             {t('login.submit')}
           </Button>

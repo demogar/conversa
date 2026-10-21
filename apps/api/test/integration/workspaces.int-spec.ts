@@ -55,7 +55,7 @@ describe('workspaces', () => {
     expect(preview.body).toMatchObject({
       email: 'admin@example.com',
       role: 'ADMIN',
-      workspaceName: 'Olivia Owner',
+      workspaceName: "Olivia Owner's workspace",
     });
 
     await signUp(admin, { name: 'Ada Admin', email: 'admin@example.com', invitationToken: token });

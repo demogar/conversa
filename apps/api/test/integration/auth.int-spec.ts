@@ -29,7 +29,7 @@ describe('auth', () => {
 
     const workspaces = await owner.get(`${API}/workspaces`).expect(200);
     expect(workspaces.body).toEqual([
-      expect.objectContaining({ name: 'Olivia Owner', role: 'OWNER' }),
+      expect.objectContaining({ name: "Olivia Owner's workspace", role: 'OWNER' }),
     ]);
   });
 

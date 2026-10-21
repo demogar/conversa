@@ -7,7 +7,13 @@ const me = (role: string) => ({
   user: { id: 'u1', name: 'Ana', email: 'ana@example.com' },
   workspaces: [{ id: 'w1', name: 'Studio', role, createdAt: '2026-01-01T00:00:00.000Z' }],
 });
-const disconnected = { connected: false, organizationId: null, organizationName: null, lastSyncedAt: null, lastError: null };
+const disconnected = {
+  connected: false,
+  organizationId: null,
+  organizationName: null,
+  lastSyncedAt: null,
+  lastError: null,
+};
 
 describe('BufferSettings', () => {
   it('validates the key, sends it, and shows why Buffer refused it', async () => {
@@ -27,16 +33,22 @@ describe('BufferSettings', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Connect Buffer' }));
 
     expect(
-      await screen.findByText("Buffer did not accept that API key. Copy it again from Buffer's settings."),
+      await screen.findByText(
+        "Buffer did not accept that API key. Copy it again from Buffer's settings.",
+      ),
     ).toBeInTheDocument();
-    expect(calls.find((call) => call.method === 'PUT')?.body).toEqual({ apiKey: 'bufferkey-1234567890' });
+    expect(calls.find((call) => call.method === 'PUT')?.body).toEqual({
+      apiKey: 'bufferkey-1234567890',
+    });
   });
 
   it('shows members the state without the form', async () => {
     mockApi({ 'GET /me': me('MEMBER'), 'GET /workspaces/w1/integrations/buffer': disconnected });
     renderWithProviders(<BufferSettings workspaceId="w1" />);
 
-    expect(await screen.findByText('Only owners and admins can change this integration')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Only owners and admins can change this integration'),
+    ).toBeInTheDocument();
     expect(screen.getByText('Not connected')).toBeInTheDocument();
     expect(screen.queryByLabelText(/Buffer API key/)).not.toBeInTheDocument();
   });

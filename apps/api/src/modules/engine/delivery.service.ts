@@ -1,10 +1,18 @@
 import { randomInt } from 'node:crypto';
 import { Injectable, Logger } from '@nestjs/common';
-import { type AutomationResponse, automationResponseSchema, renderTemplate } from '@conversa/shared';
+import {
+  type AutomationResponse,
+  automationResponseSchema,
+  renderTemplate,
+} from '@conversa/shared';
 import { PrismaService } from '../../infra/prisma/prisma.service.js';
 import type { Automation, Channel, Contact, Delivery } from '../../generated/prisma/client.js';
 import { ChannelsService } from '../channels/channels.service.js';
-import type { ChannelProvider, ChannelSession, OutboundMessage } from '../channels/provider/channel-provider.js';
+import type {
+  ChannelProvider,
+  ChannelSession,
+  OutboundMessage,
+} from '../channels/provider/channel-provider.js';
 import { ProviderError } from '../channels/provider/channel-provider.js';
 import { ProviderRegistry } from '../channels/provider/provider.registry.js';
 import { TrackedLinksService } from '../links/tracked-links.service.js';
@@ -56,7 +64,11 @@ export class DeliveryService {
     if (!context) return DONE;
     const { delivery, response, provider, session } = context;
     const isComment = delivery.automation.triggerType === 'COMMENT';
-    const gate = response.opening.enabled ? response.opening : response.followGate.enabled ? response.followGate : null;
+    const gate = response.opening.enabled
+      ? response.opening
+      : response.followGate.enabled
+        ? response.followGate
+        : null;
 
     if (isComment) {
       const slot = await this.limiter.takePrivateReplySlot(delivery.channelId);
@@ -102,7 +114,11 @@ export class DeliveryService {
       const follows = await this.refreshContact(context);
       if (follows === false) {
         if (delivery.followPrompts >= MAX_FOLLOW_PROMPTS) return DONE;
-        await provider.sendMessage(session, delivery.contact.externalId, this.gateMessage(delivery, response.followGate));
+        await provider.sendMessage(
+          session,
+          delivery.contact.externalId,
+          this.gateMessage(delivery, response.followGate),
+        );
         await this.prisma.delivery.update({
           where: { id: delivery.id },
           data: { status: 'AWAITING_FOLLOW', followPrompts: { increment: 1 } },
@@ -112,8 +128,15 @@ export class DeliveryService {
       // Unknown follow status fails open: a real follower is never locked out.
     }
 
-    await provider.sendMessage(session, delivery.contact.externalId, await this.contentMessage(delivery, response));
-    await this.prisma.delivery.update({ where: { id: delivery.id }, data: { status: 'SENT', sentAt: new Date() } });
+    await provider.sendMessage(
+      session,
+      delivery.contact.externalId,
+      await this.contentMessage(delivery, response),
+    );
+    await this.prisma.delivery.update({
+      where: { id: delivery.id },
+      data: { status: 'SENT', sentAt: new Date() },
+    });
     return DONE;
   }
 
@@ -124,7 +147,8 @@ export class DeliveryService {
       data: {
         status: 'FAILED',
         errorCode: code,
-        errorMessage: error instanceof Error ? error.message.slice(0, 1000) : String(error).slice(0, 1000),
+        errorMessage:
+          error instanceof Error ? error.message.slice(0, 1000) : String(error).slice(0, 1000),
       },
     });
   }
@@ -136,7 +160,10 @@ export class DeliveryService {
     });
   }
 
-  private async load(deliveryId: string, statuses: Delivery['status'][]): Promise<StepContext | null> {
+  private async load(
+    deliveryId: string,
+    statuses: Delivery['status'][],
+  ): Promise<StepContext | null> {
     const delivery = await this.prisma.delivery.findUnique({
       where: { id: deliveryId },
       include: { automation: true, channel: true, contact: true },
@@ -157,7 +184,10 @@ export class DeliveryService {
       await this.markFailed(delivery.id, new Error('The automation response is invalid'));
       return null;
     }
-    await this.prisma.delivery.update({ where: { id: delivery.id }, data: { attempts: { increment: 1 } } });
+    await this.prisma.delivery.update({
+      where: { id: delivery.id },
+      data: { attempts: { increment: 1 } },
+    });
     return {
       delivery,
       response: parsed.data,
@@ -166,32 +196,56 @@ export class DeliveryService {
     };
   }
 
-  private gateMessage(delivery: LoadedDelivery, gate: { text: string; buttonLabel: string }): OutboundMessage {
+  private gateMessage(
+    delivery: LoadedDelivery,
+    gate: { text: string; buttonLabel: string },
+  ): OutboundMessage {
     return {
       text: renderTemplate(gate.text, { username: delivery.contact.username }),
-      buttons: [{ type: 'postback', label: gate.buttonLabel, payload: this.tokens.create(delivery.id) }],
+      buttons: [
+        { type: 'postback', label: gate.buttonLabel, payload: this.tokens.create(delivery.id) },
+      ],
     };
   }
 
-  private async contentMessage(delivery: LoadedDelivery, response: AutomationResponse): Promise<OutboundMessage> {
-    const slugs = response.message.buttons.length ? await this.links.slugsFor(delivery.automationId) : new Map();
+  private async contentMessage(
+    delivery: LoadedDelivery,
+    response: AutomationResponse,
+  ): Promise<OutboundMessage> {
+    const slugs = response.message.buttons.length
+      ? await this.links.slugsFor(delivery.automationId)
+      : new Map();
     return {
       text: renderTemplate(response.message.text, { username: delivery.contact.username }),
       buttons: response.message.buttons.map((button, position) => {
         const slug = slugs.get(position);
-        return { type: 'url', label: button.label, url: slug ? this.links.buildUrl(slug, delivery.id) : button.url };
+        return {
+          type: 'url',
+          label: button.label,
+          url: slug ? this.links.buildUrl(slug, delivery.id) : button.url,
+        };
       }),
     };
   }
 
   /** Public replies are best effort: a failure is recorded but never fails the delivery. */
-  private async postPublicReply({ delivery, response, provider, session }: StepContext): Promise<void> {
+  private async postPublicReply({
+    delivery,
+    response,
+    provider,
+    session,
+  }: StepContext): Promise<void> {
     const variants = response.publicReply.variants;
-    const text = renderTemplate(variants[randomInt(variants.length)] ?? '', { username: delivery.contact.username });
+    const text = renderTemplate(variants[randomInt(variants.length)] ?? '', {
+      username: delivery.contact.username,
+    });
     if (!text) return;
     try {
       await provider.replyToComment(session, delivery.triggerExternalId, text);
-      await this.prisma.delivery.update({ where: { id: delivery.id }, data: { publicReplySentAt: new Date() } });
+      await this.prisma.delivery.update({
+        where: { id: delivery.id },
+        data: { publicReplySentAt: new Date() },
+      });
     } catch (error) {
       if (error instanceof ProviderError && error.kind === 'auth') throw error;
       this.logger.warn({ err: error, deliveryId: delivery.id }, 'Public reply failed');
@@ -202,7 +256,11 @@ export class DeliveryService {
     }
   }
 
-  private async refreshContact({ delivery, provider, session }: StepContext): Promise<boolean | null> {
+  private async refreshContact({
+    delivery,
+    provider,
+    session,
+  }: StepContext): Promise<boolean | null> {
     const profile = await provider.getContactProfile(session, delivery.contact.externalId);
     await this.prisma.contact.update({
       where: { id: delivery.contactId },

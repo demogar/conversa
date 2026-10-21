@@ -1,0 +1,26 @@
+# Changelog
+
+All notable changes to Conversa are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow [Semantic Versioning](https://semver.org/).
+
+## [0.1.0] - Unreleased
+
+The first version.
+
+### Added
+
+- Instagram comment-to-DM automations: keyword matching that ignores case, accents, emoji and punctuation, whole-word by default, or answer anything.
+- DM triggers, including story replies.
+- Public reply variants under the comment, picked at random.
+- Opening message with a button, and a follow gate before the content.
+- Link buttons with tracked redirects and click counts.
+- Post scopes: every post, chosen posts, the next post published, and a post scheduled in Buffer.
+- Once-per-contact delivery; at most one automation answers each comment or message.
+- Workspaces with owner, admin and member roles, and email invitations.
+- Several Instagram accounts per workspace, with automatic token refresh.
+- Contacts, activity log, inbox, content view, dashboard and audit log.
+- English and Spanish interface and emails.
+- Two-factor authentication (TOTP) with recovery codes.
+- Sandbox mode: a simulated Instagram for trying Conversa and for tests.
+- Read-only Buffer integration.
+- Docker Compose production stack with an optional Cloudflare Tunnel.
+- Security: argon2id passwords, hashed server-side sessions in `__Host-` cookies, origin checks, Redis-backed rate limits, account lockout, AES-256-GCM encryption at rest with key rotation, signed webhooks, OAuth state, postbacks and link references, nonce-based CSP, log redaction.

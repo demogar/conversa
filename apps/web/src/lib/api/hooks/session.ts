@@ -6,11 +6,18 @@ import { api } from '../client';
 import { keys } from '../keys';
 
 export function useInstance() {
-  return useQuery({ queryKey: keys.instance, queryFn: ({ signal }) => api.get<InstanceDto>('/instance', signal) });
+  return useQuery({
+    queryKey: keys.instance,
+    queryFn: ({ signal }) => api.get<InstanceDto>('/instance', signal),
+  });
 }
 
 export function useMe() {
-  return useQuery({ queryKey: keys.me, queryFn: ({ signal }) => api.get<MeDto>('/me', signal), staleTime: 60_000 });
+  return useQuery({
+    queryKey: keys.me,
+    queryFn: ({ signal }) => api.get<MeDto>('/me', signal),
+    staleTime: 60_000,
+  });
 }
 
 /** The workspace from the URL, as the signed-in person sees it (with their role). */

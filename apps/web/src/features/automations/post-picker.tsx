@@ -1,7 +1,15 @@
 'use client';
 
 import { LIMITS, type MediaDto } from '@conversa/shared';
-import { Button, Checkbox, CheckboxGroup, EmptyState, Skeleton, SkeletonGroup, Text } from '@demogar/mola-ui';
+import {
+  Button,
+  Checkbox,
+  CheckboxGroup,
+  EmptyState,
+  Skeleton,
+  SkeletonGroup,
+  Text,
+} from '@demogar/mola-ui';
 import { useFormatter, useTranslations } from 'next-intl';
 import { useChannelMediaForPicker } from '@/lib/api/hooks/automations';
 import { useErrorMessage } from '@/lib/errors';
@@ -36,7 +44,12 @@ function PostOption({ media, disabled }: { media: MediaDto; disabled: boolean })
           {media.thumbnailUrl ? (
             // Instagram's CDN serves the thumbnail; it is shown as is, not optimised.
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={media.thumbnailUrl} alt="" loading="lazy" className="aspect-square w-full object-cover" />
+            <img
+              src={media.thumbnailUrl}
+              alt=""
+              loading="lazy"
+              className="aspect-square w-full object-cover"
+            />
           ) : (
             <span aria-hidden className="block aspect-square w-full bg-cloth-shade" />
           )}

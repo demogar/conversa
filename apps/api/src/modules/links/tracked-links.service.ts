@@ -10,7 +10,10 @@ const SLUG_ALPHABET = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789
 const SLUG_LENGTH = 9;
 
 function newSlug(): string {
-  return Array.from({ length: SLUG_LENGTH }, () => SLUG_ALPHABET[randomInt(SLUG_ALPHABET.length)]).join('');
+  return Array.from(
+    { length: SLUG_LENGTH },
+    () => SLUG_ALPHABET[randomInt(SLUG_ALPHABET.length)],
+  ).join('');
 }
 
 /**
@@ -33,7 +36,9 @@ export class TrackedLinksService {
     automation: { id: string; workspaceId: string },
     buttons: readonly LinkButton[],
   ): Promise<void> {
-    await tx.trackedLink.deleteMany({ where: { automationId: automation.id, position: { gte: buttons.length } } });
+    await tx.trackedLink.deleteMany({
+      where: { automationId: automation.id, position: { gte: buttons.length } },
+    });
     for (const [position, button] of buttons.entries()) {
       await tx.trackedLink.upsert({
         where: { automationId_position: { automationId: automation.id, position } },
@@ -78,7 +83,10 @@ export class TrackedLinksService {
       }
     }
     const delivery = deliveryId
-      ? await this.prisma.delivery.findFirst({ where: { id: deliveryId, automationId: link.automationId }, select: { id: true } })
+      ? await this.prisma.delivery.findFirst({
+          where: { id: deliveryId, automationId: link.automationId },
+          select: { id: true },
+        })
       : null;
 
     await this.prisma.linkClick.create({

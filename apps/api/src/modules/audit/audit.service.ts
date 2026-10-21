@@ -52,7 +52,11 @@ export class AuditService {
     }
   }
 
-  async list(workspaceId: string, cursor: string | undefined, limit: number): Promise<Page<AuditEntryDto>> {
+  async list(
+    workspaceId: string,
+    cursor: string | undefined,
+    limit: number,
+  ): Promise<Page<AuditEntryDto>> {
     const rows = await this.prisma.auditLog.findMany({
       where: { workspaceId },
       include: { actor: { select: { id: true, name: true } } },
