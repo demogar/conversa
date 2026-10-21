@@ -39,5 +39,6 @@
     "description": "No se cambió nada. Vuelve a intentarlo y, si sigue pasando, recarga la página.",
     "reference": "Referencia: <code>{digest}</code>",
     "home": "Ir a tu espacio"
-  }
+  },
+  "version": { "label": "Conversa v{version}" }
 }
