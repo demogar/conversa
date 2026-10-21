@@ -48,6 +48,10 @@ pnpm --filter @conversa/shared build           # after changing packages/shared
 - **Every visible word in both `en` and `es`**, same keys. Spanish is Latin American, `tú`, natural.
 - Comments explain why. Match the surrounding code's density and naming.
 
+## Commits and releases
+
+Conventional Commits (`feat(engine): ...`, `fix(web): ...`). PRs are squash-merged, so the **PR title** is the commit on `main` and must be a Conventional Commit (checked by `.github/workflows/pr-title.yml`). release-please builds `CHANGELOG.md` and the version from those titles and opens a release PR; merging it tags `vX.Y.Z` and publishes the GHCR images. Never edit `CHANGELOG.md` or the `version` fields by hand. Pin any new GitHub Action to a full commit SHA with a `# vX.Y.Z` comment. Details: `CONTRIBUTING.md#releases`.
+
 ## Mola MCP server
 
 `.mcp.json` registers `mola-ui` (`list_components`, `get_component`, `search`, `get_tokens`, `get_rules`, `get_pattern`, `check_code`). Look a component up before using it, and run `check_code` on screens you write.

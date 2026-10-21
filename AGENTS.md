@@ -43,6 +43,10 @@ pnpm dev && pnpm dev:worker
 9. Do not mention other projects as sources or inspiration.
 10. Run `pnpm check` before declaring work done and report the real result.
 
+## Commits and releases
+
+Conventional Commits (`feat(engine): ...`, `fix(web): ...`). PRs are squash-merged, so the **PR title** is the commit on `main` and must be a Conventional Commit (checked by `.github/workflows/pr-title.yml`). release-please builds `CHANGELOG.md` and the version from those titles and opens a release PR; merging it tags `vX.Y.Z` and publishes the GHCR images. Never edit `CHANGELOG.md` or the `version` fields by hand. Pin any new GitHub Action to a full commit SHA with a `# vX.Y.Z` comment. Details: `CONTRIBUTING.md#releases`.
+
 ## Where to read more
 
 `docs/architecture.md`, `docs/contributing/backend-guide.md`, `docs/contributing/frontend-guide.md`, `docs/testing.md`, `docs/i18n.md`, `SECURITY.md`.

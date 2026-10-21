@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions: {}
+
+concurrency:
+  group: release-please
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    name: Release PR
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+      has_token: ${{ steps.token.outputs.has_token }}
+    steps:
+      # Only says whether the secret exists; its value never leaves the step.
+      - id: token
+        env:
+          HAS_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN != '' }}
+        run: echo "has_token=$HAS_TOKEN" >> "$GITHUB_OUTPUT"
+      # Opens or updates the release PR from Conventional Commits on main; when
+      # that PR is merged, tags the release and publishes the GitHub release.
+      # Config: release-please-config.json and .release-please-manifest.json.
+      # With RELEASE_PLEASE_TOKEN the release PR runs the required checks and
+      # the tag starts release-images.yml; with GITHUB_TOKEN neither happens.
+      - id: release
+        uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
+
+  images:
+    name: Images
+    needs: release-please
+    # Built here only when the tag came from GITHUB_TOKEN and so started no
+    # workflow; a tag pushed with RELEASE_PLEASE_TOKEN builds the images itself.
+    if: needs.release-please.outputs.release_created == 'true' && needs.release-please.outputs.has_token != 'true'
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/release-images.yml
+    with:
+      tag: ${{ needs.release-please.outputs.tag_name }}
