@@ -59,6 +59,15 @@ interface GraphConversation {
   messages?: { data?: GraphMessage[] };
 }
 
+/** The code exchange answers either flat or wrapped in `data`, depending on the app's API version. */
+type ShortLivedToken = { access_token?: string } | { data?: Array<{ access_token?: string }> };
+
+export function readShortLivedToken(response: ShortLivedToken): string | null {
+  if ('access_token' in response && response.access_token) return response.access_token;
+  if ('data' in response) return response.data?.[0]?.access_token ?? null;
+  return null;
+}
+
 function toMedia(media: GraphMedia): MediaDto {
   return {
     id: media.id,
@@ -136,7 +145,7 @@ export class InstagramProvider implements ChannelProvider {
   }
 
   async completeAuthorization(code: string, redirectUri: string): Promise<ConnectedAccount> {
-    const short = await this.graph.request<{ access_token: string }>({
+    const exchanged = await this.graph.request<ShortLivedToken>({
       method: 'POST',
       host: TOKEN_HOST,
       path: '/oauth/access_token',
@@ -148,12 +157,16 @@ export class InstagramProvider implements ChannelProvider {
         code,
       },
     });
+    const shortToken = readShortLivedToken(exchanged);
+    if (!shortToken)
+      throw new ProviderError('rejected', 'Instagram returned no access token for the code');
     // Short-lived tokens last an hour; exchange for a 60-day token right away.
     const long = await this.graph.request<{ access_token: string; expires_in?: number }>({
       host: 'https://graph.instagram.com',
       path: '/access_token',
       query: { grant_type: 'ig_exchange_token', client_secret: this.app.appSecret },
-      accessToken: short.access_token,
+      accessToken: shortToken,
+      tokenIn: 'query',
     });
     const profile = await this.graph.request<{
       user_id?: string | number;
@@ -184,6 +197,7 @@ export class InstagramProvider implements ChannelProvider {
       path: '/refresh_access_token',
       query: { grant_type: 'ig_refresh_token' },
       accessToken,
+      tokenIn: 'query',
     });
     return {
       accessToken: result.access_token,

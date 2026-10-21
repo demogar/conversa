@@ -34,6 +34,11 @@ export interface GraphRequest {
   method?: 'GET' | 'POST' | 'DELETE';
   path: string;
   accessToken?: string;
+  /**
+   * Where the token travels. `header` (the default) keeps it out of URLs; the
+   * token exchange and refresh endpoints accept it only as a query parameter.
+   */
+  tokenIn?: 'header' | 'query';
   query?: Record<string, string>;
   body?: unknown;
   /** Send the body as a form instead of JSON (OAuth endpoints). */
@@ -43,7 +48,8 @@ export interface GraphRequest {
 
 /**
  * Thin HTTP client for the Instagram Graph API. Tokens travel in the
- * Authorization header, never the URL, so they stay out of proxy logs.
+ * Authorization header unless an endpoint only accepts them in the URL, and
+ * errors name the path only, so a token never reaches a log line.
  */
 @Injectable()
 export class InstagramGraphClient {
@@ -55,7 +61,9 @@ export class InstagramGraphClient {
     for (const [key, value] of Object.entries(req.query ?? {})) url.searchParams.set(key, value);
 
     const headers: Record<string, string> = {};
-    if (req.accessToken) headers.Authorization = `Bearer ${req.accessToken}`;
+    if (req.accessToken && req.tokenIn === 'query')
+      url.searchParams.set('access_token', req.accessToken);
+    else if (req.accessToken) headers.Authorization = `Bearer ${req.accessToken}`;
     let body: string | undefined;
     if (req.form) {
       headers['Content-Type'] = 'application/x-www-form-urlencoded';
