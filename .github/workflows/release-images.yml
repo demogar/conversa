@@ -42,6 +42,8 @@ jobs:
         run: |
           echo "image=ghcr.io/${GITHUB_REPOSITORY,,}-${{ matrix.image }}" >> "$GITHUB_OUTPUT"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          # The commit that was checked out, which is the one the tag points to.
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
       - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
       - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
@@ -53,12 +55,18 @@ jobs:
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
           images: ${{ steps.name.outputs.image }}
+          # latest only for a final release, never for a pre-release such as v1.0.0-rc.1.
+          flavor: latest=false
           tags: |
             type=semver,pattern={{version}},value=${{ steps.name.outputs.tag }}
             type=semver,pattern={{major}}.{{minor}},value=${{ steps.name.outputs.tag }}
             type=semver,pattern={{major}},value=${{ steps.name.outputs.tag }}
+            type=raw,value=latest,enable=${{ !contains(steps.name.outputs.tag, '-') }}
           labels: |
             org.opencontainers.image.title=conversa-${{ matrix.image }}
+            org.opencontainers.image.description=Conversa ${{ matrix.image }}: self-hosted automation for Instagram comments and DMs
+            org.opencontainers.image.revision=${{ steps.name.outputs.commit }}
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.licenses=MIT
       - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
@@ -68,6 +76,9 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            CONVERSA_VERSION=${{ steps.meta.outputs.version }}
+            CONVERSA_COMMIT=${{ steps.name.outputs.commit }}
           provenance: true
           sbom: true
           cache-from: type=gha,scope=release-${{ matrix.image }}

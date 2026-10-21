@@ -24,6 +24,7 @@ import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { type ReactNode, useState } from 'react';
 import { BrandLogo } from '@/features/brand/brand-mark';
+import { VersionLink } from '@/features/brand/version-link';
 import { useCurrentWorkspace, useMe } from '@/lib/api/hooks/session';
 import { workspacePath } from '@/lib/navigation';
 import { CreateWorkspaceDialog } from './create-workspace-dialog';
@@ -108,7 +109,7 @@ export function WorkspaceShell({
           />
         }
         sidebar={
-          <Sidebar label={t('sidebarLabel')}>
+          <Sidebar label={t('sidebarLabel')} footer={<VersionLink />}>
             {sections.map((section) => (
               <NavSection key={section.title} title={section.title}>
                 {section.items.map((entry) => (
