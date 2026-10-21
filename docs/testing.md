@@ -73,7 +73,7 @@ Prefer a few tests that exercise behaviour over many that pin implementation det
 | Job                            | Runs                                                                                                    |
 | ------------------------------ | ------------------------------------------------------------------------------------------------------- |
 | Lint, typecheck and unit tests | `pnpm -r lint`, `pnpm -r typecheck`, unit tests of every package                                        |
-| Integration tests              | The API integration suite against PostgreSQL 17 and Valkey 8 service containers, with throwaway secrets |
+| Integration tests              | The API integration suite against PostgreSQL 17 and Valkey 9 service containers, with throwaway secrets |
 | Build images                   | Both Dockerfiles                                                                                        |
 | End-to-end tests               | `pnpm build`, then `pnpm test:e2e`; the Playwright report is uploaded as an artifact                    |
 

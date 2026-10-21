@@ -55,7 +55,7 @@ jobs:
           --health-timeout 3s
           --health-retries 20
       valkey:
-        image: valkey/valkey:8-alpine
+        image: valkey/valkey:9-alpine
         ports: ['6379:6379']
         options: >-
           --health-cmd "valkey-cli ping"
@@ -136,7 +136,7 @@ jobs:
           --health-timeout 3s
           --health-retries 20
       valkey:
-        image: valkey/valkey:8-alpine
+        image: valkey/valkey:9-alpine
         ports: ['6379:6379']
         options: >-
           --health-cmd "valkey-cli ping"

@@ -5,7 +5,7 @@ Conversa runs as one Docker Compose stack: [`docker/compose.yml`](../docker/comp
 | Service       | Image                    | Role                                                                                                                         |
 | ------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
 | `postgres`    | `postgres:17-alpine`     | Database. On an internal network with no route outside.                                                                      |
-| `valkey`      | `valkey/valkey:8-alpine` | Queues, rate limits, caches. Append-only persistence, `noeviction` (BullMQ needs every key kept).                            |
+| `valkey`      | `valkey/valkey:9-alpine` | Queues, rate limits, caches. Append-only persistence, `noeviction` (BullMQ needs every key kept).                            |
 | `migrate`     | API image                | Runs `prisma migrate deploy`, then exits. API and worker start only after it succeeds.                                       |
 | `api`         | API image                | HTTP API on port 4000, not published.                                                                                        |
 | `worker`      | API image                | Queue worker. Stopped with a 30 s grace period so running jobs finish.                                                       |
