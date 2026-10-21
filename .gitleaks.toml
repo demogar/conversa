@@ -1,14 +1,23 @@
 # Gitleaks configuration for the secret scan workflow. Extends the default
 # rules; only files that hold placeholders or hashes are allowlisted.
+# The action pins gitleaks 8.24, which reads only this single [allowlist]
+# table (a top-level [[allowlists]] array is silently ignored).
 title = "Conversa"
 
 [extend]
 useDefault = true
 
 [allowlist]
-description = "Placeholders, local development credentials and lockfile hashes"
+description = "Placeholders, local development credentials, lockfile hashes and test fixtures"
 paths = [
   '''^\.env\.example$''',
   '''(^|/)pnpm-lock\.yaml$''',
   '''^docker/compose\.dev\.yml$''',
+]
+# Made-up Instagram app secret and Turnstile secret key that the instance
+# settings tests store to check they are encrypted and never returned. Only
+# these exact values are allowed.
+regexes = [
+  '''^abcdef0123456789abcdef0123456789$''',
+  '''^0x4AAAA-secret-key-9876$''',
 ]
