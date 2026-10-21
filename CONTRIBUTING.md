@@ -44,7 +44,7 @@ Set `INSTAGRAM_SANDBOX=true` to work without a Meta app ([docs/sandbox.md](docs/
 6. Commit with [Conventional Commits](https://www.conventionalcommits.org/): `feat(engine): retry deliveries after a rate limit`, `fix(web): keep the draft when saving fails`, `docs: explain TRUST_PROXY`.
 7. Open the pull request with a Conventional Commit **title** (a check enforces it): say what changed and why, how you tested it, and include a screenshot for UI changes. Do not edit [CHANGELOG.md](CHANGELOG.md); it is generated at release time.
 
-Pull requests are squash-merged: the PR title becomes the commit message on `main`, and the PR description its body. All checks must pass and every review conversation must be resolved before merging.
+Pull requests are squash-merged: the PR title becomes the commit message on `main`, and the PR description its body. `main` is protected by a ruleset: nothing is pushed to it directly, every change arrives through a pull request that is up to date with `main`, the required checks (lint, typecheck and unit tests, integration tests, both image builds, end-to-end tests, the secret scan and the PR title check) must pass, and every review conversation must be resolved before merging. History stays linear, and `main` cannot be force-pushed or deleted.
 
 ## Releases
 
@@ -54,7 +54,7 @@ Releases are automated with [release-please](https://github.com/googleapis/relea
 - **Version bumps.** `fix`, `perf` and the other listed types bump the patch version, `feat` the minor version, and a breaking change the major version. Before 1.0.0 a breaking change bumps the minor version instead.
 - **Release PR.** Every push to `main` updates one open pull request titled `chore: release X.Y.Z`. It bumps the version in the root `package.json` and in every app and package `package.json` together, and adds the new section to `CHANGELOG.md`. Merging it is the release: release-please tags `vX.Y.Z` and publishes the GitHub release.
 - **Images.** The same workflow then builds and pushes the multi-architecture `api` and `web` images to the GitHub Container Registry, tagged `X.Y.Z`, `X.Y` and `X` (`.github/workflows/release-images.yml`). A `v*` tag pushed by hand builds them too.
-- **Checks on the release PR.** release-please uses the workflow's `GITHUB_TOKEN`, and GitHub does not start workflows for pull requests or tags created with that token. Close and reopen the release PR to run the required checks before merging it. The image build does not depend on the tag event: the release workflow calls it directly.
+- **Token.** release-please runs with the `RELEASE_PLEASE_TOKEN` repository secret when it exists: a fine-grained personal access token for this repository only, with read and write access to Contents, Pull requests and Issues. Then the release PR runs the required checks like any other, and the `vX.Y.Z` tag starts the image build. Without the secret it falls back to the workflow's `GITHUB_TOKEN`, and GitHub starts no workflows for pull requests or tags created with that token: the release workflow calls the image build itself, and the maintainer closes and reopens the release PR to run the required checks before merging it (again after each update, since the PR must be up to date with `main`).
 - Release tags are protected: they cannot be moved or deleted once created.
 
 Configuration: `release-please-config.json`, `.release-please-manifest.json` (the current version) and `.github/workflows/release.yml`.
