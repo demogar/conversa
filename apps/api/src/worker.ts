@@ -9,7 +9,7 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.createApplicationContext(WorkerRootModule, { bufferLogs: true });
   app.useLogger(app.get(Logger));
   app.enableShutdownHooks();
-  app.get(Logger).log(`Conversa worker ${app.get(BuildInfo).label} started`);
+  app.get(Logger).log(`Worker started, Conversa ${app.get(BuildInfo).label}`);
 }
 
 await bootstrap();
