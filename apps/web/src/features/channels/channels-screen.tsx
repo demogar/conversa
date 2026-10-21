@@ -122,9 +122,10 @@ export function ChannelsScreen({ workspaceId }: { workspaceId: string }) {
             loading
             label={t('states.loading')}
             fallback={
+              // The page is normally rendered with its channels; this shows only when the browser
+              // has to fetch them, and as one card at a channel card's height, since how many is unknown.
               <Grid cols="auto" minItem="20rem">
-                <Skeleton className="h-64" />
-                <Skeleton className="h-64" />
+                <Skeleton className="h-74" />
               </Grid>
             }
           />
