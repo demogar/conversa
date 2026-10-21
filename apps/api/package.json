@@ -32,7 +32,7 @@
     "cookie-parser": "1.4.7",
     "dotenv": "^17.4.2",
     "helmet": "8.3.0",
-    "ioredis": "5.11.1",
+    "ioredis": "6.0.0",
     "nestjs-pino": "5.3.1",
     "nodemailer": "10.1.7",
     "otplib": "13.5.0",
