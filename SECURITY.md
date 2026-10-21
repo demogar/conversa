@@ -6,7 +6,7 @@ Conversa holds access to other people's Instagram accounts and to their audience
 
 **Please do not open a public issue for a security problem.**
 
-Report it privately through GitHub: on this repository, open **Security → Advisories → Report a vulnerability**. Include what you found, how to reproduce it, and the version or commit. You will get an acknowledgement, and a fix and advisory will be coordinated with you before anything is published.
+Report it privately through GitHub at <https://github.com/demogar/conversa/security/advisories/new> (on the repository: **Security → Advisories → Report a vulnerability**). Include what you found, how to reproduce it, and the version or commit. You will get an acknowledgement, and a fix and advisory will be coordinated with you before anything is published.
 
 Only the latest release and `main` receive security fixes.
 
