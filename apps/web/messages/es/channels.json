@@ -50,6 +50,14 @@
     "tokenExpires": "El acceso vence",
     "tokenNever": "No vence",
     "connectedAt": "Conectada",
+    "lastEvent": "Último evento",
+    "lastEventNever": "Ninguno todavía",
+    "noEvents": {
+      "title": "Todavía no llegan eventos de Instagram",
+      "body": "Esta cuenta se conectó hace un rato e Instagram no ha enviado nada para ella. ¿Tu app de Meta está en modo Live? ¿Está activado Permitir el acceso a los mensajes en la app de Instagram?",
+      "askAdmin": "Esta cuenta se conectó hace un rato e Instagram no ha enviado nada para ella. Pídele a quien instaló Conversa que revise que la app de Meta esté en modo Live, y revisa que Permitir el acceso a los mensajes esté activado en la app de Instagram.",
+      "openGuide": "Abrir la guía de configuración"
+    },
     "needsReauth": "Instagram dejó de aceptar el acceso de esta cuenta. Sus automatizaciones están en pausa hasta que alguien la vuelva a conectar.",
     "disconnectedNote": "Conversa ya no tiene acceso a esta cuenta. Vuelve a conectarla para usarla otra vez."
   },

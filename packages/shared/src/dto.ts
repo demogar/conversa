@@ -115,6 +115,8 @@ export interface ChannelDto {
   webhookSubscribed: boolean;
   tokenExpiresAt: string | null;
   connectedAt: string;
+  /** When a webhook for this account last arrived, to the minute. Null until the first one. */
+  lastEventAt: string | null;
 }
 
 export interface MediaDto {
@@ -299,6 +301,23 @@ export interface InstanceSettingsDto {
   signup: { mode: SignupMode };
   /** Instagram is simulated (INSTAGRAM_SANDBOX): the Meta app is not used. */
   sandbox: boolean;
+}
+
+/**
+ * What Meta said about the stored Instagram app ID and secret. `unknown` means
+ * Meta could not be asked or answered in a way Conversa does not recognise.
+ */
+export type AppCredentialsCheck = 'valid' | 'invalid' | 'unknown' | 'not_configured';
+
+/** How far the Meta app setup has got, as far as this installation can tell. */
+export interface InstagramSetupStatusDto {
+  /** Instagram is simulated: the Meta app is not used, so nothing is checked. */
+  sandbox: boolean;
+  credentials: AppCredentialsCheck;
+  /** Meta's "Verify and save" last reached this installation. */
+  webhookVerifiedAt: string | null;
+  /** A signed webhook last arrived, for any account. */
+  lastEventAt: string | null;
 }
 
 export type MailTestFailure = 'auth' | 'connection' | 'timeout' | 'tls' | 'rejected' | 'unknown';

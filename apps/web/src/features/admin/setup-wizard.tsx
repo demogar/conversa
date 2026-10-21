@@ -1,13 +1,22 @@
 'use client';
 
-import { Badge, Button, Callout, PageHeader, Stepper, type StepperStep } from '@demogar/mola-ui';
+import {
+  Badge,
+  Button,
+  Callout,
+  PageHeader,
+  Stepper,
+  type StepperStep,
+  useToast,
+} from '@demogar/mola-ui';
 import type { InstanceSettingsDto } from '@conversa/shared';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { AdminGate } from './admin-gate';
-import { InstagramFields, MetaSteps, MetaUrls, useInstagramForm } from './instagram-settings';
+import { InstagramFields, useInstagramForm } from './instagram-settings';
 import { MailFields, MailTestButton, useMailForm } from './mail-settings';
+import { MetaSetupGuide } from './meta-setup-guide';
 import { TurnstileFields, useTurnstileForm } from './turnstile-settings';
 
 const STEPS = ['mail', 'instagram', 'turnstile', 'done'] as const;
@@ -31,6 +40,7 @@ export function SetupWizard() {
 function Wizard({ settings }: { settings: InstanceSettingsDto }) {
   const t = useTranslations('admin.setup');
   const router = useRouter();
+  const toast = useToast();
   const [step, setStep] = useState<Step>('mail');
   const mail = useMailForm(settings.mail);
   const instagram = useInstagramForm(settings.instagram);
@@ -88,9 +98,25 @@ function Wizard({ settings }: { settings: InstanceSettingsDto }) {
                     {t('sandboxDescription')}
                   </Callout>
                 ) : null}
-                <MetaSteps />
-                <MetaUrls urls={settings.instagram.urls} />
+                <MetaSetupGuide
+                  urls={settings.instagram.urls}
+                  verifyToken={instagram.verifyTokenToPaste}
+                />
                 <InstagramFields form={instagram} />
+                <div className="flex flex-wrap justify-end gap-2">
+                  {/* Meta checks the verify token while the guide is still open, so save here first. */}
+                  <Button
+                    variant="secondary"
+                    loading={instagram.pending}
+                    onClick={() =>
+                      void instagram
+                        .save()
+                        .then((saved) => saved && toast.success({ title: t('instagramSaved') }))
+                    }
+                  >
+                    {t('saveInstagram')}
+                  </Button>
+                </div>
                 {skip()}
               </div>
             );

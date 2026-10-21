@@ -1,4 +1,5 @@
 import request from 'supertest';
+import { SandboxInstagramProvider } from '../../src/modules/channels/sandbox/sandbox-instagram.provider.js';
 import {
   type Agent,
   API,
@@ -56,6 +57,68 @@ describe('webhooks and tracked links', () => {
         .send({ object: 'instagram', entry: [] })
         .expect(401);
       expect(await t.prisma.inboundEvent.count()).toBe(0);
+    });
+  });
+
+  describe('setup status', () => {
+    const status = () => owner.get(`${API}/instance/instagram/status`).expect(200);
+    let sandbox: SandboxInstagramProvider;
+
+    beforeAll(() => {
+      sandbox = t.app.get(SandboxInstagramProvider);
+    });
+
+    // Tests stand in for Meta by shadowing the sandbox's methods; dropping the shadows restores them.
+    afterEach(() => {
+      const shadows = sandbox as Partial<SandboxInstagramProvider>;
+      delete shadows.verifySubscription;
+      delete shadows.verifySignature;
+    });
+
+    it('starts with nothing heard from Meta', async () => {
+      const response = await status();
+      expect(response.body).toEqual({
+        sandbox: true,
+        credentials: 'unknown',
+        webhookVerifiedAt: null,
+        lastEventAt: null,
+      });
+    });
+
+    it('records when Meta last verified the webhook, but not a refused attempt', async () => {
+      await request(server)
+        .get(`${API}/webhooks/instagram`)
+        .query({ 'hub.mode': 'subscribe', 'hub.verify_token': 'wrong', 'hub.challenge': 'c' })
+        .expect(403);
+      expect((await status()).body.webhookVerifiedAt).toBeNull();
+
+      // The sandbox refuses every handshake; stand in for a correctly configured Meta app.
+      sandbox.verifySubscription = () => 'challenge-123';
+      const verified = await request(server).get(`${API}/webhooks/instagram`).expect(200);
+      expect(verified.text).toBe('challenge-123');
+      const body = (await status()).body as { webhookVerifiedAt: string; lastEventAt: null };
+      expect(Date.parse(body.webhookVerifiedAt)).toBeGreaterThan(Date.now() - 60_000);
+      expect(body.lastEventAt).toBeNull();
+    });
+
+    it('records the last signed webhook, but not an unsigned one', async () => {
+      await request(server)
+        .post(`${API}/webhooks/instagram`)
+        .send({ object: 'instagram', entry: [] })
+        .expect(401);
+      expect((await status()).body.lastEventAt).toBeNull();
+
+      sandbox.verifySignature = () => true;
+      await request(server)
+        .post(`${API}/webhooks/instagram`)
+        .send({ object: 'instagram', entry: [] })
+        .expect(200);
+      const body = (await status()).body as { lastEventAt: string };
+      expect(Date.parse(body.lastEventAt)).toBeGreaterThan(Date.now() - 60_000);
+    });
+
+    it('is only for signed-in instance admins', async () => {
+      await request(server).get(`${API}/instance/instagram/status`).expect(401);
     });
   });
 

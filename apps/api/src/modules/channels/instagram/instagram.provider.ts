@@ -1,6 +1,7 @@
 import { createHmac } from 'node:crypto';
 import { Injectable } from '@nestjs/common';
 import {
+  type AppCredentialsCheck,
   type ChannelType,
   type ConversationDto,
   LIMITS,
@@ -66,6 +67,29 @@ export function readShortLivedToken(response: ShortLivedToken): string | null {
   if ('access_token' in response && response.access_token) return response.access_token;
   if ('data' in response) return response.data?.[0]?.access_token ?? null;
   return null;
+}
+
+/** A code Meta never issues, so the exchange always fails and only the reason matters. */
+const PROBE_CODE = 'conversa-credentials-check';
+
+/**
+ * Reads Meta's answer to a code exchange made with a code that cannot work.
+ * Instagram Login apps have no endpoint that checks an app ID and secret by
+ * themselves, but the exchange authenticates the app before it looks at the
+ * code: a complaint about the code means the app ID and secret passed, a
+ * complaint about the app or the secret means they did not. Anything else is
+ * reported as unknown rather than guessed.
+ */
+export function classifyCredentialsProbe(message: string): AppCredentialsCheck {
+  if (/invalid platform app|invalid (client|app)[ _]?id|(client|app)[ _]secret/i.test(message))
+    return 'invalid';
+  if (
+    /authori[sz]ation code|verification code|code has (expired|been used)|invalid code/i.test(
+      message,
+    )
+  )
+    return 'valid';
+  return 'unknown';
 }
 
 function toMedia(media: GraphMedia): MediaDto {
@@ -142,6 +166,29 @@ export class InstagramProvider implements ChannelProvider {
       force_authentication: '1',
     }).toString();
     return url.toString();
+  }
+
+  async checkAppCredentials(redirectUri: string): Promise<AppCredentialsCheck> {
+    const app = this.settings.instagram;
+    if (!app) return 'not_configured';
+    try {
+      await this.graph.request({
+        method: 'POST',
+        host: TOKEN_HOST,
+        path: '/oauth/access_token',
+        form: {
+          client_id: app.appId,
+          client_secret: app.appSecret,
+          grant_type: 'authorization_code',
+          redirect_uri: redirectUri,
+          code: PROBE_CODE,
+        },
+      });
+      return 'unknown';
+    } catch (error) {
+      if (!(error instanceof ProviderError) || error.kind === 'transient') return 'unknown';
+      return classifyCredentialsProbe(error.message);
+    }
   }
 
   async completeAuthorization(code: string, redirectUri: string): Promise<ConnectedAccount> {

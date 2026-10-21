@@ -70,6 +70,12 @@ function routes(overrides: Record<string, unknown> = {}) {
     'GET /me': adminMe(),
     'GET /instance': instance(),
     'GET /instance/settings': settings,
+    'GET /instance/instagram/status': {
+      sandbox: false,
+      credentials: 'not_configured',
+      webhookVerifiedAt: null,
+      lastEventAt: null,
+    },
     'GET /instance/admins': [
       {
         id: 'u1',
@@ -130,13 +136,11 @@ describe('AdminPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('generates a verify token in the browser and lists the Meta addresses', async () => {
+  it('generates a verify token in the browser and hands it to the guide to paste into Meta', async () => {
     const calls = routes({ 'PATCH /instance/settings/instagram': settings });
     renderWithProviders(<AdminPage />);
     const instagram = await screen.findByRole('form', { name: 'Instagram app' });
-
-    expect(screen.getByText(urls.webhook)).toBeInTheDocument();
-    expect(screen.getByText(urls.oauthRedirect)).toBeInTheDocument();
+    const guide = screen.getByRole('navigation', { name: 'Meta app setup steps' });
 
     await userEvent.type(within(instagram).getByLabelText(/Instagram app ID/), '1234567890');
     await userEvent.type(within(instagram).getByLabelText(/Instagram app secret/), 'app-secret');
@@ -144,13 +148,25 @@ describe('AdminPage', () => {
     const token = within(instagram).getByLabelText(/Webhook verify token/) as HTMLInputElement;
     expect(token.value).toMatch(/^[\w-]{32}$/);
 
+    await userEvent.click(within(guide).getByRole('button', { name: '3. Connect the webhooks' }));
+    expect(screen.getByText(urls.webhook)).toBeInTheDocument();
+    expect(screen.getByText(token.value)).toBeInTheDocument();
+    const generated = token.value;
+
     await userEvent.click(within(instagram).getByRole('button', { name: 'Save changes' }));
     expect(await screen.findByText('Instagram app saved')).toBeInTheDocument();
     expect(calls.find((call) => call.method === 'PATCH')?.body).toEqual({
       appId: '1234567890',
       appSecret: 'app-secret',
-      verifyToken: token.value,
+      verifyToken: generated,
     });
+    // Saved, so the field is empty again, but the guide still offers the token for Meta.
+    expect(screen.getByText(generated)).toBeInTheDocument();
+
+    await userEvent.click(
+      within(guide).getByRole('button', { name: '4. Set up Instagram business login' }),
+    );
+    expect(screen.getByText(urls.oauthRedirect)).toBeInTheDocument();
   });
 
   it('tells a person who is not an instance admin who can change the settings', async () => {
