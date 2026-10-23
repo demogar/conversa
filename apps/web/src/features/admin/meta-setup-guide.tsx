@@ -26,6 +26,53 @@ export function isMetaGuideStep(value: string): value is MetaGuideStep {
   return (META_GUIDE_STEPS as readonly string[]).includes(value);
 }
 
+const laterStep = (a: MetaGuideStep, b: MetaGuideStep) =>
+  META_GUIDE_STEPS.indexOf(a) >= META_GUIDE_STEPS.indexOf(b) ? a : b;
+
+/**
+ * Where the guide opens: after what Conversa can see is done (the app saved,
+ * the webhook verified by Meta, events arriving), or at the furthest step this
+ * browser opened, since the steps in Meta's dashboard leave nothing to check.
+ */
+export function metaGuideStartStep(
+  progress: {
+    configured: boolean;
+    webhookVerifiedAt?: string | null;
+    lastEventAt?: string | null;
+  },
+  furthestOpened: MetaGuideStep | null = null,
+): MetaGuideStep {
+  // Nothing saved: a step remembered from an app since removed no longer holds.
+  if (!progress.configured) return furthestOpened === 'credentials' ? 'credentials' : 'create';
+  const seen: MetaGuideStep = progress.lastEventAt
+    ? 'connect'
+    : progress.webhookVerifiedAt
+      ? 'login'
+      : 'webhooks';
+  return furthestOpened ? laterStep(seen, furthestOpened) : seen;
+}
+
+const FURTHEST_STEP_KEY = 'conversa-meta-guide-step';
+
+export function readFurthestMetaGuideStep(): MetaGuideStep | null {
+  try {
+    const value = localStorage.getItem(FURTHEST_STEP_KEY);
+    return value && isMetaGuideStep(value) ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Remembers the step only when it is past the one stored, so looking back loses nothing. */
+export function rememberMetaGuideStep(step: MetaGuideStep): void {
+  try {
+    const stored = readFurthestMetaGuideStep();
+    localStorage.setItem(FURTHEST_STEP_KEY, stored ? laterStep(step, stored) : step);
+  } catch {
+    // Storage blocked: the guide still opens from what Conversa can see.
+  }
+}
+
 /** A value to paste into Meta, by the name of the Meta field it goes into. */
 type Paste = { field: string; value: keyof MetaAppUrlsDto | 'verifyToken' };
 

@@ -210,6 +210,36 @@ describe('AdminPage', () => {
     expect(screen.getByText(urls.oauthRedirect)).toBeInTheDocument();
   });
 
+  it('opens the guide after the webhook step once Meta has verified it', async () => {
+    localStorage.clear();
+    routes({
+      'GET /instance/settings': {
+        ...settings,
+        instagram: {
+          ...settings.instagram,
+          configured: true,
+          appId: '1234567890',
+          appSecret: { configured: true, hint: '0000' },
+          verifyToken: { configured: true, hint: '0000' },
+        },
+      },
+      'GET /instance/instagram/status': {
+        sandbox: false,
+        credentials: 'valid',
+        webhookVerifiedAt: '2026-10-23T12:00:00Z',
+        lastEventAt: null,
+      },
+    });
+    renderWithProviders(<AdminPage />);
+    const guide = await screen.findByRole('navigation', { name: 'Meta app setup steps' });
+
+    await waitFor(() =>
+      expect(within(guide).getByRole('button', { current: 'step' })).toHaveAccessibleName(
+        '4. Set up Instagram business login',
+      ),
+    );
+  });
+
   it('tells a person who is not an instance admin who can change the settings', async () => {
     const calls = mockApi({ 'GET /me': adminMe(false) });
     renderWithProviders(<AdminPage />);

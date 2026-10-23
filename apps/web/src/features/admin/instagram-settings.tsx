@@ -5,13 +5,20 @@ import { type InstagramAppSettingsDto, updateInstagramSettingsSchema } from '@co
 import { useTranslations } from 'next-intl';
 import { type FormEvent, useEffect, useState } from 'react';
 import { SettingsSection } from '@/features/settings/settings-section';
-import { useClearInstanceSettings, useUpdateInstanceSettings } from '@/lib/api/hooks/admin';
+import {
+  useClearInstanceSettings,
+  useInstagramSetupStatus,
+  useUpdateInstanceSettings,
+} from '@/lib/api/hooks/admin';
 import { type FieldErrors, useErrorMessage, useFieldErrors } from '@/lib/errors';
 import {
   isMetaGuideStep,
   MetaSetupGuide,
   type MetaGuideStep,
   metaGuideHash,
+  metaGuideStartStep,
+  readFurthestMetaGuideStep,
+  rememberMetaGuideStep,
 } from './meta-setup-guide';
 import { MetaSetupStatus } from './meta-setup-status';
 import { SecretField } from './secret-field';
@@ -142,17 +149,32 @@ export function InstagramSection({
   const clear = useClearInstanceSettings('instagram');
   const [confirming, setConfirming] = useState(false);
   const [clearError, setClearError] = useState<string | null>(null);
-  const [step, setStep] = useState<MetaGuideStep>(settings.configured ? 'webhooks' : 'create');
+  const status = useInstagramSetupStatus(!sandbox);
+  const [furthestOpened, setFurthestOpened] = useState<MetaGuideStep | null>(null);
+  // Until someone picks a step, the guide follows the status, which loads after the settings.
+  const [chosen, setChosen] = useState<MetaGuideStep | null>(null);
+  const step =
+    chosen ??
+    metaGuideStartStep({ configured: settings.configured, ...status.data }, furthestOpened);
+
+  function setStep(next: MetaGuideStep) {
+    setChosen(next);
+    rememberMetaGuideStep(next);
+  }
 
   // A hint elsewhere links to /admin#meta-guide-<step>: open the guide there, once laid out.
+  // Storage is read on the client only, after the first render.
   useEffect(() => {
     function openFromHash() {
       const wanted = window.location.hash.replace(/^#meta-guide-/, '');
       if (!isMetaGuideStep(wanted)) return;
-      setStep(wanted);
+      setChosen(wanted);
       document.getElementById('admin-instagram')?.scrollIntoView();
     }
-    const frame = requestAnimationFrame(openFromHash);
+    const frame = requestAnimationFrame(() => {
+      setFurthestOpened(readFurthestMetaGuideStep());
+      openFromHash();
+    });
     window.addEventListener('hashchange', openFromHash);
     return () => {
       cancelAnimationFrame(frame);
@@ -161,7 +183,7 @@ export function InstagramSection({
   }, []);
 
   function showStep(next: MetaGuideStep) {
-    setStep(next);
+    setChosen(next);
     document.getElementById(metaGuideHash(next))?.scrollIntoView({ block: 'nearest' });
   }
 
