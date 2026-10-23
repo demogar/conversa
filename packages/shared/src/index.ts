@@ -1,6 +1,7 @@
 export * from './enums.js';
 export * from './errors.js';
 export * from './limits.js';
+export * from './capabilities.js';
 export * from './keywords.js';
 export * from './template.js';
 export * from './schemas/common.js';

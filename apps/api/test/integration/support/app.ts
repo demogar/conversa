@@ -112,9 +112,13 @@ export async function firstWorkspaceId(agent: Agent): Promise<string> {
 }
 
 /** Connects a simulated Instagram account by following the OAuth redirect, as a browser would. */
-export async function connectSandboxChannel(agent: Agent, workspaceId: string): Promise<string> {
+export async function connectSandboxChannel(
+  agent: Agent,
+  workspaceId: string,
+  platform: 'instagram' | 'tiktok' = 'instagram',
+): Promise<string> {
   const started = await agent
-    .post(`${API}/workspaces/${workspaceId}/channels/instagram/connect`)
+    .post(`${API}/workspaces/${workspaceId}/channels/${platform}/connect`)
     .expect(201);
   const callback = new URL((started.body as { url: string }).url);
   expect(callback.origin).toBe(APP_URL);

@@ -2,6 +2,7 @@
 
 import {
   type AutomationDto,
+  CHANNEL_CAPABILITIES,
   type ChannelDto,
   type CreateAutomationInput,
   createAutomationSchema,
@@ -106,6 +107,7 @@ export function AutomationForm({
 }: AutomationFormProps) {
   const t = useTranslations('automations.builder');
   const tErrors = useTranslations('errors.fields');
+  const tChannels = useTranslations('channels');
   const errorMessage = useErrorMessage();
   const toFieldErrors = useFieldErrors();
   const ids = useId();
@@ -167,8 +169,16 @@ export function AutomationForm({
     description:
       channel.status === 'NEEDS_REAUTH'
         ? t('basics.channelNeedsReauth')
-        : (channel.displayName ?? undefined),
+        : channel.displayName
+          ? tChannels('card.platformAndName', {
+              platform: tChannels(`platform.${channel.type}`),
+              name: channel.displayName,
+            })
+          : tChannels(`platform.${channel.type}`),
   }));
+  const channelType = channels.find((channel) => channel.id === draft.channelId)?.type;
+  const capabilities = channelType ? CHANNEL_CAPABILITIES[channelType] : null;
+  const commentsAllowed = capabilities?.commentTriggers ?? true;
 
   const test = testText.trim()
     ? draft.matchMode === 'ANYTHING'
@@ -231,10 +241,18 @@ export function AutomationForm({
                       items={channelItems}
                       value={draft.channelId || null}
                       placeholder={t('basics.channelPlaceholder')}
-                      onValueChange={(channelId) =>
-                        // Posts belong to one account, so a new account starts with none picked.
-                        update({ channelId: channelId ?? '', mediaIds: [] })
-                      }
+                      onValueChange={(channelId) => {
+                        const type = channels.find((channel) => channel.id === channelId)?.type;
+                        // Posts belong to one account, so a new account starts with none picked;
+                        // and a platform without comment triggers (TikTok) answers messages.
+                        update({
+                          channelId: channelId ?? '',
+                          mediaIds: [],
+                          ...(type && !CHANNEL_CAPABILITIES[type].commentTriggers
+                            ? { triggerType: 'MESSAGE' as const }
+                            : {}),
+                        });
+                      }}
                     />
                   )}
                 </Field>
@@ -252,7 +270,10 @@ export function AutomationForm({
                 <Radio
                   value="COMMENT"
                   label={t('trigger.comment')}
-                  description={t('trigger.commentHint')}
+                  disabled={!commentsAllowed}
+                  description={
+                    commentsAllowed ? t('trigger.commentHint') : t('trigger.commentUnavailable')
+                  }
                 />
                 <Radio
                   value="MESSAGE"
@@ -641,6 +662,11 @@ export function AutomationForm({
                 onChange={(buttons) => updateResponse('message', { buttons })}
                 errorFor={errorFor}
               />
+              {capabilities && !capabilities.linkButtons ? (
+                <Text size="sm" variant="secondary">
+                  {t('response.linksAsText')}
+                </Text>
+              ) : null}
             </FormSection>
 
             {/* On a phone the buttons stack full width, the main one on top. */}
@@ -675,7 +701,7 @@ export function AutomationForm({
         </Form>
 
         <aside className="@4xl:sticky @4xl:top-6">
-          <DmPreview draft={draft} />
+          <DmPreview draft={draft} linkButtons={capabilities?.linkButtons ?? true} />
         </aside>
       </div>
     </div>

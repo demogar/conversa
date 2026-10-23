@@ -194,7 +194,9 @@ Maintenance schedules (upserted by every worker, so they are not duplicated):
 
 Plus `type` and `isConfigured()`. Failures are thrown as `ProviderError` with one of the kinds above.
 
-Providers are registered in `channels.module.ts` under the `CHANNEL_PROVIDERS` token and looked up through `ProviderRegistry`. With `INSTAGRAM_SANDBOX=true`, `SandboxInstagramProvider` takes the place of `InstagramProvider`.
+Providers are registered in `channels.module.ts` under the `CHANNEL_PROVIDERS` token and looked up through `ProviderRegistry`: `InstagramProvider` and `TikTokProvider`. With `INSTAGRAM_SANDBOX=true`, `SandboxInstagramProvider` and `SandboxTikTokProvider` take their place.
+
+What a platform cannot do is declared, not discovered: `CHANNEL_CAPABILITIES` in `packages/shared/src/capabilities.ts` says whether comments can start automations, whether messages have link buttons, how long a tap payload may be, and whether follow status is looked up or arrives with webhooks. The engine, the automation API and the editor read it; the provider throws `ProviderError('rejected')` for anything it cannot do.
 
 ### Adding a platform
 

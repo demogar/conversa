@@ -43,9 +43,9 @@ test('the first person sets up the installation and signs back in', async ({ pag
     ).toBeVisible();
     const checklist = page.getByRole('region', { name: 'Get started' });
     await expect(checklist).toBeVisible();
-    await expect(checklist.getByText('Connect your Instagram account')).toBeVisible();
+    await expect(checklist.getByText('Connect your account')).toBeVisible();
     await expect(checklist.getByText('Create your first automation')).toBeVisible();
-    await expect(checklist.getByRole('link', { name: 'Connect Instagram' })).toBeVisible();
+    await expect(checklist.getByRole('link', { name: 'Connect an account' })).toBeVisible();
   });
 
   await test.step('signs out', async () => {

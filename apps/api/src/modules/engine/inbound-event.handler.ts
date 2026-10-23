@@ -75,7 +75,12 @@ export class InboundEventHandler {
   }
 
   private async onMessage(channel: Channel, event: InboundMessageEvent): Promise<boolean> {
-    const contact = await this.touchContact(channel, event.sender.externalId, null);
+    const contact = await this.touchContact(
+      channel,
+      event.sender.externalId,
+      event.sender.username ?? null,
+      event.sender.follows,
+    );
     const candidates = await this.activeAutomations(channel.id, 'MESSAGE');
     const selection = selectAutomation(candidates, { text: event.text });
     if (!selection) return false;
@@ -102,7 +107,12 @@ export class InboundEventHandler {
     });
     if (!delivery || (delivery.status !== 'AWAITING_TAP' && delivery.status !== 'AWAITING_FOLLOW'))
       return false;
-    await this.touchContact(channel, event.sender.externalId, null);
+    await this.touchContact(
+      channel,
+      event.sender.externalId,
+      event.sender.username ?? null,
+      event.sender.follows,
+    );
     // One job per delivery state: repeated taps on the same message collapse into one.
     await this.outbound.add(
       'tap',
@@ -173,12 +183,15 @@ export class InboundEventHandler {
     });
   }
 
+  /** `follows` comes from platforms that report it in the event; undefined or null leaves it as is. */
   private touchContact(
     channel: Channel,
     externalId: string,
     username: string | null,
+    follows?: boolean | null,
   ): Promise<Contact> {
     const now = new Date();
+    const isFollower = typeof follows === 'boolean' ? { isFollower: follows } : {};
     return this.prisma.contact.upsert({
       where: { channelId_externalId: { channelId: channel.id, externalId } },
       create: {
@@ -187,11 +200,13 @@ export class InboundEventHandler {
         externalId,
         username,
         interactions: 1,
+        ...isFollower,
       },
       update: {
         lastInteractionAt: now,
         interactions: { increment: 1 },
         ...(username ? { username } : {}),
+        ...isFollower,
       },
     });
   }

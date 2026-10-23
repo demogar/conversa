@@ -9,7 +9,13 @@ export const SIGNUP_MODES = ['invite_only', 'open'] as const;
 export type SignupMode = (typeof SIGNUP_MODES)[number];
 
 /** Section names of `PATCH /instance/settings/:section`. */
-export const INSTANCE_SETTINGS_SECTIONS = ['mail', 'instagram', 'turnstile', 'signup'] as const;
+export const INSTANCE_SETTINGS_SECTIONS = [
+  'mail',
+  'instagram',
+  'tiktok',
+  'turnstile',
+  'signup',
+] as const;
 export type InstanceSettingsSection = (typeof INSTANCE_SETTINGS_SECTIONS)[number];
 
 const noLineBreaks = /^[^\r\n]*$/;
@@ -54,6 +60,28 @@ export const updateInstagramSettingsSchema = z.object({
   verifyToken: secret(128, /^[\w.~-]{8,}$/),
 });
 export type UpdateInstagramSettingsInput = z.infer<typeof updateInstagramSettingsSchema>;
+
+/** A TikTok for Business developer app. Webhooks are signed with its secret, so no verify token. */
+export const updateTikTokSettingsSchema = z.object({
+  appId: z
+    .string()
+    .trim()
+    .regex(/^\d{5,32}$/, 'invalid_app_id'),
+  appSecret: secret(128, /^[\w-]+$/),
+  /**
+   * The "TikTok account holder authorization URL" from the app's page. TikTok
+   * builds it from the app's permissions, so it is copied rather than rebuilt.
+   */
+  authorizationUrl: z
+    .string()
+    .trim()
+    .max(2000)
+    .regex(
+      /^https:\/\/www\.tiktok\.com\/v2\/auth\/authorize\/?\?\S+$/,
+      'invalid_authorization_url',
+    ),
+});
+export type UpdateTikTokSettingsInput = z.infer<typeof updateTikTokSettingsSchema>;
 
 export const updateTurnstileSettingsSchema = z.object({
   siteKey: z

@@ -6,7 +6,7 @@ import { PrismaService } from '../../infra/prisma/prisma.service.js';
 import { MAINTENANCE_QUEUE, MaintenanceTask } from '../../infra/queue/queues.js';
 import { BufferService } from '../buffer/buffer.service.js';
 import { ChannelsService } from '../channels/channels.service.js';
-import { ProviderError } from '../channels/provider/channel-provider.js';
+import { type ChannelCredentials, ProviderError } from '../channels/provider/channel-provider.js';
 import { ProviderRegistry } from '../channels/provider/provider.registry.js';
 import { ScopeResolver } from '../engine/scope-resolver.js';
 import { InstanceSettingsService } from '../instance/instance-settings.service.js';
@@ -70,14 +70,18 @@ export class MaintenanceProcessor extends WorkerHost implements OnApplicationBoo
       const staleKey = this.crypto.needsReencryption(channel.credentials);
       if (!expiring && !staleKey) continue;
       try {
-        const session = this.channels.session(channel);
+        const current = this.channels.credentials(channel);
         const refreshed = expiring
-          ? await this.providers.get(channel.type).refreshCredentials(session.accessToken)
-          : { accessToken: session.accessToken, tokenExpiresAt: channel.tokenExpiresAt };
+          ? await this.providers.get(channel.type).refreshCredentials(current)
+          : { ...current, tokenExpiresAt: channel.tokenExpiresAt };
         await this.prisma.channel.update({
           where: { id: channel.id },
           data: {
-            credentials: this.crypto.encryptJson({ accessToken: refreshed.accessToken }),
+            credentials: this.crypto.encryptJson({
+              accessToken: refreshed.accessToken,
+              // Kept unless the platform handed out a new one.
+              refreshToken: refreshed.refreshToken ?? current.refreshToken ?? null,
+            } satisfies ChannelCredentials),
             tokenExpiresAt: refreshed.tokenExpiresAt,
           },
         });

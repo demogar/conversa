@@ -20,11 +20,11 @@
     "LAST_OWNER": "Un espacio necesita al menos un propietario. Haz propietario a otra persona primero.",
     "INVITATION_EMAIL_MISMATCH": "Esta invitación se envió a otro correo.",
     "ALREADY_MEMBER": "Esa persona ya es miembro de este espacio.",
-    "CHANNEL_NOT_CONFIGURED": "Instagram no está configurado en esta instalación. El administrador debe agregar las claves de la app de Meta.",
-    "CHANNEL_IN_OTHER_WORKSPACE": "Esa cuenta de Instagram ya está conectada a otro espacio.",
+    "CHANNEL_NOT_CONFIGURED": "Esa plataforma no está configurada en esta instalación. El administrador debe agregar las claves de su app.",
+    "CHANNEL_IN_OTHER_WORKSPACE": "Esa cuenta ya está conectada a otro espacio.",
     "CHANNEL_NEEDS_REAUTH": "Hay que volver a conectar la cuenta antes de usarla.",
-    "PROVIDER_ERROR": "Instagram no aceptó la solicitud. Inténtalo de nuevo en un momento.",
-    "MESSAGING_WINDOW_CLOSED": "Instagram solo permite responder dentro de las 24 horas posteriores al último mensaje de la persona.",
+    "PROVIDER_ERROR": "La plataforma no aceptó la solicitud. Inténtalo de nuevo en un momento.",
+    "MESSAGING_WINDOW_CLOSED": "La plataforma ya no permite responderle a esta persona. Instagram lo permite durante 24 horas después de su último mensaje; TikTok, durante 48.",
     "BUFFER_NOT_CONNECTED": "Primero conecta Buffer.",
     "BUFFER_INVALID_KEY": "Buffer no aceptó esa clave de API. Cópiala de nuevo desde la configuración de Buffer.",
     "BUFFER_RATE_LIMITED": "Se alcanzó el límite de solicitudes de Buffer. Inténtalo de nuevo en unos minutos.",
@@ -49,6 +49,8 @@
     "not_found": "Ese elemento ya no existe.",
     "passwords_differ": "Las contraseñas no coinciden.",
     "invalid_host": "Escribe un nombre de servidor como smtp.example.com.",
-    "invalid_app_id": "Escribe el ID numérico de la app de Instagram."
+    "invalid_app_id": "Escribe el ID numérico de la app.",
+    "invalid_authorization_url": "Pega completa la URL de autorización para titulares de cuentas de TikTok. Empieza con https://www.tiktok.com/v2/auth/authorize.",
+    "not_supported_by_channel": "La plataforma de este canal no permite eso. Las cuentas de TikTok solo responden mensajes directos."
   }
 }

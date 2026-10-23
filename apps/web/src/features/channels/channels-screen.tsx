@@ -13,13 +13,13 @@ import {
   SkeletonGroup,
   useToast,
 } from '@demogar/mola-ui';
-import { ROLE_RANK } from '@conversa/shared';
+import { type ChannelType, ROLE_RANK } from '@conversa/shared';
 import { useQueryClient } from '@tanstack/react-query';
 import { Plus, RotateCcw } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef } from 'react';
-import { useChannels, useConnectInstagram } from '@/lib/api/hooks/channels';
+import { useChannels, useConnectChannel } from '@/lib/api/hooks/channels';
 import { useCurrentWorkspace, useInstance, useMe } from '@/lib/api/hooks/session';
 import { MetaSetupStatus } from '@/features/admin/meta-setup-status';
 import { keys } from '@/lib/api/keys';
@@ -48,11 +48,17 @@ export function ChannelsScreen({ workspaceId }: { workspaceId: string }) {
   const instance = useInstance().data;
   const isInstanceAdmin = useMe().data?.user.isInstanceAdmin === true;
   const channels = useChannels(workspaceId);
-  const connect = useConnectInstagram(workspaceId);
+  const connect = useConnectChannel(workspaceId);
 
   const canManage = role !== undefined && ROLE_RANK[role] >= ROLE_RANK.ADMIN;
   const sandbox = instance?.sandbox ?? false;
-  const configured = !instance || instance.providers.instagram || instance.sandbox;
+  // Until the instance flags load, offer Instagram so the header does not jump.
+  const platforms: ChannelType[] = instance
+    ? (['INSTAGRAM', 'TIKTOK'] as const).filter((type) =>
+        type === 'INSTAGRAM' ? instance.providers.instagram : instance.providers.tiktok,
+      )
+    : ['INSTAGRAM'];
+  const configured = platforms.length > 0;
   const callbackError = useCallbackError(params.get('error'));
 
   // The OAuth callback lands here with ?connected=<id> once: say so, then drop the query.
@@ -66,16 +72,23 @@ export function ChannelsScreen({ workspaceId }: { workspaceId: string }) {
     router.replace(pathname);
   }, [connectedId, pathname, queryClient, router, t, toast, workspaceId]);
 
-  const connectButton = canManage ? (
-    <Button
-      icon={<Plus />}
-      loading={connect.isPending}
-      disabled={!configured}
-      onClick={() => connect.mutate()}
-    >
-      {t('connect')}
-    </Button>
-  ) : undefined;
+  const connectButton =
+    canManage && configured ? (
+      <div className="flex flex-wrap gap-2">
+        {platforms.map((type, index) => (
+          <Button
+            key={type}
+            icon={<Plus />}
+            variant={index === 0 ? 'primary' : 'secondary'}
+            loading={connect.isPending && connect.variables === type}
+            disabled={connect.isPending && connect.variables !== type}
+            onClick={() => connect.mutate(type)}
+          >
+            {t(`connectPlatform.${type}`)}
+          </Button>
+        ))}
+      </div>
+    ) : undefined;
 
   const list = channels.data ?? [];
 
@@ -109,7 +122,8 @@ export function ChannelsScreen({ workspaceId }: { workspaceId: string }) {
         {canManage && !configured ? (
           <Callout tone="warn" headingLevel={2} title={t('notConfigured.title')}>
             {t.rich('notConfigured.body', {
-              doc: () => <code className="literal">docs/instagram.md</code>,
+              instagram: () => <code className="literal">docs/instagram.md</code>,
+              tiktok: () => <code className="literal">docs/tiktok.md</code>,
             })}
           </Callout>
         ) : null}
@@ -149,7 +163,7 @@ export function ChannelsScreen({ workspaceId }: { workspaceId: string }) {
             headingLevel={2}
             title={t('empty.title')}
             description={canManage ? t('empty.description') : t('empty.memberDescription')}
-            actions={configured ? connectButton : undefined}
+            actions={connectButton}
           />
         ) : (
           <Grid cols="auto" minItem="20rem">
@@ -184,6 +198,7 @@ export function ChannelsScreen({ workspaceId }: { workspaceId: string }) {
               <li>{t('empty.requirements.professional')}</li>
               <li>{t('empty.requirements.permissions')}</li>
               <li>{t('empty.requirements.admin')}</li>
+              {platforms.includes('TIKTOK') ? <li>{t('empty.requirements.tiktok')}</li> : null}
             </ul>
           </section>
         ) : null}

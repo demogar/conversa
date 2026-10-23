@@ -8,6 +8,7 @@ import type {
   UpdateInstagramSettingsInput,
   UpdateMailSettingsInput,
   UpdateSignupSettingsInput,
+  UpdateTikTokSettingsInput,
   UpdateTurnstileSettingsInput,
 } from '@conversa/shared';
 import { Redis } from 'ioredis';
@@ -38,6 +39,11 @@ interface StoredInstagram {
   appSecret: string | null;
   verifyToken: string | null;
 }
+interface StoredTikTok {
+  appId: string;
+  appSecret: string | null;
+  authorizationUrl: string;
+}
 interface StoredTurnstile {
   siteKey: string;
   secretKey: string | null;
@@ -48,6 +54,7 @@ interface StoredSignup {
 interface Stored {
   mail?: StoredMail;
   instagram?: StoredInstagram;
+  tiktok?: StoredTikTok;
   turnstile?: StoredTurnstile;
   signup?: StoredSignup;
 }
@@ -66,6 +73,12 @@ export interface InstagramAppSettings {
   verifyToken: string;
 }
 
+export interface TikTokAppSettings {
+  appId: string;
+  appSecret: string;
+  authorizationUrl: string;
+}
+
 export interface TurnstileSettings {
   siteKey: string;
   secretKey: string;
@@ -74,6 +87,7 @@ export interface TurnstileSettings {
 export type SectionInput = {
   mail: UpdateMailSettingsInput;
   instagram: UpdateInstagramSettingsInput;
+  tiktok: UpdateTikTokSettingsInput;
   turnstile: UpdateTurnstileSettingsInput;
   signup: UpdateSignupSettingsInput;
 };
@@ -89,7 +103,7 @@ export function secretStatus(value: string | null | undefined): SecretStatusDto 
 }
 
 /**
- * Installation-wide settings (mail, the Meta app, Turnstile, sign-up mode),
+ * Installation-wide settings (mail, the Meta and TikTok apps, Turnstile, sign-up mode),
  * edited in the admin area and stored encrypted in `InstanceSetting`.
  *
  * Reads are synchronous from an in-memory copy, so hot paths (webhook
@@ -151,6 +165,12 @@ export class InstanceSettingsService implements OnModuleInit, OnModuleDestroy {
     return { appId: app.appId, appSecret: app.appSecret, verifyToken: app.verifyToken };
   }
 
+  get tiktok(): TikTokAppSettings | null {
+    const app = this.stored.tiktok;
+    if (!app?.appId || !app.appSecret || !app.authorizationUrl) return null;
+    return { appId: app.appId, appSecret: app.appSecret, authorizationUrl: app.authorizationUrl };
+  }
+
   get turnstile(): TurnstileSettings | null {
     const turnstile = this.stored.turnstile;
     if (!turnstile?.siteKey || !turnstile.secretKey) return null;
@@ -164,7 +184,7 @@ export class InstanceSettingsService implements OnModuleInit, OnModuleDestroy {
 
   /** What the admin area shows: every value except the secrets themselves. */
   toDto(): InstanceSettingsDto {
-    const { mail, instagram, turnstile } = this.stored;
+    const { mail, instagram, tiktok, turnstile } = this.stored;
     return {
       mail: {
         configured: this.mail !== null,
@@ -188,6 +208,17 @@ export class InstanceSettingsService implements OnModuleInit, OnModuleDestroy {
           dataDeletion: this.config.url('/api/v1/webhooks/instagram/data-deletion'),
           privacyPolicy: this.config.url('/legal/privacy'),
           termsOfService: this.config.url('/legal/terms'),
+        },
+      },
+      tiktok: {
+        configured: this.tiktok !== null,
+        appId: tiktok?.appId ?? null,
+        appSecret: secretStatus(tiktok?.appSecret),
+        authorizationUrl: tiktok?.authorizationUrl ?? null,
+        urls: {
+          // TikTok accepts only redirect URLs that end in a slash.
+          oauthRedirect: this.config.url('/api/v1/channels/oauth/tiktok/callback/'),
+          webhook: this.config.url('/api/v1/webhooks/tiktok'),
         },
       },
       turnstile: {
@@ -220,7 +251,7 @@ export class InstanceSettingsService implements OnModuleInit, OnModuleDestroy {
     });
   }
 
-  /** Removes a section, turning the feature off (mail, Meta app, captcha). */
+  /** Removes a section, turning the feature off (mail, Meta or TikTok app, captcha). */
   async clear(section: InstanceSettingsSection, actorId: string, ip?: string): Promise<void> {
     await this.prisma.instanceSetting.deleteMany({ where: { key: section } });
     await this.changed();
@@ -298,6 +329,15 @@ export class InstanceSettingsService implements OnModuleInit, OnModuleDestroy {
           appSecret: merge(app.appSecret, stored?.appSecret),
           verifyToken: merge(app.verifyToken, stored?.verifyToken),
         } satisfies StoredInstagram as Stored[S];
+      }
+      case 'tiktok': {
+        const app = input as UpdateTikTokSettingsInput;
+        const stored = current as StoredTikTok | undefined;
+        return {
+          appId: app.appId,
+          appSecret: merge(app.appSecret, stored?.appSecret),
+          authorizationUrl: app.authorizationUrl,
+        } satisfies StoredTikTok as Stored[S];
       }
       case 'turnstile': {
         const turnstile = input as UpdateTurnstileSettingsInput;

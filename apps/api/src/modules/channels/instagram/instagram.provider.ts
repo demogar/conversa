@@ -11,6 +11,7 @@ import {
 import { safeEqual } from '../../../common/crypto/crypto.service.js';
 import { InstanceSettingsService } from '../../instance/instance-settings.service.js';
 import type {
+  ChannelCredentials,
   ChannelProvider,
   ChannelSession,
   ConnectedAccount,
@@ -238,7 +239,7 @@ export class InstagramProvider implements ChannelProvider {
     };
   }
 
-  async refreshCredentials(accessToken: string): Promise<RefreshedCredentials> {
+  async refreshCredentials({ accessToken }: ChannelCredentials): Promise<RefreshedCredentials> {
     const result = await this.graph.request<{ access_token: string; expires_in?: number }>({
       host: 'https://graph.instagram.com',
       path: '/refresh_access_token',

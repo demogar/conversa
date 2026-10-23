@@ -39,6 +39,7 @@ export async function apiCall<T>(
 
 export interface Channel {
   id: string;
+  type: 'INSTAGRAM' | 'TIKTOK';
   username: string;
   status: string;
 }

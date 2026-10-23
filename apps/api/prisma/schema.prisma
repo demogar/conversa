@@ -145,6 +145,7 @@ model Invitation {
 
 enum ChannelType {
   INSTAGRAM
+  TIKTOK
 }
 
 enum ChannelStatus {

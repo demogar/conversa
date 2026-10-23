@@ -1,11 +1,11 @@
 {
   "title": "Bandeja",
-  "description": "Los mensajes directos de tus cuentas de Instagram, leídos en vivo desde Instagram. Responde a mano cuando una automatización no alcance.",
+  "description": "Los mensajes directos de tus cuentas, leídos en vivo desde Instagram y TikTok. Responde a mano cuando una automatización no alcance.",
   "refresh": "Actualizar la bandeja",
   "channel": "Cuenta",
   "conversations": "Conversaciones",
   "conversationCount": "{count, plural, one {# conversación} other {# conversaciones}}",
-  "unknownContact": "Usuario de Instagram",
+  "unknownContact": "Contacto sin nombre",
   "noText": "Un mensaje sin texto (una foto, un sticker o una publicación compartida).",
   "you": "Tú",
   "backToConversations": "Volver a las conversaciones",
@@ -17,17 +17,17 @@
     "loadingMessages": "Cargando mensajes",
     "loadFailed": "No se cargaron las conversaciones",
     "messagesFailed": "No se cargaron los mensajes",
-    "loadFailedDescription": "Instagram no respondió. No se cambió nada; vuelve a intentarlo en un momento.",
+    "loadFailedDescription": "La plataforma no respondió. No se cambió nada; vuelve a intentarlo en un momento.",
     "channelsFailed": "No se cargaron los canales"
   },
   "noChannels": {
-    "title": "Primero conecta una cuenta de Instagram",
+    "title": "Primero conecta una cuenta",
     "description": "La bandeja muestra los mensajes directos de una cuenta conectada.",
     "action": "Ir a canales"
   },
   "reauth": {
     "title": "Hay que volver a conectar @{username}",
-    "description": "Instagram dejó de aceptar el acceso de esta cuenta, así que no se pueden leer sus mensajes. Alguien con rol de administrador puede volver a conectarla desde la página de canales.",
+    "description": "La plataforma dejó de aceptar el acceso de esta cuenta, así que no se pueden leer sus mensajes. Alguien con rol de administrador puede volver a conectarla desde la página de canales.",
     "action": "Ir a canales"
   },
   "empty": {
@@ -37,10 +37,10 @@
   "noMessages": "Todavía no hay mensajes en esta conversación.",
   "composer": {
     "label": "Responder a {name}",
-    "hint": "Instagram solo te deja responder dentro de las 24 horas posteriores al último mensaje de la persona.",
+    "hint": "Puedes responder durante un tiempo después del último mensaje de la persona: 24 horas en Instagram, 48 en TikTok.",
     "submit": "Enviar mensaje",
     "sent": "Mensaje enviado",
-    "windowClosedTitle": "Se cerró la ventana de 24 horas para responder",
-    "windowClosed": "{name} escribió hace más de 24 horas, así que Instagram no permite responder ahora. Podrás contestar en cuanto te vuelva a escribir."
+    "windowClosedTitle": "Se cerró la ventana para responder",
+    "windowClosed": "{name} escribió hace demasiado tiempo, así que la plataforma no permite responder ahora. Podrás contestar en cuanto te vuelva a escribir."
   }
 }

@@ -1,7 +1,7 @@
 {
   "list": {
     "title": "Automatizaciones",
-    "description": "Responde comentarios y mensajes de Instagram con un mensaje directo, de forma automática.",
+    "description": "Responde comentarios y mensajes de Instagram, y mensajes de TikTok, con un mensaje directo, de forma automática.",
     "create": "Crear automatización",
     "tableLabel": "Automatizaciones",
     "loading": "Cargando automatizaciones",
@@ -38,7 +38,7 @@
     "empty": {
       "title": "Todavía no tienes automatizaciones",
       "description": "Una automatización detecta una palabra clave en un comentario o mensaje y envía un mensaje directo con tu enlace, para que nadie se quede esperando respuesta.",
-      "noChannelTitle": "Primero conecta una cuenta de Instagram",
+      "noChannelTitle": "Primero conecta una cuenta",
       "noChannelDescription": "Las automatizaciones responden desde una cuenta conectada. Conecta una en Canales y vuelve para crear tu primera automatización.",
       "goToChannels": "Ir a canales"
     },
@@ -85,7 +85,7 @@
       "channelRequired": "Elige la cuenta desde la que responde."
     },
     "noChannel": {
-      "title": "Primero conecta una cuenta de Instagram",
+      "title": "Primero conecta una cuenta",
       "description": "Una automatización responde desde una cuenta conectada, y este espacio todavía no tiene ninguna.",
       "action": "Ir a canales"
     },
@@ -104,6 +104,7 @@
       "comment": "Un comentario",
       "message": "Un mensaje directo",
       "commentHint": "Alguien comenta en una publicación o un reel.",
+      "commentUnavailable": "No en TikTok: no puede escribirle por mensaje a quien comenta.",
       "messageHint": "Alguien envía un mensaje directo o responde a una historia.",
       "scope": "En qué publicaciones",
       "scopeAny": "Cualquier publicación o reel",
@@ -167,11 +168,11 @@
       "addVariant": "Agregar respuesta",
       "removeVariant": "Quitar respuesta {number}",
       "opening": "Enviar primero un mensaje de apertura",
-      "openingDescription": "Instagram solo deja enviar enlaces cuando la persona ya respondió. Este mensaje le pide tocar su botón, y el contenido se envía cuando lo hace.",
+      "openingDescription": "La plataforma solo deja enviar enlaces cuando la persona ya respondió. Este mensaje le pide tocar su botón, y el contenido se envía cuando lo hace.",
       "openingText": "Mensaje de apertura",
       "openingPlaceholder": "¡Hola, {username}! Toca abajo y te mando el enlace.",
       "followGate": "Pedir que sigan la cuenta primero",
-      "followGateDescription": "Quien no sigue la cuenta recibe primero este mensaje, y el contenido cuando la sigue y toca el botón. Si Instagram no informa si la sigue, el contenido se envía de todos modos.",
+      "followGateDescription": "Quien no sigue la cuenta recibe primero este mensaje, y el contenido cuando la sigue y toca el botón. Si la plataforma no informa si la sigue, el contenido se envía de todos modos.",
       "followText": "Mensaje para pedir que te sigan",
       "followPlaceholder": "Sigue la cuenta y toca abajo para recibirlo.",
       "buttonLabel": "Texto del botón",
@@ -181,6 +182,7 @@
       "messageHint": "Escribe {username} para saludar a la persona por su usuario.",
       "messagePlaceholder": "Aquí tienes la lista de precios, {username}:",
       "characters": "{count} / {max}",
+      "linksAsText": "TikTok no tiene botones de enlace, así que cada enlace va escrito debajo del mensaje como “etiqueta: enlace”.",
       "buttons": "Botones con enlace",
       "buttonsHint": "Hasta {max}. Se cuentan los clics de cada botón.",
       "buttonsEmpty": "Sin botones. Los enlaces del mensaje funcionan igual, pero sin contar clics.",
@@ -193,7 +195,7 @@
     },
     "preview": {
       "title": "Vista previa",
-      "description": "Lo que la persona ve en Instagram.",
+      "description": "Lo que la persona ve en la app.",
       "sampleUsername": "ana.rios",
       "commentOn": "Comenta en tu publicación",
       "messageFrom": "Te envía un mensaje",

@@ -38,9 +38,9 @@
     "done": "Done",
     "todo": "To do",
     "connect": {
-      "title": "Connect your Instagram account",
-      "note": "Conversa needs a professional Instagram account to read comments and send messages.",
-      "action": "Connect Instagram",
+      "title": "Connect your account",
+      "note": "Conversa needs a professional Instagram account, or a TikTok business account, to read what people send and to answer.",
+      "action": "Connect an account",
       "memberNote": "Only an owner or an admin of this workspace can connect it. Ask one of them."
     },
     "automate": {

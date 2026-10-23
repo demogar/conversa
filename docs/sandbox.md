@@ -1,6 +1,6 @@
 # Sandbox mode
 
-The sandbox replaces Instagram with a simulation inside Conversa. You can connect accounts, build automations, fire comments and messages at them and watch every step run, without a Meta app, a public URL or a real Instagram account. The end-to-end tests use it too.
+The sandbox replaces Instagram and TikTok with a simulation inside Conversa. You can connect accounts, build automations, fire comments and messages at them and watch every step run, without a Meta app, a public URL or a real Instagram account. The end-to-end tests use it too.
 
 ## Turn it on
 
@@ -12,7 +12,9 @@ Restart the API and the worker. The channels page shows a **Sandbox mode** notic
 
 The sandbox **refuses to start with `NODE_ENV=production`**: the API exits with a configuration error. It cannot be switched on by accident in the Docker stack, which always runs in production mode.
 
-While it is on, the sandbox **replaces** the real Instagram provider: no request goes to Meta, and real Instagram accounts cannot be connected at the same time.
+While it is on, the sandbox **replaces** the real Instagram and TikTok providers: no request goes to Meta or TikTok, and real accounts cannot be connected at the same time.
+
+**TikTok** practice accounts (**Connect TikTok account**) behave like real TikTok ones: they answer direct messages only, so **Simulate an event** offers messages only. Simulated messages and taps use TikTok's own webhook format (`im_receive_msg` with the conversation as the contact) and go through the real TikTok parser. Follow status comes with each message, using the same `nofollow` rule.
 
 ## What it simulates
 
@@ -54,6 +56,7 @@ The body is validated by `simulateEventSchema` in `@conversa/shared`.
 | File                                          | Role                                                                                             |
 | --------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | `sandbox-instagram.provider.ts`               | A `ChannelProvider` that answers like Instagram. Parses webhooks with the real Instagram parser. |
-| `sandbox-events.ts`                           | Builds Instagram-shaped webhook payloads.                                                        |
+| `sandbox-tiktok.provider.ts`                  | The same simulation with TikTok's webhook format and limits, parsed by the real TikTok parser.   |
+| `sandbox-events.ts`                           | Builds Instagram- and TikTok-shaped webhook payloads.                                            |
 | `sandbox-outbox.ts`                           | The per-channel record of sent and received messages.                                            |
 | `sandbox.service.ts`, `sandbox.controller.ts` | The routes above.                                                                                |

@@ -10,16 +10,19 @@ export type AutomationDraft = UpdateAutomationInput & { bufferPostId: string | n
 export interface DraftDefaults {
   channelId?: string | null;
   bufferPostId?: string | null;
+  /** MESSAGE for a channel whose platform cannot start automations from comments (TikTok). */
+  triggerType?: AutomationDraft['triggerType'];
 }
 
 export function emptyDraft({
   channelId = null,
   bufferPostId = null,
+  triggerType = 'COMMENT',
 }: DraftDefaults = {}): AutomationDraft {
   return {
     name: '',
     channelId: channelId ?? '',
-    triggerType: 'COMMENT',
+    triggerType,
     postScope: bufferPostId ? 'BUFFER_POST' : 'ANY',
     mediaIds: [],
     bufferPostId,

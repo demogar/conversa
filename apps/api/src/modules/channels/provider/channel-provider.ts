@@ -12,11 +12,20 @@ import type {
   MessageDto,
 } from '@conversa/shared';
 
+/** What is stored, encrypted, for a connected account. */
+export interface ChannelCredentials {
+  accessToken: string;
+  /** For platforms whose access tokens are renewed with a separate refresh token. */
+  refreshToken?: string | null;
+}
+
 /** Decrypted credentials for one connected account, for the duration of a call. */
 export interface ChannelSession {
   channelId: string;
   externalId: string;
   accessToken: string;
+  /** The account's handle, for platforms that name message senders by it. */
+  username?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -33,19 +42,29 @@ export interface InboundCommentEvent {
   mediaIds: string[];
 }
 
+/**
+ * Who sent a message or tapped a button. Some platforms name the person and
+ * say whether they follow the account in the event itself; null is unknown.
+ */
+export interface InboundSender {
+  externalId: string;
+  username?: string | null;
+  follows?: boolean | null;
+}
+
 export interface InboundMessageEvent {
   kind: 'message';
   accountExternalId: string;
   messageId: string;
   text: string;
-  sender: { externalId: string };
+  sender: InboundSender;
   isStoryReply: boolean;
 }
 
 export interface InboundPostbackEvent {
   kind: 'postback';
   accountExternalId: string;
-  sender: { externalId: string };
+  sender: InboundSender;
   payload: string;
 }
 
@@ -62,6 +81,15 @@ export type MessageButton =
 export interface OutboundMessage {
   text: string;
   buttons?: MessageButton[];
+}
+
+export interface SendOptions {
+  /**
+   * Names one step of a delivery; a retry of that step passes the same key.
+   * A platform that sends one message as several requests uses it to skip
+   * the parts that already went out.
+   */
+  idempotencyKey?: string;
 }
 
 export interface SendResult {
@@ -103,11 +131,14 @@ export interface ConnectedAccount {
   displayName: string | null;
   avatarUrl: string | null;
   accessToken: string;
+  refreshToken?: string | null;
   tokenExpiresAt: Date | null;
 }
 
 export interface RefreshedCredentials {
   accessToken: string;
+  /** A new refresh token, when the platform rotates it. */
+  refreshToken?: string | null;
   tokenExpiresAt: Date | null;
 }
 
@@ -115,7 +146,7 @@ export interface RefreshedCredentials {
 export interface ChannelConnector {
   authorizationUrl(state: string, redirectUri: string): string;
   completeAuthorization(code: string, redirectUri: string): Promise<ConnectedAccount>;
-  refreshCredentials(accessToken: string): Promise<RefreshedCredentials>;
+  refreshCredentials(credentials: ChannelCredentials): Promise<RefreshedCredentials>;
   subscribeWebhooks(session: ChannelSession): Promise<void>;
   /**
    * Asks the platform whether it recognises the instance's app credentials,
@@ -150,6 +181,7 @@ export interface Messenger {
     session: ChannelSession,
     recipientId: string,
     message: OutboundMessage,
+    options?: SendOptions,
   ): Promise<SendResult>;
   replyToComment(session: ChannelSession, commentId: string, text: string): Promise<void>;
   /** What the platform will say about a person; null fields are unknown. */

@@ -1,22 +1,29 @@
 {
   "title": "Canales",
-  "description": "Las cuentas de Instagram que atiende este espacio. Las automatizaciones y la bandeja las usan.",
-  "connect": "Conectar cuenta de Instagram",
+  "description": "Las cuentas de Instagram y TikTok que atiende este espacio. Las automatizaciones y la bandeja las usan.",
+  "connectPlatform": {
+    "INSTAGRAM": "Conectar cuenta de Instagram",
+    "TIKTOK": "Conectar cuenta de TikTok"
+  },
+  "platform": {
+    "INSTAGRAM": "Instagram",
+    "TIKTOK": "TikTok"
+  },
   "reconnect": "Volver a conectar la cuenta",
   "disconnect": "Desconectar cuenta",
   "simulate": "Simular un evento",
   "connected": {
-    "title": "Cuenta de Instagram conectada",
-    "description": "Los comentarios y mensajes que reciba ya pueden activar automatizaciones."
+    "title": "Cuenta conectada",
+    "description": "Lo que le envíen ya puede activar automatizaciones."
   },
   "connectFailed": "No se conectó la cuenta",
   "notConfigured": {
-    "title": "Instagram no está configurado en esta instalación",
-    "body": "Quien administra la instalación debe configurar la app de Meta antes de poder conectar cuentas. Consulta {doc}."
+    "title": "No hay ninguna plataforma configurada en esta instalación",
+    "body": "Quien administra la instalación debe agregar una app de Meta o una app de TikTok antes de poder conectar cuentas. Consulta <instagram></instagram> y <tiktok></tiktok>."
   },
   "sandbox": {
     "title": "Modo de prueba",
-    "body": "No se usa Instagram de verdad. Al conectar se crea una cuenta de práctica, y con “Simular un evento” puedes fingir que alguien comentó o envió un mensaje para probar tus automatizaciones sin riesgo."
+    "body": "No se usan Instagram ni TikTok de verdad. Al conectar se crea una cuenta de práctica, y con “Simular un evento” puedes fingir que alguien comentó o envió un mensaje para probar tus automatizaciones sin riesgo."
   },
   "memberNote": {
     "title": "Solo quienes son propietarios o administradores del espacio pueden conectar o desconectar cuentas",
@@ -28,13 +35,14 @@
     "loadFailedDescription": "No se cambió nada. Las cuentas conectadas siguen funcionando."
   },
   "empty": {
-    "title": "Todavía no hay cuentas de Instagram",
+    "title": "Todavía no hay cuentas",
     "description": "Conecta la cuenta en la que la gente comenta y escribe. Conversa leerá sus comentarios y mensajes y responderá con tus automatizaciones.",
     "requirementsTitle": "Antes de conectar",
     "requirements": {
       "professional": "La cuenta debe ser profesional de Instagram (de empresa o de creador).",
       "permissions": "Cuando Instagram te lo pida, permite que Conversa lea los comentarios y envíe mensajes.",
-      "admin": "Necesitas poder iniciar sesión en esa cuenta de Instagram."
+      "admin": "Necesitas poder iniciar sesión en esa cuenta de Instagram.",
+      "tiktok": "Una cuenta de TikTok debe ser de empresa y tener el acceso a mensajes aprobado por TikTok. Las cuentas de TikTok solo responden mensajes directos."
     },
     "memberDescription": "Pídele a quien sea propietario o administrador del espacio que conecte la cuenta en la que la gente comenta y escribe."
   },
@@ -44,6 +52,7 @@
     "DISCONNECTED": "Desconectada"
   },
   "card": {
+    "platformAndName": "{platform} · {name}",
     "webhook": "Actualizaciones en vivo",
     "webhookOn": "Suscrita",
     "webhookOff": "Sin suscripción",
@@ -53,12 +62,14 @@
     "lastEvent": "Último evento",
     "lastEventNever": "Ninguno todavía",
     "noEvents": {
-      "title": "Todavía no llegan eventos de Instagram",
+      "title": "Todavía no llegan eventos de {platform}",
       "body": "Esta cuenta se conectó hace un rato e Instagram no ha enviado nada para ella. ¿Tu app de Meta está en modo Live? ¿Está activado Permitir el acceso a los mensajes en la app de Instagram?",
       "askAdmin": "Esta cuenta se conectó hace un rato e Instagram no ha enviado nada para ella. Pídele a quien instaló Conversa que revise que la app de Meta esté en modo Live, y revisa que Permitir el acceso a los mensajes esté activado en la app de Instagram.",
+      "tiktokBody": "Esta cuenta se conectó hace un rato y TikTok no ha enviado nada para ella. ¿TikTok ya aprobó el acceso a mensajes para la app y esta cuenta? Las cuentas registradas en el EEE, el Reino Unido o Suiza no pueden usarlo.",
+      "tiktokAskAdmin": "Esta cuenta se conectó hace un rato y TikTok no ha enviado nada para ella. Pídele a quien instaló Conversa que revise que TikTok haya aprobado el acceso a mensajes para la app y esta cuenta.",
       "openGuide": "Abrir la guía de configuración"
     },
-    "needsReauth": "Instagram dejó de aceptar el acceso de esta cuenta. Sus automatizaciones están en pausa hasta que alguien la vuelva a conectar.",
+    "needsReauth": "{platform} dejó de aceptar el acceso de esta cuenta. Sus automatizaciones están en pausa hasta que alguien la vuelva a conectar.",
     "disconnectedNote": "Conversa ya no tiene acceso a esta cuenta. Vuelve a conectarla para usarla otra vez."
   },
   "disconnectDialog": {
@@ -72,7 +83,7 @@
     "description": "Finge que alguien interactuó con esta cuenta de práctica. Las automatizaciones que coincidan se ejecutan igual que con una cuenta real.",
     "kind": "Qué pasa",
     "kinds": { "comment": "Comentario en una publicación", "message": "Mensaje directo" },
-    "username": "De (usuario de Instagram)",
+    "username": "De (usuario)",
     "usernameHint": "Letras, números, puntos y guiones bajos, sin la @.",
     "text": "Texto",
     "commentText": "Comentario",

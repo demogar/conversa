@@ -18,6 +18,8 @@ import {
   updateMailSettingsSchema,
   type UpdateSignupSettingsInput,
   updateSignupSettingsSchema,
+  type UpdateTikTokSettingsInput,
+  updateTikTokSettingsSchema,
   type UpdateTurnstileSettingsInput,
   updateTurnstileSettingsSchema,
 } from '@conversa/shared';
@@ -66,6 +68,16 @@ export class InstanceSettingsController {
     @ClientIp() ip: string,
   ): Promise<InstanceSettingsDto> {
     await this.settings.update('instagram', body, auth.userId, ip);
+    return this.settings.toDto();
+  }
+
+  @Patch('settings/tiktok')
+  async updateTikTok(
+    @CurrentAuth() auth: AuthContext,
+    @ZodBody(updateTikTokSettingsSchema) body: UpdateTikTokSettingsInput,
+    @ClientIp() ip: string,
+  ): Promise<InstanceSettingsDto> {
+    await this.settings.update('tiktok', body, auth.userId, ip);
     return this.settings.toDto();
   }
 

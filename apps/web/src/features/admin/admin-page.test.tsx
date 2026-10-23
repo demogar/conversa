@@ -50,6 +50,16 @@ const settings: InstanceSettingsDto = {
     verifyToken: { configured: false, hint: null },
     urls,
   },
+  tiktok: {
+    configured: false,
+    appId: null,
+    appSecret: { configured: false, hint: null },
+    authorizationUrl: null,
+    urls: {
+      oauthRedirect: 'https://conversa.example.com/api/v1/channels/oauth/tiktok/callback/',
+      webhook: 'https://conversa.example.com/api/v1/webhooks/tiktok',
+    },
+  },
   turnstile: { configured: false, siteKey: null, secretKey: { configured: false, hint: null } },
   signup: { mode: 'invite_only' },
   sandbox: false,
@@ -60,7 +70,7 @@ const instance = (version = WEB_VERSION): InstanceDto => ({
   signupOpen: false,
   mailEnabled: true,
   captchaSiteKey: null,
-  providers: { instagram: false },
+  providers: { instagram: false, tiktok: false },
   sandbox: false,
   version,
 });
@@ -134,6 +144,37 @@ describe('AdminPage', () => {
         'The mail server refused the username or password. Check them and save again.',
       ),
     ).toBeInTheDocument();
+  });
+
+  it('saves the TikTok app with the authorization URL TikTok generated, and shows where to paste', async () => {
+    const calls = routes({ 'PATCH /instance/settings/tiktok': settings });
+    renderWithProviders(<AdminPage />);
+    const tiktok = await screen.findByRole('form', { name: 'TikTok app' });
+    expect(
+      screen.getByText('https://conversa.example.com/api/v1/channels/oauth/tiktok/callback/'),
+    ).toBeInTheDocument();
+
+    await userEvent.type(within(tiktok).getByLabelText(/^App ID/), '7300000000000000001');
+    await userEvent.type(within(tiktok).getByLabelText(/^Secret/), 'tiktok-secret');
+    const authorize = within(tiktok).getByLabelText(/TikTok account holder authorization URL/);
+    await userEvent.type(authorize, 'https://example.com/not-tiktok');
+    await userEvent.click(within(tiktok).getByRole('button', { name: 'Save changes' }));
+    expect(
+      await within(tiktok).findByText(/Paste the whole TikTok account holder authorization URL/),
+    ).toBeInTheDocument();
+    expect(calls.some((call) => call.method === 'PATCH')).toBe(false);
+
+    const url =
+      'https://www.tiktok.com/v2/auth/authorize?client_key=7300000000000000001&scope=user.info.basic';
+    await userEvent.clear(authorize);
+    await userEvent.type(authorize, url);
+    await userEvent.click(within(tiktok).getByRole('button', { name: 'Save changes' }));
+    expect(await screen.findByText('TikTok app saved')).toBeInTheDocument();
+    expect(calls.find((call) => call.method === 'PATCH')?.body).toEqual({
+      appId: '7300000000000000001',
+      appSecret: 'tiktok-secret',
+      authorizationUrl: url,
+    });
   });
 
   it('generates a verify token in the browser and hands it to the guide to paste into Meta', async () => {

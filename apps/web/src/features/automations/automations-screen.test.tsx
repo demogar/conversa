@@ -81,7 +81,7 @@ describe('AutomationsScreen', () => {
     renderWithProviders(<AutomationsScreen workspaceId="w1" />);
 
     expect(
-      await screen.findByRole('heading', { name: 'Connect an Instagram account first' }),
+      await screen.findByRole('heading', { name: 'Connect an account first' }),
     ).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Go to channels' })).toHaveAttribute(
       'href',

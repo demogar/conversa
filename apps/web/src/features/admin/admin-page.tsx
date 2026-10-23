@@ -9,6 +9,7 @@ import { InstagramSection } from './instagram-settings';
 import { InstanceAdminsSection } from './instance-admins';
 import { MailSection } from './mail-settings';
 import { SignupSection } from './signup-settings';
+import { TikTokSection } from './tiktok-settings';
 import { TurnstileSection } from './turnstile-settings';
 import { VersionSection } from './version-section';
 
@@ -33,6 +34,7 @@ export function AdminPage() {
               <>
                 <MailSection settings={settings.mail} />
                 <InstagramSection settings={settings.instagram} sandbox={settings.sandbox} />
+                <TikTokSection settings={settings.tiktok} sandbox={settings.sandbox} />
                 <TurnstileSection settings={settings.turnstile} />
                 <SignupSection mode={settings.signup.mode} />
                 <InstanceAdminsSection />

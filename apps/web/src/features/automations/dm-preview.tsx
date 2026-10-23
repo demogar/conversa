@@ -43,7 +43,14 @@ function ContactLine({ children }: { children: ReactNode }) {
 }
 
 /** The automation as the person meets it: their comment, then each message in order. */
-export function DmPreview({ draft }: { draft: AutomationDraft }) {
+export function DmPreview({
+  draft,
+  linkButtons = true,
+}: {
+  draft: AutomationDraft;
+  /** False where the platform has no link buttons (TikTok): links are written into the text. */
+  linkButtons?: boolean;
+}) {
   const t = useTranslations('automations.builder.preview');
   const username = t('sampleUsername');
   const fill = (text: string) => renderTemplate(text, { username });
@@ -103,8 +110,19 @@ export function DmPreview({ draft }: { draft: AutomationDraft }) {
               step={
                 response.opening.enabled || response.followGate.enabled ? t('content') : t('dm')
               }
-              text={fill(response.message.text) || t('emptyMessage')}
-              buttons={response.message.buttons.map((button) => buttonLabel(button.label))}
+              text={[
+                fill(response.message.text) || t('emptyMessage'),
+                ...(linkButtons
+                  ? []
+                  : response.message.buttons.map(
+                      (button) => `${buttonLabel(button.label)}: ${button.url || '…'}`,
+                    )),
+              ].join('\n\n')}
+              buttons={
+                linkButtons
+                  ? response.message.buttons.map((button) => buttonLabel(button.label))
+                  : []
+              }
             />
           </div>
         </Panel>

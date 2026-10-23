@@ -12,14 +12,14 @@ import { AppException } from '../../common/errors/app.exception.js';
 import { PrismaService } from '../../infra/prisma/prisma.service.js';
 import type { Channel } from '../../generated/prisma/client.js';
 import { AuditService } from '../audit/audit.service.js';
-import { type ChannelSession, ProviderError } from './provider/channel-provider.js';
+import {
+  type ChannelCredentials,
+  type ChannelSession,
+  ProviderError,
+} from './provider/channel-provider.js';
 import { ProviderRegistry } from './provider/provider.registry.js';
 
 const STATE_TTL_SECONDS = 10 * 60;
-
-interface StoredCredentials {
-  accessToken: string;
-}
 
 interface OAuthState {
   w: string;
@@ -69,10 +69,20 @@ export class ChannelsService {
     return channel;
   }
 
+  /** Everything stored for the account, decrypted (the refresh job needs the refresh token). */
+  credentials(channel: Channel): ChannelCredentials {
+    return this.crypto.decryptJson<ChannelCredentials>(channel.credentials);
+  }
+
   /** Decrypted credentials for a call to the platform. */
   session(channel: Channel): ChannelSession {
-    const { accessToken } = this.crypto.decryptJson<StoredCredentials>(channel.credentials);
-    return { channelId: channel.id, externalId: channel.externalId, accessToken };
+    const { accessToken } = this.credentials(channel);
+    return {
+      channelId: channel.id,
+      externalId: channel.externalId,
+      accessToken,
+      username: channel.username,
+    };
   }
 
   async activeSession(
@@ -85,7 +95,9 @@ export class ChannelsService {
   }
 
   redirectUri(type: ChannelType): string {
-    return this.config.url(`/api/v1/channels/oauth/${type.toLowerCase()}/callback`);
+    // TikTok only accepts redirect URLs that end in a slash; the route matches either way.
+    const slash = type === 'TIKTOK' ? '/' : '';
+    return this.config.url(`/api/v1/channels/oauth/${type.toLowerCase()}/callback${slash}`);
   }
 
   startConnect(workspaceId: string, userId: string, type: ChannelType): { url: string } {
@@ -141,7 +153,8 @@ export class ChannelsService {
       avatarUrl: account.avatarUrl,
       credentials: this.crypto.encryptJson({
         accessToken: account.accessToken,
-      } satisfies StoredCredentials),
+        refreshToken: account.refreshToken ?? null,
+      } satisfies ChannelCredentials),
       tokenExpiresAt: account.tokenExpiresAt,
       status: 'ACTIVE' as const,
       lastError: null,
@@ -228,6 +241,15 @@ export class ChannelsService {
     return this.callProvider(channel, () =>
       this.providers.get(channel.type).listMedia(session, limit),
     );
+  }
+
+  /** The usernames Conversa knows for some of a channel's contacts, by their platform id. */
+  async contactUsernames(channelId: string, externalIds: string[]): Promise<Map<string, string>> {
+    const contacts = await this.prisma.contact.findMany({
+      where: { channelId, externalId: { in: externalIds }, username: { not: null } },
+      select: { externalId: true, username: true },
+    });
+    return new Map(contacts.map((contact) => [contact.externalId, contact.username ?? '']));
   }
 
   /** Runs a provider call for a request, translating provider failures into API errors. */

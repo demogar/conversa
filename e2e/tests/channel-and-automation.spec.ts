@@ -20,7 +20,7 @@ test('a comment with the keyword gets a direct message with a tracked link', asy
     await expect(page.getByRole('heading', { name: 'Channels', level: 1 })).toBeVisible();
     await expect(page.getByText('Sandbox mode')).toBeVisible();
     await page.getByRole('button', { name: 'Connect Instagram account' }).first().click();
-    await expect(page.getByText('Instagram account connected')).toBeVisible();
+    await expect(page.getByText('Account connected')).toBeVisible();
 
     const card = page
       .getByRole('article')
@@ -86,7 +86,7 @@ test('a comment with the keyword gets a direct message with a tracked link', asy
     await page.getByRole('button', { name: 'Simulate an event' }).click();
     const dialog = page.getByRole('dialog', { name: `Simulate an event on @${channel.username}` });
     await expect(dialog).toBeVisible();
-    await dialog.getByLabel('From (Instagram username)').fill('maria');
+    await dialog.getByLabel('From (username)').fill('maria');
     await dialog.getByRole('combobox', { name: 'Post' }).click();
     await page.getByRole('option', { name: /New guide is out!/ }).click();
     await dialog.getByLabel('Comment', { exact: true }).fill('Send the LINK please');

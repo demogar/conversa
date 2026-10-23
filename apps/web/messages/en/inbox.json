@@ -1,11 +1,11 @@
 {
   "title": "Inbox",
-  "description": "Direct messages to your Instagram accounts, read live from Instagram. Reply by hand when an automation is not enough.",
+  "description": "Direct messages to your accounts, read live from Instagram and TikTok. Reply by hand when an automation is not enough.",
   "refresh": "Refresh inbox",
   "channel": "Account",
   "conversations": "Conversations",
   "conversationCount": "{count, plural, one {# conversation} other {# conversations}}",
-  "unknownContact": "Instagram user",
+  "unknownContact": "Unnamed contact",
   "noText": "A message without text (a photo, a sticker or a shared post).",
   "you": "You",
   "backToConversations": "Back to conversations",
@@ -17,17 +17,17 @@
     "loadingMessages": "Loading messages",
     "loadFailed": "Conversations did not load",
     "messagesFailed": "Messages did not load",
-    "loadFailedDescription": "Instagram did not answer. Nothing was changed; try again in a moment.",
+    "loadFailedDescription": "The platform did not answer. Nothing was changed; try again in a moment.",
     "channelsFailed": "Channels did not load"
   },
   "noChannels": {
-    "title": "Connect an Instagram account first",
+    "title": "Connect an account first",
     "description": "The inbox shows the direct messages of a connected account.",
     "action": "Go to channels"
   },
   "reauth": {
     "title": "@{username} needs reconnecting",
-    "description": "Instagram stopped accepting this account's access, so its messages cannot be read. An admin can reconnect it from the channels page.",
+    "description": "The platform stopped accepting this account's access, so its messages cannot be read. An admin can reconnect it from the channels page.",
     "action": "Go to channels"
   },
   "empty": {
@@ -37,10 +37,10 @@
   "noMessages": "No messages in this conversation yet.",
   "composer": {
     "label": "Reply to {name}",
-    "hint": "Instagram only lets you reply within 24 hours of the person's last message.",
+    "hint": "You can reply for a while after the person's last message: 24 hours on Instagram, 48 on TikTok.",
     "submit": "Send message",
     "sent": "Message sent",
-    "windowClosedTitle": "The 24-hour reply window has closed",
-    "windowClosed": "{name} wrote more than 24 hours ago, so Instagram does not allow a reply now. You can answer as soon as they write to you again."
+    "windowClosedTitle": "The reply window has closed",
+    "windowClosed": "{name} wrote too long ago, so the platform does not allow a reply now. You can answer as soon as they write to you again."
   }
 }

@@ -16,7 +16,7 @@ const instance: InstanceDto = {
   signupOpen: false,
   mailEnabled: false,
   captchaSiteKey: null,
-  providers: { instagram: true },
+  providers: { instagram: true, tiktok: false },
   sandbox: false,
   version: '0.1.0',
 };
@@ -62,9 +62,7 @@ describe('ChannelsScreen', () => {
       'GET /workspaces/w1/channels': [],
     });
     renderWithProviders(<ChannelsScreen workspaceId="w1" />);
-    expect(
-      await screen.findByRole('heading', { name: 'No Instagram accounts yet' }),
-    ).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'No accounts yet' })).toBeInTheDocument();
     expect(screen.getByText(/professional account \(Business or Creator\)/)).toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: 'Connect Instagram account' })).toHaveLength(2);
   });
@@ -95,7 +93,7 @@ describe('ChannelsScreen', () => {
     });
     renderWithProviders(<ChannelsScreen workspaceId="w1" />);
     expect(
-      await screen.findByText('That Instagram account is already connected to another workspace.'),
+      await screen.findByText('That account is already connected to another workspace.'),
     ).toBeInTheDocument();
     expect(await screen.findByRole('button', { name: 'Reconnect account' })).toBeInTheDocument();
   });
@@ -155,5 +153,46 @@ describe('ChannelsScreen', () => {
       expect(screen.getByText('3 minutes ago')).toBeInTheDocument();
       expect(screen.queryByText('No events from Instagram yet')).not.toBeInTheDocument();
     });
+  });
+});
+
+describe('ChannelsScreen with TikTok', () => {
+  it('offers a connect button for each platform the installation has set up', async () => {
+    mockApi({
+      'GET /me': me('OWNER'),
+      'GET /instance': { ...instance, providers: { instagram: true, tiktok: true } },
+      'GET /workspaces/w1/channels': [],
+    });
+    renderWithProviders(<ChannelsScreen workspaceId="w1" />);
+    expect(
+      (await screen.findAllByRole('button', { name: 'Connect TikTok account' })).length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen.getAllByRole('button', { name: 'Connect Instagram account' }).length,
+    ).toBeGreaterThan(0);
+    expect(screen.getByText(/TikTok accounts answer direct messages only/)).toBeInTheDocument();
+  });
+
+  it('names the platform of a TikTok channel and points its quiet hint at the TikTok setup', async () => {
+    mockApi({
+      'GET /me': me('OWNER', true),
+      'GET /instance': { ...instance, providers: { instagram: false, tiktok: true } },
+      'GET /workspaces/w1/channels': [
+        {
+          ...channel,
+          type: 'TIKTOK',
+          status: 'ACTIVE',
+          displayName: 'Sol Shop',
+          connectedAt: '2026-01-01T00:00:00Z',
+        },
+      ],
+    });
+    renderWithProviders(<ChannelsScreen workspaceId="w1" />);
+    expect(await screen.findByText('TikTok · Sol Shop')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'No events from TikTok yet' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Open the setup guide' })).toHaveAttribute(
+      'href',
+      '/admin#admin-tiktok',
+    );
   });
 });

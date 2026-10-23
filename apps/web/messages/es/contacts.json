@@ -8,7 +8,7 @@
   "filters": {
     "label": "Filtrar contactos",
     "search": "Buscar",
-    "searchPlaceholder": "Usuario de Instagram",
+    "searchPlaceholder": "Usuario",
     "channel": "Cuenta",
     "allChannels": "Todas las cuentas",
     "clear": "Quitar filtros"
@@ -27,7 +27,7 @@
   "empty": {
     "title": "Aún no hay contactos",
     "description": "Alguien se vuelve contacto la primera vez que comenta una publicación o le escribe a una cuenta conectada.",
-    "action": "Conectar Instagram"
+    "action": "Conectar una cuenta"
   },
   "noResults": {
     "title": "Ningún contacto coincide con estos filtros",
