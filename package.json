@@ -1,6 +1,6 @@
 {
   "name": "conversa",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "description": "Self-hosted, open-source automation for Instagram comments and direct messages.",
   "license": "MIT",
