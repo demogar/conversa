@@ -1,10 +1,11 @@
 'use client';
 
-import type {
-  AutomationDto,
-  ChannelDto,
-  CreateAutomationInput,
-  UpdateAutomationInput,
+import {
+  type AutomationDto,
+  CHANNEL_CAPABILITIES,
+  type ChannelDto,
+  type CreateAutomationInput,
+  type UpdateAutomationInput,
 } from '@conversa/shared';
 import {
   AlertDialog,
@@ -159,11 +160,19 @@ export function NewAutomationScreen({
     }
     const usable = channels.data.filter((channel) => channel.status !== 'DISCONNECTED');
     if (usable.length === 0) return <NoChannel workspaceId={workspaceId} />;
+    const channelId = pickChannel(usable, defaults?.channelId);
+    const type = usable.find((channel) => channel.id === channelId)?.type;
     return (
       <AutomationForm
         workspaceId={workspaceId}
         channels={channels.data}
-        initial={emptyDraft({ ...defaults, channelId: pickChannel(usable, defaults?.channelId) })}
+        initial={emptyDraft({
+          ...defaults,
+          channelId,
+          ...(type && !CHANNEL_CAPABILITIES[type].commentTriggers
+            ? { triggerType: 'MESSAGE' as const }
+            : {}),
+        })}
         saving={create.isPending}
         saveError={create.error}
         onSave={save}

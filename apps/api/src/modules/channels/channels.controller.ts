@@ -12,7 +12,7 @@ import { ChannelsService } from './channels.service.js';
 const channelType = z
   .string()
   .transform((value) => value.toUpperCase())
-  .pipe(z.enum([ChannelType.INSTAGRAM]));
+  .pipe(z.enum([ChannelType.INSTAGRAM, ChannelType.TIKTOK]));
 
 const mediaQuery = z.object({ limit: z.coerce.number().int().min(1).max(100).default(30) });
 

@@ -3,6 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import {
   type AutomationResponse,
   automationResponseSchema,
+  CHANNEL_CAPABILITIES,
   renderTemplate,
 } from '@conversa/shared';
 import { PrismaService } from '../../infra/prisma/prisma.service.js';
@@ -85,7 +86,10 @@ export class DeliveryService {
 
     try {
       if (isComment) await provider.sendPrivateReply(session, delivery.triggerExternalId, message);
-      else await provider.sendMessage(session, delivery.contact.externalId, message);
+      else
+        await provider.sendMessage(session, delivery.contact.externalId, message, {
+          idempotencyKey: `${delivery.id}:start`,
+        });
     } catch (error) {
       if (isComment && error instanceof ProviderError && error.kind !== 'transient') {
         await this.limiter.releasePrivateReplySlot(delivery.channelId);
@@ -118,6 +122,7 @@ export class DeliveryService {
           session,
           delivery.contact.externalId,
           this.gateMessage(delivery, response.followGate),
+          { idempotencyKey: `${delivery.id}:prompt:${delivery.followPrompts}` },
         );
         await this.prisma.delivery.update({
           where: { id: delivery.id },
@@ -132,6 +137,7 @@ export class DeliveryService {
       session,
       delivery.contact.externalId,
       await this.contentMessage(delivery, response),
+      { idempotencyKey: `${delivery.id}:content` },
     );
     await this.prisma.delivery.update({
       where: { id: delivery.id },
@@ -203,7 +209,14 @@ export class DeliveryService {
     return {
       text: renderTemplate(gate.text, { username: delivery.contact.username }),
       buttons: [
-        { type: 'postback', label: gate.buttonLabel, payload: this.tokens.create(delivery.id) },
+        {
+          type: 'postback',
+          label: gate.buttonLabel,
+          payload: this.tokens.create(
+            delivery.id,
+            CHANNEL_CAPABILITIES[delivery.channel.type].postbackPayloadLength,
+          ),
+        },
       ],
     };
   }
@@ -270,6 +283,13 @@ export class DeliveryService {
       },
     });
     if (profile.username) delivery.contact.username = profile.username;
+    // Platforms that report following only in their webhooks have already
+    // stored it on the contact, from the message that brought the tap.
+    if (
+      profile.follows === null &&
+      CHANNEL_CAPABILITIES[delivery.channel.type].followStatus === 'webhook'
+    )
+      return delivery.contact.isFollower;
     return profile.follows;
   }
 

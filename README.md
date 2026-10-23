@@ -1,8 +1,8 @@
 # Conversa
 
-**Self-hosted, open-source automation for Instagram comments and direct messages.**
+**Self-hosted, open-source automation for Instagram comments and direct messages, and TikTok direct messages.**
 
-Someone comments `LINK` on your post and gets the link in their DMs a second later. Someone replies to your story and gets an answer. Conversa does this on your own server, for as many Instagram accounts and teams as you need, and it is built so other messaging platforms can be added beside Instagram.
+Someone comments `LINK` on your post and gets the link in their DMs a second later. Someone replies to your story and gets an answer. Conversa does this on your own server, for as many Instagram accounts and teams as you need, and it answers TikTok direct messages too, with more platforms possible behind the same provider interface.
 
 MIT licensed. Your data stays in your own PostgreSQL database.
 
@@ -21,17 +21,18 @@ MIT licensed. Your data stays in your own PostgreSQL database.
 
 **Teams and accounts**
 
-- Multiple workspaces per installation, and multiple Instagram accounts per workspace.
+- Multiple workspaces per installation, and multiple Instagram and TikTok accounts per workspace.
+- **TikTok:** keyword DM automations with the opening message, follow gate and tracked links. TikTok cannot message comment authors, so its accounts answer direct messages only.
 - Roles: owner, admin and member, with email invitations.
 - Contacts, an activity log of every delivery and why it was sent, skipped or failed, an inbox to read and answer conversations, a content view of your posts, and a dashboard.
 - An audit log of who changed what.
-- Instance settings in the app for instance admins: email, the Meta app, Turnstile and sign-up, with a first-run setup guide. Nothing to restart.
+- Instance settings in the app for instance admins: email, the Meta and TikTok apps, Turnstile and sign-up, with a first-run setup guide. Nothing to restart.
 
 **Everything else**
 
 - English and Spanish interface (and emails), chosen per person.
 - Two-factor authentication with an authenticator app and recovery codes.
-- **Sandbox mode:** a simulated Instagram to try every feature without a Meta app.
+- **Sandbox mode:** a simulated Instagram and TikTok to try every feature without a Meta or TikTok app.
 - One `docker compose` file for production, with an optional Cloudflare Tunnel.
 
 ## How it works
@@ -84,6 +85,7 @@ The production stack is [`docker/compose.yml`](docker/compose.yml): PostgreSQL, 
 - [Self-hosting](docs/self-hosting.md): configuration reference, migrations, backups, upgrades, scaling.
 - [Cloudflare](docs/cloudflare.md): Tunnel, WAF rules, Turnstile, Access.
 - [Instagram](docs/instagram.md): creating the Meta app and going live.
+- [TikTok](docs/tiktok.md): the TikTok developer app, messaging access and what TikTok allows.
 - [Buffer](docs/buffer.md): attaching automations to scheduled posts.
 
 ## Tech stack

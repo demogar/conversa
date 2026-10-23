@@ -30,9 +30,24 @@ export class InboxController {
       membership.workspaceId,
       channelId,
     );
-    return this.channels.callProvider(channel, () =>
+    const conversations = await this.channels.callProvider(channel, () =>
       this.providers.get(channel.type).listConversations(session),
     );
+    // Some platforms (TikTok) do not name the other side; the contacts their webhooks created do.
+    const unnamed = conversations.filter((c) => !c.participant.username && c.participant.id);
+    if (unnamed.length === 0) return conversations;
+    const usernames = await this.channels.contactUsernames(
+      channel.id,
+      unnamed.map((c) => c.participant.id),
+    );
+    return conversations.map((conversation) => ({
+      ...conversation,
+      participant: {
+        ...conversation.participant,
+        username:
+          conversation.participant.username ?? usernames.get(conversation.participant.id) ?? null,
+      },
+    }));
   }
 
   @Get(':conversationId/messages')

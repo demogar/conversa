@@ -20,11 +20,11 @@
     "LAST_OWNER": "A workspace needs at least one owner. Make someone else an owner first.",
     "INVITATION_EMAIL_MISMATCH": "This invitation was sent to a different email address.",
     "ALREADY_MEMBER": "That person is already a member of this workspace.",
-    "CHANNEL_NOT_CONFIGURED": "Instagram is not set up on this installation. The administrator needs to add the Meta app keys.",
-    "CHANNEL_IN_OTHER_WORKSPACE": "That Instagram account is already connected to another workspace.",
+    "CHANNEL_NOT_CONFIGURED": "That platform is not set up on this installation. The administrator needs to add its app keys.",
+    "CHANNEL_IN_OTHER_WORKSPACE": "That account is already connected to another workspace.",
     "CHANNEL_NEEDS_REAUTH": "The account needs to be reconnected before it can be used.",
-    "PROVIDER_ERROR": "Instagram did not accept the request. Try again in a moment.",
-    "MESSAGING_WINDOW_CLOSED": "Instagram only allows replies within 24 hours of the person's last message.",
+    "PROVIDER_ERROR": "The platform did not accept the request. Try again in a moment.",
+    "MESSAGING_WINDOW_CLOSED": "The platform no longer allows replies to this person. Instagram allows them for 24 hours after their last message, TikTok for 48.",
     "BUFFER_NOT_CONNECTED": "Connect Buffer first.",
     "BUFFER_INVALID_KEY": "Buffer did not accept that API key. Copy it again from Buffer's settings.",
     "BUFFER_RATE_LIMITED": "Buffer's request limit was reached. Try again in a few minutes.",
@@ -49,6 +49,8 @@
     "not_found": "That item no longer exists.",
     "passwords_differ": "The passwords do not match.",
     "invalid_host": "Enter a server name such as smtp.example.com.",
-    "invalid_app_id": "Enter the numeric Instagram app ID."
+    "invalid_app_id": "Enter the numeric app ID.",
+    "invalid_authorization_url": "Paste the whole TikTok account holder authorization URL. It starts with https://www.tiktok.com/v2/auth/authorize.",
+    "not_supported_by_channel": "This channel's platform cannot do that. TikTok accounts answer direct messages only."
   }
 }

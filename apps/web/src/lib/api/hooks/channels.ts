@@ -1,4 +1,4 @@
-import type { ChannelDto, MediaDto, SimulateEventInput } from '@conversa/shared';
+import type { ChannelDto, ChannelType, MediaDto, SimulateEventInput } from '@conversa/shared';
 import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, type ApiGet } from '../client';
 import { keys } from '../keys';
@@ -14,11 +14,13 @@ export function useChannels(workspaceId: string) {
   return useQuery(channelsQuery(workspaceId));
 }
 
-/** Starts the Instagram sign-in; the browser leaves for the platform and comes back to the channels page. */
-export function useConnectInstagram(workspaceId: string) {
+/** Starts a platform's sign-in; the browser leaves for the platform and comes back to the channels page. */
+export function useConnectChannel(workspaceId: string) {
   return useMutation({
-    mutationFn: () =>
-      api.post<{ url: string }>(`/workspaces/${workspaceId}/channels/instagram/connect`),
+    mutationFn: (type: ChannelType) =>
+      api.post<{ url: string }>(
+        `/workspaces/${workspaceId}/channels/${type.toLowerCase()}/connect`,
+      ),
     onSuccess: ({ url }) => window.location.assign(url),
   });
 }

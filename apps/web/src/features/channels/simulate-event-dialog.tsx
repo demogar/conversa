@@ -15,7 +15,12 @@ import {
   Textarea,
   useToast,
 } from '@demogar/mola-ui';
-import { type ChannelDto, type MediaDto, simulateEventSchema } from '@conversa/shared';
+import {
+  CHANNEL_CAPABILITIES,
+  type ChannelDto,
+  type MediaDto,
+  simulateEventSchema,
+} from '@conversa/shared';
 import { useFormatter, useTranslations } from 'next-intl';
 import { type FormEvent, useId, useState } from 'react';
 import { useChannelMedia, useSimulateEvent } from '@/lib/api/hooks/channels';
@@ -44,7 +49,9 @@ export function SimulateEventDialog({
   const toFieldErrors = useFieldErrors();
   const formId = useId();
 
-  const [kind, setKind] = useState<Kind>('comment');
+  // TikTok only answers direct messages, so its accounts simulate nothing else.
+  const commentsAllowed = CHANNEL_CAPABILITIES[channel.type].commentTriggers;
+  const [kind, setKind] = useState<Kind>(commentsAllowed ? 'comment' : 'message');
   const [username, setUsername] = useState('');
   const [text, setText] = useState('');
   const [mediaId, setMediaId] = useState<string | null>(null);
@@ -113,14 +120,16 @@ export function SimulateEventDialog({
             {simulate.error ? (
               <Callout tone="danger">{errorMessage(simulate.error)}</Callout>
             ) : null}
-            <RadioGroup
-              label={t('kind')}
-              value={kind}
-              onValueChange={(value) => setKind(value as Kind)}
-            >
-              <Radio value="comment" label={t('kinds.comment')} />
-              <Radio value="message" label={t('kinds.message')} />
-            </RadioGroup>
+            {commentsAllowed ? (
+              <RadioGroup
+                label={t('kind')}
+                value={kind}
+                onValueChange={(value) => setKind(value as Kind)}
+              >
+                <Radio value="comment" label={t('kinds.comment')} />
+                <Radio value="message" label={t('kinds.message')} />
+              </RadioGroup>
+            ) : null}
             <Field label={t('username')} hint={t('usernameHint')} required error={errors.username}>
               {(control) => (
                 <Input

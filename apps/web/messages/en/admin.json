@@ -83,6 +83,38 @@
     "removeDialogTitle": "Remove the Instagram app?",
     "removeDialogDescription": "Connected accounts stop receiving comments and messages, and nobody can connect a new one until the app is added again."
   },
+  "tiktok": {
+    "title": "TikTok app",
+    "description": "Your TikTok for Business developer app, which every TikTok account connected here authorises. TikTok accounts answer direct messages only.",
+    "off": "TikTok is not set up yet. Until it is, nobody can connect a TikTok account.",
+    "sandboxTitle": "TikTok is simulated here",
+    "sandboxDescription": "This installation runs the sandbox, so the TikTok app is not used. You can still save it for when the sandbox is turned off.",
+    "limitsTitle": "What TikTok allows",
+    "limitsBody": "TikTok cannot message the author of a comment, so only direct messages start automations, and you can only answer people who wrote first. Its messaging API needs TikTok's approval, is not available for accounts registered in the EEA, the UK or Switzerland, and needs an extra review for US accounts. Links are written into the message, because TikTok has no link buttons.",
+    "statusTitle": "Connection to TikTok",
+    "invalid": "TikTok did not accept the app ID and secret. Copy both again from the app's Basic Information page.",
+    "stepsTitle": "Set up the app",
+    "steps": {
+      "create": "In the <portal>TikTok API for Business portal</portal>, create a developer app and upload its logo.",
+      "permissions": "Under Scope of permission, select TikTok Accounts and Business Messaging, and request messaging access for your accounts.",
+      "redirect": "Add the redirect URL below as the TikTok account holder redirect URL, exactly as shown, ending in a slash.",
+      "paste": "Copy the app ID, the secret and the TikTok account holder authorization URL from Basic Information into the fields below.",
+      "webhook": "Conversa registers the webhook URL with TikTok when the first account connects. It is shown here for reference."
+    },
+    "redirectUrl": "TikTok account holder redirect URL",
+    "webhookUrl": "Webhook URL",
+    "appId": "App ID",
+    "appIdHint": "The numeric App ID on the app's Basic Information page.",
+    "appSecret": "Secret",
+    "appSecretHint": "Shown next to the App ID. Conversa uses it to check that webhooks really come from TikTok.",
+    "authorizationUrl": "TikTok account holder authorization URL",
+    "authorizationUrlHint": "TikTok builds it from the app's permissions. Paste it as it is; Conversa adds what it needs.",
+    "saved": "TikTok app saved",
+    "remove": "Remove TikTok app",
+    "removed": "TikTok app removed",
+    "removeDialogTitle": "Remove the TikTok app?",
+    "removeDialogDescription": "Connected accounts stop receiving messages, and nobody can connect a new one until the app is added again."
+  },
   "guide": {
     "title": "Set up your Meta app",
     "intro": "Nine steps in Meta's developer dashboard and the Instagram app. It takes about 20 minutes.",

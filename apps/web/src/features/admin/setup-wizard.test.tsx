@@ -49,6 +49,16 @@ const settings: InstanceSettingsDto = {
       termsOfService: 'https://conversa.example.com/legal/terms',
     },
   },
+  tiktok: {
+    configured: false,
+    appId: null,
+    appSecret: { configured: false, hint: null },
+    authorizationUrl: null,
+    urls: {
+      oauthRedirect: 'https://conversa.example.com/api/v1/channels/oauth/tiktok/callback/',
+      webhook: 'https://conversa.example.com/api/v1/webhooks/tiktok',
+    },
+  },
   turnstile: { configured: false, siteKey: null, secretKey: unset },
   signup: { mode: 'invite_only' },
   sandbox: false,

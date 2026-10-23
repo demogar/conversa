@@ -1,5 +1,5 @@
 /**
- * Builds simulated webhook payloads in Instagram's own format, so they go
+ * Builds simulated webhook payloads in each platform's own format, so they go
  * through the same parser and engine as real deliveries.
  */
 
@@ -81,4 +81,66 @@ function messagingPayload(input: SimulatedBase, senderId: string, body: Record<s
       },
     ],
   };
+}
+
+// ---- TikTok ---------------------------------------------------------------
+
+/** Simulated TikTok users follow the account unless their username says "nofollow". */
+function follows(username: string): boolean {
+  return !username.toLowerCase().includes('nofollow');
+}
+
+/**
+ * TikTok's `im_receive_msg`, whose content is a JSON string. The conversation
+ * id doubles as the contact's id, as with the real TikTok.
+ */
+function tiktokMessagePayload(
+  input: SimulatedBase & { username: string; messageId: string; text: string },
+  extra: Record<string, unknown> = {},
+) {
+  const now = input.now ?? new Date();
+  const userId = sandboxUserId(input.username);
+  return {
+    client_key: 'sandbox',
+    event: 'im_receive_msg',
+    create_time: Math.floor(now.getTime() / 1000),
+    user_openid: input.accountId,
+    content: JSON.stringify({
+      from: input.username,
+      to: 'sandbox',
+      unique_identifier: userId,
+      from_user: { id: userId, role: 'personal_account' },
+      to_user: { id: input.accountId, role: 'business_account' },
+      conversation_id: userId,
+      message_id: input.messageId,
+      timestamp: now.getTime(),
+      type: 'text',
+      text: { body: input.text },
+      is_follower: follows(input.username),
+      message_tag: { source: 'APP' },
+      ...extra,
+    }),
+  };
+}
+
+export function buildTikTokMessagePayload(
+  input: SimulatedBase & { messageId: string; username: string; text: string },
+) {
+  return tiktokMessagePayload(input);
+}
+
+/** A tap on a Q&A card button: TikTok sends the button's text with the id we gave it. */
+export function buildTikTokTapPayload(
+  input: SimulatedBase & { senderId: string; messageId: string; payload: string },
+) {
+  const username = sandboxUsername(input.senderId) ?? input.senderId;
+  return tiktokMessagePayload(
+    { ...input, username, text: 'Tap' },
+    {
+      reply_source_payload: {
+        reply_source_msg_id: input.messageId,
+        reply_source_unique_id: input.payload,
+      },
+    },
+  );
 }

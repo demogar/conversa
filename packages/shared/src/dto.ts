@@ -47,7 +47,7 @@ export interface InstanceDto {
   signupOpen: boolean;
   mailEnabled: boolean;
   captchaSiteKey: string | null;
-  providers: { instagram: boolean };
+  providers: { instagram: boolean; tiktok: boolean };
   /** A simulated Instagram for trying Conversa without a Meta app. Never on in production. */
   sandbox: boolean;
   /** The API's version, from its package.json: "0.1.0". */
@@ -288,6 +288,22 @@ export interface InstagramAppSettingsDto {
   urls: MetaAppUrlsDto;
 }
 
+/** The addresses to paste into the TikTok developer app, built from APP_URL. */
+export interface TikTokAppUrlsDto {
+  /** Ends in a slash, as TikTok requires of redirect URLs. */
+  oauthRedirect: string;
+  webhook: string;
+}
+
+export interface TikTokAppSettingsDto {
+  /** App ID, secret and authorization URL are all set. */
+  configured: boolean;
+  appId: string | null;
+  appSecret: SecretStatusDto;
+  authorizationUrl: string | null;
+  urls: TikTokAppUrlsDto;
+}
+
 export interface TurnstileSettingsDto {
   configured: boolean;
   siteKey: string | null;
@@ -297,9 +313,10 @@ export interface TurnstileSettingsDto {
 export interface InstanceSettingsDto {
   mail: MailSettingsDto;
   instagram: InstagramAppSettingsDto;
+  tiktok: TikTokAppSettingsDto;
   turnstile: TurnstileSettingsDto;
   signup: { mode: SignupMode };
-  /** Instagram is simulated (INSTAGRAM_SANDBOX): the Meta app is not used. */
+  /** The platforms are simulated (INSTAGRAM_SANDBOX): no Meta or TikTok app is used. */
   sandbox: boolean;
 }
 
@@ -309,16 +326,17 @@ export interface InstanceSettingsDto {
  */
 export type AppCredentialsCheck = 'valid' | 'invalid' | 'unknown' | 'not_configured';
 
-/** How far the Meta app setup has got, as far as this installation can tell. */
-export interface InstagramSetupStatusDto {
-  /** Instagram is simulated: the Meta app is not used, so nothing is checked. */
+/** How far a platform app's setup (Meta, TikTok) has got, as far as this installation can tell. */
+export interface PlatformSetupStatusDto {
+  /** The platform is simulated: its app is not used, so nothing is checked. */
   sandbox: boolean;
   credentials: AppCredentialsCheck;
-  /** Meta's "Verify and save" last reached this installation. */
+  /** The platform's subscription handshake last reached this installation (Meta only). */
   webhookVerifiedAt: string | null;
   /** A signed webhook last arrived, for any account. */
   lastEventAt: string | null;
 }
+export type InstagramSetupStatusDto = PlatformSetupStatusDto;
 
 export type MailTestFailure = 'auth' | 'connection' | 'timeout' | 'tls' | 'rejected' | 'unknown';
 

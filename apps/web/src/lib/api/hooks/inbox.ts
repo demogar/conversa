@@ -7,6 +7,7 @@ import { keys } from '../keys';
 
 const base = (workspaceId: string, channelId: string) =>
   `/workspaces/${workspaceId}/channels/${channelId}/conversations`;
+// Conversation ids are the platform's own; TikTok's are base64 and may hold "/", "+" and "=".
 
 /** Read live from Instagram on every load; Conversa keeps no copy. */
 export function useConversations(workspaceId: string, channelId: string | null) {
@@ -26,7 +27,10 @@ export function useMessages(
   return useQuery({
     queryKey: keys.messages(workspaceId, channelId ?? '', conversationId ?? ''),
     queryFn: ({ signal }) =>
-      api.get<MessageDto[]>(`${base(workspaceId, channelId!)}/${conversationId}/messages`, signal),
+      api.get<MessageDto[]>(
+        `${base(workspaceId, channelId!)}/${encodeURIComponent(conversationId!)}/messages`,
+        signal,
+      ),
     enabled: !!channelId && !!conversationId,
   });
 }
@@ -40,9 +44,12 @@ export function useSendMessage(
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (text: string) =>
-      api.post<void>(`${base(workspaceId, channelId)}/${conversationId}/messages/${recipientId}`, {
-        text,
-      }),
+      api.post<void>(
+        `${base(workspaceId, channelId)}/${encodeURIComponent(conversationId)}/messages/${encodeURIComponent(recipientId)}`,
+        {
+          text,
+        },
+      ),
     // Both the thread and the list's excerpt change.
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: keys.conversations(workspaceId, channelId) }),

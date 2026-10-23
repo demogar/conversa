@@ -55,7 +55,7 @@ describe('InboxScreen', () => {
     });
   });
 
-  it('explains the 24-hour window when Instagram refuses the reply', async () => {
+  it('explains the reply window when the platform refuses the reply', async () => {
     const user = userEvent.setup();
     mockApi({
       'GET /workspaces/w1/channels': [channel],
@@ -66,8 +66,8 @@ describe('InboxScreen', () => {
     renderWithProviders(<InboxScreen workspaceId="w1" />);
     await user.type(await screen.findByRole('textbox', { name: /Reply to @marta/ }), 'Hello again');
     await user.click(screen.getByRole('button', { name: 'Send message' }));
-    expect(await screen.findByText('The 24-hour reply window has closed')).toBeInTheDocument();
-    expect(screen.getByText(/@marta wrote more than 24 hours ago/)).toBeInTheDocument();
+    expect(await screen.findByText('The reply window has closed')).toBeInTheDocument();
+    expect(screen.getByText(/@marta wrote too long ago/)).toBeInTheDocument();
   });
 
   it('points to the channels page when no account is connected', async () => {

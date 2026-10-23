@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import { Injectable } from '@nestjs/common';
-import type { SimulateEventInput } from '@conversa/shared';
+import { CHANNEL_CAPABILITIES, ErrorCode, type SimulateEventInput } from '@conversa/shared';
 import { AppConfig } from '../../../config/app-config.js';
 import { AppException } from '../../../common/errors/app.exception.js';
 import { PrismaService } from '../../../infra/prisma/prisma.service.js';
@@ -12,12 +12,14 @@ import {
   buildCommentPayload,
   buildMessagePayload,
   buildPostbackPayload,
+  buildTikTokMessagePayload,
+  buildTikTokTapPayload,
   sandboxUserId,
 } from './sandbox-events.js';
 import { SandboxOutbox, type SandboxOutboxEntry } from './sandbox-outbox.js';
 
 /**
- * Injects simulated Instagram events. Each one is stored and queued exactly
+ * Injects simulated Instagram and TikTok events. Each one is stored and queued exactly
  * like a real webhook, so the worker runs the whole pipeline on it.
  */
 @Injectable()
@@ -45,13 +47,21 @@ export class SandboxService {
         text: input.text,
         timestamp: new Date().toISOString(),
       });
-      const payload = buildMessagePayload({
+      const message = {
         accountId: channel.externalId,
         messageId,
         username: input.username,
         text: input.text,
-      });
+      };
+      const payload =
+        channel.type === 'TIKTOK'
+          ? buildTikTokMessagePayload(message)
+          : buildMessagePayload(message);
       return this.ingestor.ingest(channel.type, payload);
+    }
+
+    if (!CHANNEL_CAPABILITIES[channel.type].commentTriggers) {
+      throw new AppException(ErrorCode.VALIDATION_FAILED, { kind: ['not_supported_by_channel'] });
     }
 
     const commentId = `sandbox-comment-${randomBytes(8).toString('hex')}`;
@@ -78,11 +88,21 @@ export class SandboxService {
       select: { id: true, contact: { select: { externalId: true } } },
     });
     if (!delivery) throw AppException.notFound();
-    const payload = buildPostbackPayload({
+    const tap = {
       accountId: channel.externalId,
       senderId: delivery.contact.externalId,
-      payload: this.tokens.create(delivery.id),
-    });
+      payload: this.tokens.create(
+        delivery.id,
+        CHANNEL_CAPABILITIES[channel.type].postbackPayloadLength,
+      ),
+    };
+    const payload =
+      channel.type === 'TIKTOK'
+        ? buildTikTokTapPayload({
+            ...tap,
+            messageId: `sandbox-mid-${randomBytes(8).toString('hex')}`,
+          })
+        : buildPostbackPayload(tap);
     return this.ingestor.ingest(channel.type, payload);
   }
 
@@ -94,8 +114,6 @@ export class SandboxService {
   /** Every sandbox route is a 404 unless the sandbox is on. */
   private async channel(workspaceId: string, channelId: string): Promise<Channel> {
     if (!this.config.sandbox) throw AppException.notFound();
-    const channel = await this.channels.findInWorkspace(workspaceId, channelId);
-    if (channel.type !== 'INSTAGRAM') throw AppException.notFound();
-    return channel;
+    return this.channels.findInWorkspace(workspaceId, channelId);
   }
 }

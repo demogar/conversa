@@ -8,7 +8,7 @@
   "filters": {
     "label": "Filter contacts",
     "search": "Search",
-    "searchPlaceholder": "Instagram username",
+    "searchPlaceholder": "Username",
     "channel": "Account",
     "allChannels": "All accounts",
     "clear": "Clear filters"
@@ -27,7 +27,7 @@
   "empty": {
     "title": "No contacts yet",
     "description": "Someone becomes a contact the first time they comment on a post or write to a connected account.",
-    "action": "Connect Instagram"
+    "action": "Connect an account"
   },
   "noResults": {
     "title": "No contacts match these filters",

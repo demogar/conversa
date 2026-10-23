@@ -83,6 +83,38 @@
     "removeDialogTitle": "¿Quitar la app de Instagram?",
     "removeDialogDescription": "Las cuentas conectadas dejan de recibir comentarios y mensajes, y nadie puede conectar una nueva hasta que vuelvas a agregar la app."
   },
+  "tiktok": {
+    "title": "App de TikTok",
+    "description": "Tu app de desarrollador de TikTok for Business, la que autoriza cada cuenta de TikTok que se conecta aquí. Las cuentas de TikTok solo responden mensajes directos.",
+    "off": "TikTok todavía no está configurado. Hasta que lo esté, nadie puede conectar una cuenta de TikTok.",
+    "sandboxTitle": "Aquí TikTok es simulado",
+    "sandboxDescription": "Esta instalación usa el sandbox, así que la app de TikTok no se usa. Igual puedes guardarla para cuando se apague el sandbox.",
+    "limitsTitle": "Lo que TikTok permite",
+    "limitsBody": "TikTok no puede escribirle por mensaje a quien comenta, así que solo los mensajes directos inician automatizaciones, y solo puedes responder a quien escribió primero. Su API de mensajes necesita la aprobación de TikTok, no está disponible para cuentas registradas en el EEE, el Reino Unido o Suiza, y pide una revisión adicional para cuentas de EE. UU. Los enlaces van escritos en el mensaje, porque TikTok no tiene botones de enlace.",
+    "statusTitle": "Conexión con TikTok",
+    "invalid": "TikTok no aceptó el ID y la clave secreta de la app. Vuelve a copiar ambos desde la página Basic Information de la app.",
+    "stepsTitle": "Configura la app",
+    "steps": {
+      "create": "En el <portal>portal de TikTok API for Business</portal>, crea una app de desarrollador y sube su logo.",
+      "permissions": "En Scope of permission, elige TikTok Accounts y Business Messaging, y solicita el acceso a mensajes para tus cuentas.",
+      "redirect": "Agrega la URL de redirección de abajo como TikTok account holder redirect URL, tal cual, terminada en barra.",
+      "paste": "Copia el App ID, la clave secreta y la TikTok account holder authorization URL desde Basic Information en los campos de abajo.",
+      "webhook": "Conversa registra la URL del webhook en TikTok cuando se conecta la primera cuenta. Se muestra aquí como referencia."
+    },
+    "redirectUrl": "URL de redirección para titulares de cuentas de TikTok",
+    "webhookUrl": "URL del webhook",
+    "appId": "App ID",
+    "appIdHint": "El App ID numérico de la página Basic Information de la app.",
+    "appSecret": "Clave secreta",
+    "appSecretHint": "Aparece junto al App ID. Conversa la usa para comprobar que los webhooks de verdad vienen de TikTok.",
+    "authorizationUrl": "URL de autorización para titulares de cuentas de TikTok",
+    "authorizationUrlHint": "TikTok la arma con los permisos de la app. Pégala tal cual; Conversa agrega lo que necesita.",
+    "saved": "App de TikTok guardada",
+    "remove": "Quitar app de TikTok",
+    "removed": "App de TikTok quitada",
+    "removeDialogTitle": "¿Quitar la app de TikTok?",
+    "removeDialogDescription": "Las cuentas conectadas dejan de recibir mensajes y nadie puede conectar una nueva hasta que se vuelva a agregar la app."
+  },
   "guide": {
     "title": "Configura tu app de Meta",
     "intro": "Son nueve pasos en el panel de desarrolladores de Meta y en la app de Instagram. Toma unos 20 minutos.",

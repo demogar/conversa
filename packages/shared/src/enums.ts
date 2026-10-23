@@ -3,7 +3,7 @@
  * Prisma enums one to one, so a value can cross the wire without mapping.
  */
 
-export const ChannelType = { INSTAGRAM: 'INSTAGRAM' } as const;
+export const ChannelType = { INSTAGRAM: 'INSTAGRAM', TIKTOK: 'TIKTOK' } as const;
 export type ChannelType = (typeof ChannelType)[keyof typeof ChannelType];
 
 export const ChannelStatus = {

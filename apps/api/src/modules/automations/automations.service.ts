@@ -3,6 +3,7 @@ import {
   type AutomationDto,
   type AutomationStatsDto,
   automationResponseSchema,
+  CHANNEL_CAPABILITIES,
   type CreateAutomationInput,
   ErrorCode,
   type UpdateAutomationInput,
@@ -84,7 +85,7 @@ export class AutomationsService {
     actorId: string,
     input: CreateAutomationInput,
   ): Promise<AutomationDto> {
-    await this.assertChannel(workspaceId, input.channelId);
+    await this.assertChannel(workspaceId, input.channelId, input.triggerType);
     const columns = toColumns(input);
     const automation = await this.prisma.$transaction(async (tx) => {
       const created = await tx.automation.create({
@@ -118,8 +119,7 @@ export class AutomationsService {
     input: UpdateAutomationInput,
   ): Promise<AutomationDto> {
     const current = await this.find(workspaceId, id);
-    if (input.channelId !== current.channelId)
-      await this.assertChannel(workspaceId, input.channelId);
+    await this.assertChannel(workspaceId, input.channelId, input.triggerType);
     const columns = toColumns(input);
     const scopeChanged =
       columns.postScope !== current.postScope || columns.bufferPostId !== current.bufferPostId;
@@ -208,12 +208,22 @@ export class AutomationsService {
     return automation;
   }
 
-  private async assertChannel(workspaceId: string, channelId: string): Promise<void> {
+  /** The channel is in the workspace and its platform can start this trigger. */
+  private async assertChannel(
+    workspaceId: string,
+    channelId: string,
+    triggerType: CreateAutomationInput['triggerType'],
+  ): Promise<void> {
     const channel = await this.prisma.channel.findFirst({
       where: { id: channelId, workspaceId },
-      select: { id: true },
+      select: { type: true },
     });
     if (!channel) throw new AppException(ErrorCode.VALIDATION_FAILED, { channelId: ['not_found'] });
+    if (triggerType === 'COMMENT' && !CHANNEL_CAPABILITIES[channel.type].commentTriggers) {
+      throw new AppException(ErrorCode.VALIDATION_FAILED, {
+        triggerType: ['not_supported_by_channel'],
+      });
+    }
   }
 
   private async statsFor(ids: string[]): Promise<Map<string, AutomationStatsDto>> {

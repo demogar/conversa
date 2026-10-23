@@ -1,7 +1,7 @@
 {
   "list": {
     "title": "Automations",
-    "description": "Reply to comments and messages on Instagram with a direct message, automatically.",
+    "description": "Reply to comments and messages on Instagram, and to messages on TikTok, with a direct message, automatically.",
     "create": "Create automation",
     "tableLabel": "Automations",
     "loading": "Loading automations",
@@ -38,7 +38,7 @@
     "empty": {
       "title": "No automations yet",
       "description": "An automation watches for a keyword in a comment or a message and sends a direct message with your link, so nobody waits for an answer.",
-      "noChannelTitle": "Connect an Instagram account first",
+      "noChannelTitle": "Connect an account first",
       "noChannelDescription": "Automations reply from a connected account. Connect one in Channels, then come back to create your first automation.",
       "goToChannels": "Go to channels"
     },
@@ -85,7 +85,7 @@
       "channelRequired": "Choose the account it replies from."
     },
     "noChannel": {
-      "title": "Connect an Instagram account first",
+      "title": "Connect an account first",
       "description": "An automation replies from a connected account, and there is none in this workspace yet.",
       "action": "Go to channels"
     },
@@ -104,6 +104,7 @@
       "comment": "A comment",
       "message": "A direct message",
       "commentHint": "Someone comments on a post or reel.",
+      "commentUnavailable": "Not on TikTok: it cannot message the author of a comment.",
       "messageHint": "Someone sends a direct message, or replies to a story.",
       "scope": "Which posts",
       "scopeAny": "Any post or reel",
@@ -167,11 +168,11 @@
       "addVariant": "Add reply",
       "removeVariant": "Remove reply {number}",
       "opening": "Send an opening message first",
-      "openingDescription": "Instagram only lets you send links once the person has answered. This message asks them to tap its button, and the content goes out when they do.",
+      "openingDescription": "The platform only lets you send links once the person has answered. This message asks them to tap its button, and the content goes out when they do.",
       "openingText": "Opening message",
       "openingPlaceholder": "Hi {username}! Tap below and I’ll send you the link.",
       "followGate": "Ask people to follow first",
-      "followGateDescription": "People who do not follow the account get this message first, and the content once they follow and tap the button. If Instagram does not say whether they follow, the content is sent anyway.",
+      "followGateDescription": "People who do not follow the account get this message first, and the content once they follow and tap the button. If the platform does not say whether they follow, the content is sent anyway.",
       "followText": "Follow request",
       "followPlaceholder": "Follow the account and tap below to get it.",
       "buttonLabel": "Button label",
@@ -181,6 +182,7 @@
       "messageHint": "Write {username} to greet the person by their handle.",
       "messagePlaceholder": "Here is the price list, {username}:",
       "characters": "{count} / {max}",
+      "linksAsText": "TikTok has no link buttons, so each link is written under the message as “label: link”.",
       "buttons": "Link buttons",
       "buttonsHint": "Up to {max}. Clicks are counted for each button.",
       "buttonsEmpty": "No buttons. Links in the message still work, without click counts.",
@@ -193,7 +195,7 @@
     },
     "preview": {
       "title": "Preview",
-      "description": "What the person sees in Instagram.",
+      "description": "What the person sees in the app.",
       "sampleUsername": "ana.rios",
       "commentOn": "Comments on your post",
       "messageFrom": "Sends you a message",

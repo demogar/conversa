@@ -19,7 +19,7 @@ import { FlaskConical, RefreshCw, Unplug } from 'lucide-react';
 import NextLink from 'next/link';
 import { useFormatter, useLocale, useTranslations } from 'next-intl';
 import { useId, useState } from 'react';
-import { useConnectInstagram, useDisconnectChannel } from '@/lib/api/hooks/channels';
+import { useConnectChannel, useDisconnectChannel } from '@/lib/api/hooks/channels';
 import { metaGuideHash } from '@/features/admin/meta-setup-guide';
 import { QUIET_AFTER_MS } from '@/features/admin/meta-setup-status';
 import { useErrorMessage } from '@/lib/errors';
@@ -41,9 +41,9 @@ export function ChannelStatusBadge({ status }: { status: ChannelStatus }) {
 }
 
 /**
- * Connected and subscribed for a while, yet Meta has sent nothing. Usually the
- * Meta app is still in development mode, or the account does not allow access
- * to its messages.
+ * Connected and subscribed for a while, yet the platform has sent nothing.
+ * Usually the Meta app is still in development mode or the account does not
+ * allow access to its messages; on TikTok, messaging access is not approved yet.
  */
 export function isWaitingForEvents(channel: ChannelDto, now = Date.now()): boolean {
   return (
@@ -74,7 +74,7 @@ export function ChannelCard({
   const toast = useToast();
   const errorMessage = useErrorMessage();
   const headingId = useId();
-  const connect = useConnectInstagram(workspaceId);
+  const connect = useConnectChannel(workspaceId);
   const disconnect = useDisconnectChannel(workspaceId);
   const [confirming, setConfirming] = useState(false);
   const [simulating, setSimulating] = useState(false);
@@ -89,16 +89,21 @@ export function ChannelCard({
           <Heading level={2} visualLevel={4} id={headingId} className="truncate">
             @{channel.username}
           </Heading>
-          {channel.displayName ? (
-            <p className="m-0 truncate text-sm text-ink-2">{channel.displayName}</p>
-          ) : null}
+          <p className="m-0 truncate text-sm text-ink-2">
+            {channel.displayName
+              ? t('card.platformAndName', {
+                  platform: t(`platform.${channel.type}`),
+                  name: channel.displayName,
+                })
+              : t(`platform.${channel.type}`)}
+          </p>
         </div>
         <ChannelStatusBadge status={channel.status} />
       </header>
 
       {channel.status === 'NEEDS_REAUTH' ? (
         <Callout tone="warn" variant="flat">
-          {t('card.needsReauth')}
+          {t('card.needsReauth', { platform: t(`platform.${channel.type}`) })}
         </Callout>
       ) : channel.status === 'DISCONNECTED' ? (
         <Callout tone="neutral" variant="flat">
@@ -108,20 +113,34 @@ export function ChannelCard({
         <Callout
           tone="warn"
           headingLevel={3}
-          title={t('card.noEvents.title')}
+          title={t('card.noEvents.title', { platform: t(`platform.${channel.type}`) })}
           actions={
             isInstanceAdmin ? (
               <LinkButton
                 size="sm"
                 variant="secondary"
-                render={<NextLink href={`/admin#${metaGuideHash('publish')}`} />}
+                render={
+                  <NextLink
+                    href={
+                      channel.type === 'TIKTOK'
+                        ? '/admin#admin-tiktok'
+                        : `/admin#${metaGuideHash('publish')}`
+                    }
+                  />
+                }
               >
                 {t('card.noEvents.openGuide')}
               </LinkButton>
             ) : undefined
           }
         >
-          {isInstanceAdmin ? t('card.noEvents.body') : t('card.noEvents.askAdmin')}
+          {channel.type === 'TIKTOK'
+            ? isInstanceAdmin
+              ? t('card.noEvents.tiktokBody')
+              : t('card.noEvents.tiktokAskAdmin')
+            : isInstanceAdmin
+              ? t('card.noEvents.body')
+              : t('card.noEvents.askAdmin')}
         </Callout>
       ) : null}
 
@@ -156,7 +175,7 @@ export function ChannelCard({
             <Button
               icon={<RefreshCw />}
               loading={connect.isPending}
-              onClick={() => connect.mutate()}
+              onClick={() => connect.mutate(channel.type)}
             >
               {t('reconnect')}
             </Button>

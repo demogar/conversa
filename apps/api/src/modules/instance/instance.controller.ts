@@ -25,7 +25,10 @@ export class InstanceController {
       signupOpen: !hasUsers || this.settings.signupMode === 'open',
       mailEnabled: this.settings.mail !== null,
       captchaSiteKey: this.settings.turnstile?.siteKey ?? null,
-      providers: { instagram: this.config.sandbox || this.settings.instagram !== null },
+      providers: {
+        instagram: this.config.sandbox || this.settings.instagram !== null,
+        tiktok: this.config.sandbox || this.settings.tiktok !== null,
+      },
       sandbox: this.config.sandbox,
       version: this.build.version,
     };

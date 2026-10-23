@@ -38,9 +38,9 @@
     "done": "Listo",
     "todo": "Pendiente",
     "connect": {
-      "title": "Conecta tu cuenta de Instagram",
-      "note": "Conversa necesita una cuenta profesional de Instagram para leer comentarios y enviar mensajes.",
-      "action": "Conectar Instagram",
+      "title": "Conecta tu cuenta",
+      "note": "Conversa necesita una cuenta profesional de Instagram, o una cuenta de empresa de TikTok, para leer lo que la gente envía y responder.",
+      "action": "Conectar una cuenta",
       "memberNote": "Solo un propietario o un administrador de este espacio puede conectarla. Pídeselo a alguno de ellos."
     },
     "automate": {

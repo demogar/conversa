@@ -4,9 +4,11 @@ import type {
   InstanceSettingsSection,
   InstanceUserDto,
   MailTestResultDto,
+  PlatformSetupStatusDto,
   UpdateInstagramSettingsInput,
   UpdateMailSettingsInput,
   UpdateSignupSettingsInput,
+  UpdateTikTokSettingsInput,
   UpdateTurnstileSettingsInput,
 } from '@conversa/shared';
 import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -16,6 +18,7 @@ import { keys } from '../keys';
 type SectionInput = {
   mail: UpdateMailSettingsInput;
   instagram: UpdateInstagramSettingsInput;
+  tiktok: UpdateTikTokSettingsInput;
   turnstile: UpdateTurnstileSettingsInput;
   signup: UpdateSignupSettingsInput;
 };
@@ -44,6 +47,17 @@ export function useInstagramSetupStatus(enabled = true) {
   });
 }
 
+/** Whether TikTok accepts the app, and when its webhooks last arrived. */
+export function useTikTokSetupStatus(enabled = true) {
+  return useQuery({
+    queryKey: keys.tiktokStatus,
+    queryFn: ({ signal }) => api.get<PlatformSetupStatusDto>('/instance/tiktok/status', signal),
+    enabled,
+    refetchOnWindowFocus: false,
+    refetchInterval: 60_000,
+  });
+}
+
 export function useInstanceSettings(enabled = true) {
   return useQuery({ ...instanceSettingsQuery(), enabled });
 }
@@ -58,6 +72,7 @@ export function useUpdateInstanceSettings<S extends InstanceSettingsSection>(sec
       queryClient.setQueryData(keys.instanceSettings, settings);
       if (section === 'instagram')
         void queryClient.invalidateQueries({ queryKey: keys.instagramStatus });
+      if (section === 'tiktok') void queryClient.invalidateQueries({ queryKey: keys.tiktokStatus });
       await queryClient.invalidateQueries({ queryKey: keys.instance, exact: true });
     },
   });
