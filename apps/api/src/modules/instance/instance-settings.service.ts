@@ -1,4 +1,4 @@
-import { Injectable, Logger, type OnModuleDestroy, type OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, type OnApplicationShutdown, type OnModuleInit } from '@nestjs/common';
 import type {
   InstanceSettingsDto,
   InstanceSettingsSection,
@@ -112,7 +112,7 @@ export function secretStatus(value: string | null | undefined): SecretStatusDto 
  * worker reloads too.
  */
 @Injectable()
-export class InstanceSettingsService implements OnModuleInit, OnModuleDestroy {
+export class InstanceSettingsService implements OnModuleInit, OnApplicationShutdown {
   private readonly logger = new Logger(InstanceSettingsService.name);
   private stored: Stored = {};
   private subscriber: Redis | null = null;
@@ -138,7 +138,8 @@ export class InstanceSettingsService implements OnModuleInit, OnModuleDestroy {
     await this.subscriber.subscribe(SETTINGS_CHANNEL);
   }
 
-  async onModuleDestroy(): Promise<void> {
+  // With the Redis connection, so requests served while shutting down still see changes.
+  async onApplicationShutdown(): Promise<void> {
     await this.subscriber?.quit().catch(() => undefined);
   }
 

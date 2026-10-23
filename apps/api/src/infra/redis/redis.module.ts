@@ -1,4 +1,4 @@
-import { Global, Inject, Module, type OnModuleDestroy } from '@nestjs/common';
+import { Global, Inject, Module, type OnApplicationShutdown } from '@nestjs/common';
 import { Redis } from 'ioredis';
 import { AppConfig } from '../../config/app-config.js';
 
@@ -17,10 +17,12 @@ export const InjectRedis = (): ParameterDecorator => Inject(REDIS);
   ],
   exports: [REDIS],
 })
-export class RedisModule implements OnModuleDestroy {
+export class RedisModule implements OnApplicationShutdown {
   constructor(@InjectRedis() private readonly redis: Redis) {}
 
-  async onModuleDestroy(): Promise<void> {
+  // Not onModuleDestroy: that runs before the HTTP server and the queue workers
+  // close, and requests still in flight would lose Valkey (503s).
+  async onApplicationShutdown(): Promise<void> {
     await this.redis.quit();
   }
 }
