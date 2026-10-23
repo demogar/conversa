@@ -2,7 +2,12 @@ import type { MetaAppUrlsDto } from '@conversa/shared';
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '@/test/render';
-import { MetaSetupGuide } from './meta-setup-guide';
+import {
+  MetaSetupGuide,
+  metaGuideStartStep,
+  readFurthestMetaGuideStep,
+  rememberMetaGuideStep,
+} from './meta-setup-guide';
 
 const urls: MetaAppUrlsDto = {
   oauthRedirect: 'https://conversa.example.com/api/v1/channels/oauth/instagram/callback',
@@ -100,5 +105,40 @@ describe('MetaSetupGuide', () => {
     await guide.open('3. Connect the webhooks');
     expect(screen.getByText(/shown only until it is saved/)).toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: 'Copy to clipboard' })).toHaveLength(1);
+  });
+});
+
+describe('metaGuideStartStep', () => {
+  const verifiedAt = '2026-10-23T12:00:00Z';
+
+  it('opens after the last step Conversa can see is done', () => {
+    expect(metaGuideStartStep({ configured: false })).toBe('create');
+    expect(metaGuideStartStep({ configured: true })).toBe('webhooks');
+    expect(metaGuideStartStep({ configured: true, webhookVerifiedAt: verifiedAt })).toBe('login');
+    expect(
+      metaGuideStartStep({
+        configured: true,
+        webhookVerifiedAt: verifiedAt,
+        lastEventAt: verifiedAt,
+      }),
+    ).toBe('connect');
+  });
+
+  it('opens at the furthest step opened, but never before what Conversa can see', () => {
+    const verified = { configured: true, webhookVerifiedAt: verifiedAt };
+    expect(metaGuideStartStep(verified, 'roles')).toBe('roles');
+    expect(metaGuideStartStep(verified, 'credentials')).toBe('login');
+    // An app removed since: only the first two steps still apply.
+    expect(metaGuideStartStep({ configured: false }, 'publish')).toBe('create');
+    expect(metaGuideStartStep({ configured: false }, 'credentials')).toBe('credentials');
+  });
+
+  it('remembers only the furthest step, so looking back keeps the progress', () => {
+    localStorage.clear();
+    rememberMetaGuideStep('roles');
+    rememberMetaGuideStep('credentials');
+    expect(readFurthestMetaGuideStep()).toBe('roles');
+    rememberMetaGuideStep('publish');
+    expect(readFurthestMetaGuideStep()).toBe('publish');
   });
 });
