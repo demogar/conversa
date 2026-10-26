@@ -146,7 +146,7 @@ services:
   # Optional: a Cloudflare Tunnel, so the host needs no inbound port.
   #   docker compose -f docker/compose.yml --env-file .env --profile tunnel up -d
   cloudflared:
-    image: cloudflare/cloudflared:2026.10.1
+    image: cloudflare/cloudflared:2026.10.3
     profiles: [tunnel]
     restart: unless-stopped
     command: ['tunnel', '--no-autoupdate', 'run']
