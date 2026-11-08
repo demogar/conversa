@@ -70,7 +70,11 @@ function TikTokSetupStatus() {
         ) : null}
       </div>
       {status.isPending ? (
-        <SkeletonGroup loading label={t('loading')} fallback={<Skeleton className="h-16" />} />
+        <SkeletonGroup
+          loading
+          label={tTikTok('statusLoading')}
+          fallback={<Skeleton className="h-16" />}
+        />
       ) : status.isError ? (
         <Callout
           tone="danger"
@@ -91,12 +95,12 @@ function TikTokSetupStatus() {
                 term: t('credentials'),
                 detail: (
                   <Badge tone={CREDENTIALS_TONE[status.data.credentials]} dot>
-                    {t(`credentialsState.${status.data.credentials}`)}
+                    {tTikTok(`credentialsState.${status.data.credentials}`)}
                   </Badge>
                 ),
               },
               {
-                term: t('lastEvent'),
+                term: tTikTok('lastEvent'),
                 detail: status.data.lastEventAt ? (
                   <RelativeTime date={status.data.lastEventAt} locale={locale} />
                 ) : (
@@ -200,9 +204,10 @@ export function TikTokSection({
               ),
             })}
           </li>
-          <li>{t('steps.permissions')}</li>
-          <li>{t('steps.redirect')}</li>
+          <li>{t('steps.accounts')}</li>
           <li>{t('steps.paste')}</li>
+          <li>{t('steps.messaging')}</li>
+          <li>{t('steps.reconnect')}</li>
           <li>{t('steps.webhook')}</li>
         </ol>
         <CodeBlock label={t('redirectUrl')} code={settings.urls.oauthRedirect} wrap />

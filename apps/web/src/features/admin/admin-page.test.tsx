@@ -177,6 +177,27 @@ describe('AdminPage', () => {
     });
   });
 
+  it('names TikTok, not Meta or Instagram, in the TikTok connection status', async () => {
+    routes({
+      'GET /instance/settings': {
+        ...settings,
+        tiktok: { ...settings.tiktok, configured: true, appId: '7300000000000000001' },
+      },
+      'GET /instance/tiktok/status': {
+        sandbox: false,
+        credentials: 'valid',
+        webhookVerifiedAt: null,
+        lastEventAt: null,
+      },
+    });
+    renderWithProviders(<AdminPage />);
+
+    const status = await screen.findByRole('region', { name: 'Connection to TikTok' });
+    expect(await within(status).findByText('Accepted by TikTok')).toBeInTheDocument();
+    expect(within(status).getByText('Last event from TikTok')).toBeInTheDocument();
+    expect(within(status).queryByText(/Meta|Instagram/)).not.toBeInTheDocument();
+  });
+
   it('generates a verify token in the browser and hands it to the guide to paste into Meta', async () => {
     const calls = routes({ 'PATCH /instance/settings/instagram': settings });
     renderWithProviders(<AdminPage />);
