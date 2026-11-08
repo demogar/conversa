@@ -31,42 +31,41 @@ Business Messaging also has access rules of its own:
 
 **Upgrading?** Finish rolling out the release that adds TikTok to every API process and worker before you set up the TikTok app. A worker from the previous release does not know TikTok, and fails the TikTok events it picks up.
 
-## 1. Create the developer app
+## 1. Start the app
 
-In the portal, open **My Apps** and create an app. Upload an **App logo** (JPG or PNG, at most 512 × 512 px): without one, people see an error page when they try to connect.
+In the portal, open **My Apps** and start an app, without submitting it yet:
 
-## 2. Permissions
-
-Under **Authorization → Scope of permission**, select:
-
-- **TikTok Accounts**, with the account profile, video list and comment scopes it offers.
-- **Business Messaging** (`message.list.read`, `message.list.send`, `message.list.manage`).
-
-Then request Business Messaging access as described in TikTok's guide (the data security intake form).
-
-## 3. Redirect URL
-
-Under **Basic Information → TikTok account holder redirect URLs**, add the address shown in **Instance settings → TikTok app**:
+- **App logo:** JPG or PNG, at most 512 × 512 px. Without one, people see an error page when they connect.
+- **Scope of permission:** select **TikTok Accounts**. Business Messaging is not offered here; see step 4.
+- **TikTok account holder redirect URL:** the address shown in **Instance settings → TikTok app**:
 
 ```
 https://conversa.example.com/api/v1/channels/oauth/tiktok/callback/
 ```
 
-It **must end in a slash**: TikTok refuses redirect URLs without one, and the token exchange only works when the URL matches exactly. If you have several redirect URLs, make this one the active one; TikTok builds the authorization URL from the active redirect URL.
+It **must end in a slash** and match exactly. With several redirect URLs, make this one active.
 
-## 4. Copy the app into Conversa
+## 2. Send the Accounts API form
+
+Send the **Accounts API Access Application Form**, linked next to TikTok Accounts, then submit the app. Send the form once. It asks for business documents and a screen recording. The App ID appears after TikTok approves the app.
+
+## 3. Copy the app into Conversa
 
 From **Basic Information**, copy into **Instance settings → TikTok app**:
 
-| Portal field                            | Conversa field                          |
-| --------------------------------------- | --------------------------------------- |
-| App ID                                  | App ID                                  |
-| Secret                                  | Secret                                  |
-| TikTok account holder authorization URL | TikTok account holder authorization URL |
+- App ID
+- Secret
+- TikTok account holder authorization URL, as it is
 
-Paste the authorization URL as it is. TikTok builds it from the app's permissions, so Conversa does not rebuild it; it only adds a signed `state` and `disable_auto_auth=1` (so reconnecting an account always returns a fresh code).
+**Connection to TikTok** then says whether TikTok accepts the app ID and secret. It is a good sign, not a guarantee: Conversa exchanges a code that cannot work and reads TikTok's complaint.
 
-After saving, **Connection to TikTok** says whether TikTok accepts the app ID and secret. Conversa asks by exchanging a code that cannot work and reading TikTok's complaint: a complaint about the code means the app passed.
+## 4. Request Business Messaging
+
+1. Send the intake form from [TikTok's guide](https://business-api.tiktok.com/portal/docs/access-to-business-messaging-api/v1.3) with your App ID and the regions where your accounts signed up. Send it once.
+2. Answer the questionnaire TikTok emails to your contact. US accounts get a second one about a week later and, after passing, the USDS Addendum.
+3. Once approved, paste the new authorization URL and reconnect your accounts.
+
+To add the US after another region is approved, send the form again with its option for extending access.
 
 ## 5. Webhook
 
@@ -106,7 +105,7 @@ TikTok allows about 40 requests per minute per account per endpoint, and 600 to 
 
 ## Troubleshooting
 
-- **The account connected, but no messages arrive.** Has TikTok approved Business Messaging for the app and this account? Is the account registered in the EEA, the UK or Switzerland? Is the account an Advanced Access or Verified Business Account? Check **Last event** under **Connection to TikTok**.
+- **The account connected, but no messages arrive.** An account can connect before Business Messaging is approved. Has TikTok approved it for this account's region, and did you reconnect afterwards? Is the account registered in the EEA, the UK or Switzerland? Is the account an Advanced Access or Verified Business Account? Check **Last event** under **Connection to TikTok**.
 - **"The account was not connected" after approving.** The redirect URL in the portal must match exactly, ending in a slash. If the account had approved the app before, reconnect from Conversa (it always asks TikTok for a new code).
 - **Messages stop after a while.** TikTok's direct message rules (the 48-hour window and its message caps) blocked them; the delivery fails with `WINDOW_CLOSED`. It works again once the person writes.
 - **The channel needs reconnecting.** Refresh tokens last a year. If the worker was down for more than a day, the access token may also have expired; reconnect the account.

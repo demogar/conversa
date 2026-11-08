@@ -92,14 +92,23 @@
     "limitsTitle": "Lo que TikTok permite",
     "limitsBody": "TikTok no puede escribirle por mensaje a quien comenta, así que solo los mensajes directos inician automatizaciones, y solo puedes responder a quien escribió primero. Su API de mensajes necesita la aprobación de TikTok, no está disponible para cuentas registradas en el EEE, el Reino Unido o Suiza, y pide una revisión adicional para cuentas de EE. UU. Los enlaces van escritos en el mensaje, porque TikTok no tiene botones de enlace.",
     "statusTitle": "Conexión con TikTok",
+    "statusLoading": "Comprobando la app de TikTok",
+    "credentialsState": {
+      "valid": "TikTok los aceptó",
+      "invalid": "TikTok los rechazó",
+      "unknown": "No se pudo saber",
+      "not_configured": "Sin guardar"
+    },
+    "lastEvent": "Último evento de TikTok",
     "invalid": "TikTok no aceptó el ID y la clave secreta de la app. Vuelve a copiar ambos desde la página Basic Information de la app.",
     "stepsTitle": "Configura la app",
     "steps": {
-      "create": "En el <portal>portal de TikTok API for Business</portal>, crea una app de desarrollador y sube su logo.",
-      "permissions": "En Scope of permission, elige TikTok Accounts y Business Messaging, y solicita el acceso a mensajes para tus cuentas.",
-      "redirect": "Agrega la URL de redirección de abajo como TikTok account holder redirect URL, tal cual, terminada en barra.",
-      "paste": "Copia el App ID, la clave secreta y la TikTok account holder authorization URL desde Basic Information en los campos de abajo.",
-      "webhook": "Conversa registra la URL del webhook en TikTok cuando se conecta la primera cuenta. Se muestra aquí como referencia."
+      "create": "En el <portal>portal de TikTok API for Business</portal>, empieza una app con logo y la URL de redirección de abajo, terminada en barra.",
+      "accounts": "Elige TikTok Accounts, envía el formulario de Accounts API que enlaza y luego envía la app.",
+      "paste": "Cuando la aprueben, copia el App ID, la clave secreta y la URL de autorización en los campos de abajo.",
+      "messaging": "Solicita Business Messaging con el formulario de TikTok y responde sus cuestionarios.",
+      "reconnect": "Cuando lo aprueben, pega la nueva URL de autorización y vuelve a conectar tus cuentas.",
+      "webhook": "Conversa registra el webhook cuando se conecta una cuenta."
     },
     "redirectUrl": "URL de redirección para titulares de cuentas de TikTok",
     "webhookUrl": "URL del webhook",

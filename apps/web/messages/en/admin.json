@@ -92,14 +92,23 @@
     "limitsTitle": "What TikTok allows",
     "limitsBody": "TikTok cannot message the author of a comment, so only direct messages start automations, and you can only answer people who wrote first. Its messaging API needs TikTok's approval, is not available for accounts registered in the EEA, the UK or Switzerland, and needs an extra review for US accounts. Links are written into the message, because TikTok has no link buttons.",
     "statusTitle": "Connection to TikTok",
+    "statusLoading": "Checking the TikTok app",
+    "credentialsState": {
+      "valid": "Accepted by TikTok",
+      "invalid": "Rejected by TikTok",
+      "unknown": "Could not tell",
+      "not_configured": "Not saved yet"
+    },
+    "lastEvent": "Last event from TikTok",
     "invalid": "TikTok did not accept the app ID and secret. Copy both again from the app's Basic Information page.",
     "stepsTitle": "Set up the app",
     "steps": {
-      "create": "In the <portal>TikTok API for Business portal</portal>, create a developer app and upload its logo.",
-      "permissions": "Under Scope of permission, select TikTok Accounts and Business Messaging, and request messaging access for your accounts.",
-      "redirect": "Add the redirect URL below as the TikTok account holder redirect URL, exactly as shown, ending in a slash.",
-      "paste": "Copy the app ID, the secret and the TikTok account holder authorization URL from Basic Information into the fields below.",
-      "webhook": "Conversa registers the webhook URL with TikTok when the first account connects. It is shown here for reference."
+      "create": "In the <portal>TikTok API for Business portal</portal>, start an app with a logo and the redirect URL below, ending in a slash.",
+      "accounts": "Select TikTok Accounts, send the Accounts API form it links to, then submit the app.",
+      "paste": "Once approved, copy the App ID, secret and authorization URL into the fields below.",
+      "messaging": "Request Business Messaging with TikTok's intake form and answer its questionnaires.",
+      "reconnect": "Once approved, paste the new authorization URL and reconnect your accounts.",
+      "webhook": "Conversa registers the webhook when an account connects."
     },
     "redirectUrl": "TikTok account holder redirect URL",
     "webhookUrl": "Webhook URL",
