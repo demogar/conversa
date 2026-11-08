@@ -616,6 +616,25 @@ export const molaSpanish: MessagesOverride<typeof defaultMessages> = {
     needsApproval: 'Esta llamada necesita tu aprobación.',
     approve: 'Aprobar',
     deny: 'Denegar',
+    editAndApprove: 'Editar y aprobar',
+    editing: 'Cambia los argumentos y luego aprueba.',
+    approveWithEdits: 'Aprobar con cambios',
+    cancelEdits: 'Cancelar cambios',
+    editUnchanged:
+      'Todavía no hay cambios. Cambia un argumento, o cancela y aprueba la llamada como se propuso.',
+    editInvalid: 'Aún no se puede aprobar:',
+    decisions: {
+      approved: 'Aprobada',
+      approved_with_edits: 'Aprobada con cambios',
+      denied: 'Denegada',
+    },
+    decidedBy: 'por {name}',
+    decidedWithChanges: '{decision}: {changes}.',
+    argumentChanged: '{field} cambió de {before} a {after}',
+    argumentAdded: '{field} se definió como {after}',
+    argumentRemoved: '{field} se eliminó, era {before}',
+    proposedArguments: 'argumentos propuestos',
+    editedArguments: 'argumentos aprobados',
   },
   toolCallGroup: {
     label: {
